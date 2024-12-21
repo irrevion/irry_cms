@@ -25,11 +25,11 @@ $(document).ready(function() {
 			var $ul = ui.item.parent();
 			var list = $('.gallery-photos-list').sortable('serialize');
 			$.ajax({
-				url: '?controller=gallery&action=ajax_photos_sort&gallery_id=<?=$gallery['id'];?>',
+				url: '?controller=gallery&action=ajax_photos_sort&gallery_id=<?= $gallery['id']; ?>',
 				async: false,
 				cache: false,
 				method: 'POST',
-				data: list+'&CSRF_token=<?=$CSRF_token;?>',
+				data: list+'&CSRF_token=<?= $CSRF_token; ?>',
 				dataType: 'json',
 				success: function(response, status, xhr) {
 					if (response.success) {
@@ -131,8 +131,8 @@ $(document).ready(function() {
 							<img src="<?=$gallery_dir;?>gallery_<?=$gallery['id'];?>/thumb/<?=$f['image'];?>" alt="<?=$f['image'];?>" style="border: 1px solid #888;" />
 						</a>
 						<p style="text-align: center;">
-							<strong><?=(trim(@$f['name'])? utils::limitWords($f['name'], 5): $f['image']);?></strong><br />
-							<?=utils::formatMySQLDate('d.m.Y H:i:s', $f['add_datetime']);?>
+							<strong><?= (trim($f['name'] ?? '')? utils::limitWords($f['name'], 5): $f['image']); ?></strong><br />
+							<?= utils::formatMySQLDate('d.m.Y H:i:s', $f['add_datetime']); ?>
 						</p>
 					</li>
 				<?php } ?>

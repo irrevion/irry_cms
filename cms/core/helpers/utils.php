@@ -420,9 +420,9 @@ class utils {
 	}
 
 	public static function limitStringLength($str, $limit, $hellip=1) {
-		$res = mb_substr($str, 0, $limit, 'UTF-8');
+		$res = mb_substr(($str ?? ''), 0, $limit, 'UTF-8');
 		if ($hellip) {
-			if (mb_strlen($str)>$limit) {
+			if (mb_strlen($str ?? '')>$limit) {
 				$res.='...';
 			}
 		}

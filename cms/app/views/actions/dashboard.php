@@ -85,6 +85,7 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 						<h3><?=$total_comments;?></h3>
 
 						<p><?=CMS::t('comments_are_left', [
+							'{ua:u1}' => utils::getRussianWordEndingByNumber($total_members, '', 'і', 'ів'),
 							'{ru:u1}' => utils::getRussianWordEndingByNumber($total_comments, 'й', 'я', 'ев'),
 							'{ru:u2}' => utils::getRussianWordEndingByNumber($total_comments, '', 'о', 'ы')
 						]);?></p>

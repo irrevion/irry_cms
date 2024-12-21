@@ -145,7 +145,7 @@ class base_controller extends controller {
 		]);
 	}
 
-	public static function action_change_password() { // 2016-08-14
+	public static function action_change_password() {
 		self::$layout = 'simple_layout';
 		view::$title = CMS::t('password_change_title');
 
@@ -179,7 +179,7 @@ class base_controller extends controller {
 		]);
 	}
 
-	public static function action_save_menubar_status() { // 2017-04-15
+	public static function action_save_menubar_status() {
 		header('Content-type: application/json; charset=utf-8');
 
 		$response = [
