@@ -6,8 +6,6 @@ use irrevion\irry_cms\core\helpers\view;
 
 if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.');}
 
-// view::appendJs('//ulogin.ru/js/ulogin.js');
-
 ?>
 
 
@@ -51,7 +49,6 @@ var auth = function(token) {
 
 		<?php if (!empty($response['errors'])) foreach ($response['errors'] as $e) { ?>
 		<div class="callout callout-danger">
-			<!-- <h4></h4> -->
 			<p><?=CMS::t($e);?></p>
 		</div>
 		<?php } ?>
@@ -63,7 +60,7 @@ var auth = function(token) {
 				<input type="hidden" name="CSRF_token" value="<?=$CSRF_token;?>" />
 
 				<div class="form-group has-feedback">
-					<input type="email" name="ad_login" value="<?=utils::safeEcho(@$_POST['ad_login'], 1);?>" class="form-control" placeholder="<?=CMS::t('login_email_placeholder');?>" />
+					<input type="email" name="ad_login" value="<?= utils::safeEcho(@$_POST['ad_login'], 1); ?>" class="form-control" placeholder="<?= CMS::t('login_email_placeholder'); ?>" />
 					<span class="fa fa-envelope form-control-feedback"></span>
 				</div>
 
@@ -87,16 +84,7 @@ var auth = function(token) {
 				</div>
 			</form>
 
-			<!-- 
-			<div class="social-auth-links text-center" data-ulogin="display=buttons;fields=first_name,last_name,email,photo;providers=vkontakte,odnoklassniki,facebook,googleplus;hidden=;redirect_uri=;callback=auth">
-				<a class="btn btn-block btn-social btn-facebook" data-uloginbutton="facebook"><i class="fa fa-facebook"></i> <?=CMS::t('login_social_facebook');?></a>
-				<a class="btn btn-block btn-social btn-google" data-uloginbutton="googleplus"><i class="fa fa-google-plus"></i> <?=CMS::t('login_social_googleplus');?></a>
-			</div>
-			-->
-
 			<a href="?controller=base&amp;action=password_recovery"><?=CMS::t('login_password_recovery');?></a>
-			<!-- <br />
-			<a href="register.html" class="text-center">Register a new membership</a> -->
 		</div>
 	</div>
 </body>

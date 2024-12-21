@@ -400,7 +400,7 @@ $(document).ready(function() {
 						foreach ($cats as $c) {
 							if (!empty($allowed_cats) && !in_array($c['id'], $allowed_cats)) {continue;}
 					?>
-					<input type="checkbox" name="filter[cats][]" value="<?=$c['id'];?>"<?=(@in_array($c['id'], @$_GET['filter']['cats'])? ' checked="checked"': '');?> id="multichoiceCat_<?=$c['id'];?>" form="formSearchAndFilter" /><label for="multichoiceCat_<?=$c['id'];?>"> <?=$c['name'];?><?php if (!empty($c['parent']['id'])) { ?> <span style="color: #aaa;">&crarr; <?=$c['parent']['name'];?></span><?php } ?></label><br />
+					<input type="checkbox" name="filter[cats][]" value="<?=$c['id'];?>"<?=(@in_array($c['id'], ($_GET['filter']['cats'] ?? []))? ' checked="checked"': '');?> id="multichoiceCat_<?=$c['id'];?>" form="formSearchAndFilter" /><label for="multichoiceCat_<?=$c['id'];?>"> <?=$c['name'];?><?php if (!empty($c['parent']['id'])) { ?> <span style="color: #aaa;">&crarr; <?=$c['parent']['name'];?></span><?php } ?></label><br />
 					<?php
 						}
 					?>

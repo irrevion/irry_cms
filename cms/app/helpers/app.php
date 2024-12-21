@@ -27,7 +27,7 @@ class app {
 			$to = $to['email'];
 		}
 
-		$headers = "From: no-reply@irrevion.dp.ua\r\n";
+		$headers = "From: admin@irrevion.dp.ua\r\n";
 		$headers.="Content-type: text/html; charset=UTF-8\r\n";
 		$headers.="Content-transfer-encoding: base64\r\n\r\n";
 		if (!empty($username)) {
@@ -39,7 +39,7 @@ class app {
 		//return mail($to, $subj, $text, $headers, '-fno-reply@irrevion.dp.ua');
 		$smtp = new smtp(self::$config['smtp']['host'], self::$config['smtp']['port'], self::$config['smtp']['user'], self::$config['smtp']['password'], self::$config['smtp']['protocol']);
 		$sended = $smtp->send($to, $subj, $text, $headers);
-		//print "<pre>".var_export($smtp->log, 1)."</pre>";
+		// print "<pre>".var_export($smtp->log, 1)."</pre>";
 
 		return $sended;
 	}

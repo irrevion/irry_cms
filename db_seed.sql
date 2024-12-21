@@ -11,7 +11,7 @@
  Target Server Version : 100432 (10.4.32-MariaDB)
  File Encoding         : 65001
 
- Date: 21/12/2024 19:17:18
+ Date: 22/12/2024 00:49:21
 */
 
 SET NAMES utf8mb4;
@@ -53,7 +53,6 @@ INSERT INTO `articles` VALUES (1, 'qaydalari-ve-normalarinin-tesdiq-edilmesi-haq
 INSERT INTO `articles` VALUES (2, 'beden-terbiyesi-ve-idman-haqqinda-azerbaycan-respublikasi-qanununun-tetbiqi-ile-', NULL, NULL, NULL, '2016-04-28 17:55:00', 0, '0', '0', 2, 1, '2016-04-28 18:12:20', NULL, NULL, '1', '1');
 INSERT INTO `articles` VALUES (3, 'mayjaiavms', NULL, NULL, NULL, '2016-04-29 13:10:00', 0, '0', '0', 5, 1, '2016-04-29 13:53:49', NULL, NULL, '0', '1');
 INSERT INTO `articles` VALUES (4, 'aprelin-29-da-yaz-heyeti-layihesi-cherchivesinde-tehsil-muessiselerinde-imecilik', NULL, NULL, NULL, '2016-02-29 16:45:00', 0, '0', '0', 11, 1, '2016-04-29 16:55:11', 1, '2016-05-02 12:31:36', '1', '0');
-INSERT INTO `articles` VALUES (5, 'qurban-vypil-dvesti-qramm-i-uqnal-stroitelnyj-kran', NULL, NULL, NULL, '2016-04-05 19:10:00', 0, '0', '0', 4, 1, '2016-04-29 19:13:57', NULL, NULL, '0', '1');
 INSERT INTO `articles` VALUES (6, 'some-silly-title', NULL, NULL, NULL, '2016-05-02 12:30:00', 0, '0', '0', 6, 1, '2016-05-02 12:32:11', NULL, NULL, '0', '1');
 INSERT INTO `articles` VALUES (7, 'test-opublikovannostineopublikovannosti-jazykovyh-versij', NULL, NULL, NULL, '2016-05-02 13:30:00', 0, '0', '0', 7, 1, '2016-05-02 13:37:58', 1, '2016-05-02 14:01:34', '1', '0');
 INSERT INTO `articles` VALUES (8, 'yadda-saxlanilmamish-deyishiklikler-itirilecek.-davam-etmek-istediyinize-eminsin', NULL, NULL, NULL, '2016-05-03 15:30:00', 0, '0', '0', 8, 1, '2016-05-03 15:38:45', 1, '2016-05-03 15:56:43', '1', '0');
@@ -146,11 +145,6 @@ CREATE TABLE `cms_log`  (
 -- ----------------------------
 -- Records of cms_log
 -- ----------------------------
-INSERT INTO `cms_log` VALUES (1, 1, 'galleries', 10, 'add', 'Gallery album added by admin Super Admin', '2016-05-27 13:19:44');
-INSERT INTO `cms_log` VALUES (2, 1, 'galleries', 10, 'edit', 'Gallery album modified by admin Super Admin', '2016-05-27 13:20:37');
-INSERT INTO `cms_log` VALUES (3, 1, 'galleries', 10, 'delete', 'Gallery album moved to recycle bin by admin Super Admin', '2016-05-27 13:21:02');
-INSERT INTO `cms_log` VALUES (4, 1, 'galleries', 9, 'edit', 'Gallery album published by admin Super Admin', '2016-05-27 14:50:50');
-INSERT INTO `cms_log` VALUES (5, 1, 'articles', 17, 'edit', 'Article unpublished by admin Super Admin', '2016-05-27 14:59:11');
 INSERT INTO `cms_log` VALUES (6, 13, 'articles', 20, 'add', 'Article added by admin Forsaken Eddie', '2016-05-27 15:01:55');
 INSERT INTO `cms_log` VALUES (7, 1, 'articles', 20, 'edit', 'Article modified by admin Super Admin', '2016-05-27 15:03:17');
 INSERT INTO `cms_log` VALUES (8, 13, 'articles', 20, 'edit', 'Article published by admin Forsaken Eddie', '2016-05-27 15:05:51');
@@ -435,7 +429,7 @@ CREATE TABLE `cms_users`  (
 -- ----------------------------
 -- Records of cms_users
 -- ----------------------------
-INSERT INTO `cms_users` VALUES (1, 'irrevion@gmail.com', 'admin', 'dc6a4cb9828faa8d48ca2fef88c8f469b1353bbf64dfcd8955894576f95cc91a8235ee3fe2508912b809699aadd1f7aa', 'Super Admin 🌭', NULL, 'ua', 1, '2015-03-26 12:26:32', '2017-05-21 22:51:05', '0', '0');
+INSERT INTO `cms_users` VALUES (1, 'irrevion@gmail.com', 'admin', '5f8ff37217339e11afa5b85ab31af34014a4d66ddd78ea540280f43dce69b10abb12c42434c42b4754ec9f01851a8aac', 'Super Admin 🌭', NULL, 'ua', 1, '2015-03-26 12:26:32', '2024-12-22 00:34:36', '0', '0');
 INSERT INTO `cms_users` VALUES (16, 'user@domain.com', 'admin', 'bvfbngfsngfdfbfdsbf', 'Padre Domini', 'i.jpg', 'ru', 1, '2016-09-12 11:33:17', NULL, '0', '0');
 INSERT INTO `cms_users` VALUES (17, 'obama@penthagon.us', 'editor', '9ba225066b8eb8b8b6580a7e850a4a8c8513719977a4b5f64dde11b6becb619b659382647d5bc37cef787217ff39e539', 'Obama Barack Mustafa Ibrahim ex', 'obama-2.jpg', 'az', 1, '2016-09-12 13:41:08', NULL, '0', '0');
 INSERT INTO `cms_users` VALUES (18, 'maestro@contoso.com', 'editor', '0ce6f6f0797ad8ed1dd2fe30eb0fe8d6d86b104746fb2ff1e208a90cb7143438cefb830cd732e995da526da216a27825', 'Ivan Drago <script>alert(\'Damn!\');</script>', 'ivan-drago.jpg', 'en', 1, '2016-09-14 22:34:18', NULL, '0', '0');
@@ -975,7 +969,7 @@ CREATE TABLE `site_settings`  (
   `value` char(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `option`(`option`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Records of site_settings
@@ -985,6 +979,7 @@ INSERT INTO `site_settings` VALUES (2, 'site_default_lang_dir', 'en');
 INSERT INTO `site_settings` VALUES (3, 'cms_name', 'Irry CMS');
 INSERT INTO `site_settings` VALUES (4, 'cms_default_lang', 'ua');
 INSERT INTO `site_settings` VALUES (5, 'cms_name_formatted', '<b>Irry</b>CMS');
+INSERT INTO `site_settings` VALUES (7, 'cms_sender_email', 'admin@irrevion.dp.ua');
 
 -- ----------------------------
 -- Table structure for site_users
@@ -1016,9 +1011,9 @@ CREATE TABLE `site_users`  (
 -- ----------------------------
 -- Records of site_users
 -- ----------------------------
-INSERT INTO `site_users` VALUES (1, '116883195089063849540', 'googleplus', 'https://plus.google.com/u/0/116883195089063849540/', 'https://plus.google.com/116883195089063849540', 'profitaz1@gmail.com', '', 1, 'Professional', 'IT', '', 'profit', NULL, NULL, '2016-05-24 12:16:40', '2016-05-24 13:05:57', '1');
-INSERT INTO `site_users` VALUES (2, '1190297687648667', 'facebook', 'https://www.facebook.com/app_scoped_user_id/1190297687648667/', 'https://www.facebook.com/app_scoped_user_id/1190297687648667/', 'vallos_alien@mail.ru', '', 1, 'Валентин', 'Белоусов', '', 'belousov_valentin', NULL, NULL, '2016-05-24 13:22:37', '2016-05-24 13:22:37', '0');
-INSERT INTO `site_users` VALUES (3, '111454852475613307532', 'googleplus', 'https://plus.google.com/u/0/111454852475613307532/', 'https://plus.google.com/111454852475613307532', 'qurban.qurbanov93@gmail.com', '', 1, 'Курбан', 'Курбанов', '', 'kurbanov_kurban', '2016-06-24', 'male', '2016-05-24 13:24:00', '2016-05-30 14:19:39', '0');
+INSERT INTO `site_users` VALUES (1, '116883195089063849540', 'googleplus', 'https://plus.google.com/u/0/116883195089063849540/', 'https://plus.google.com/116883195089063849540', 'erdogan@turkiye.gov', '', 1, 'Recep Tayyip', 'Erdogan', '', 'erdogan', NULL, NULL, '2016-05-24 12:16:40', '2016-05-24 13:05:57', '1');
+INSERT INTO `site_users` VALUES (2, '1190297687648667', 'facebook', 'https://www.facebook.com/app_scoped_user_id/1190297687648667/', 'https://www.facebook.com/app_scoped_user_id/1190297687648667/', 'trump@whitehouse.gov', '', 1, 'Donald', 'Trump', '', 'trump', NULL, NULL, '2016-05-24 13:22:37', '2016-05-24 13:22:37', '0');
+INSERT INTO `site_users` VALUES (3, '111454852475613307532', 'googleplus', 'https://plus.google.com/u/0/111454852475613307532/', 'https://plus.google.com/111454852475613307532', 'justin.trudo@canada.gov', '', 1, 'Justin', 'Trudo', '', 'trudo', '2016-06-24', 'male', '2016-05-24 13:24:00', '2016-05-30 14:19:39', '0');
 
 -- ----------------------------
 -- Table structure for site_users_events

@@ -16,7 +16,7 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 class base_controller extends controller {
 	private static $runtime = [];
 
-	public static function action_404() { // 2016-08-18
+	public static function action_404() {
 		header('HTTP/1.1 404 Not Found');
 
 		self::$layout = 'simple_layout';
@@ -25,7 +25,7 @@ class base_controller extends controller {
 		return self::render('404');
 	}
 
-	public static function action_403() { // 2016-09-05
+	public static function action_403() {
 		header('HTTP/1.1 403 Forbidden');
 
 		self::$layout = 'simple_layout';
@@ -64,7 +64,8 @@ class base_controller extends controller {
 		]);
 	}
 
-	public static function action_ulogin() { // 2016-08-20
+	/*
+	public static function action_ulogin() {
 		header('Content-type: application/json; charset=utf-8');
 
 		$response = [
@@ -96,13 +97,14 @@ class base_controller extends controller {
 
 		return json_encode($response);
 	}
+	*/
 
-	public static function action_sign_out() { // 2016-08-18
+	public static function action_sign_out() {
 		CMS::logout();
 		return '';
 	}
 
-	public static function action_password_recovery() { // 2016-08-13
+	public static function action_password_recovery() {
 		self::$layout = 'simple_layout';
 		view::$title = CMS::t('password_recovery_title');
 

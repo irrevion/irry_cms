@@ -351,8 +351,8 @@ return [
 
 	// Moderation - Site users
 
-	'site_users_list_details' => 'Знайдено{ru:u1} {count} користувачів{ru:u2}',
-	'site_users_has_registered' => 'користувач{ru:u1} зареєстрував{ru:u2}',
+	'site_users_list_details' => 'Знайдено{ua:u1} {count} користувачів{ua:u2}',
+	'site_users_has_registered' => 'користувач{ua:u1} зареєстр{ua:u2}',
 	'site_user_profile_info' => 'Профіль',
 	'site_user_email' => 'E-mail',
 	'site_user_name' => 'Імʼя, прізвище',

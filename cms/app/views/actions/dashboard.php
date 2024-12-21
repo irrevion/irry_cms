@@ -64,6 +64,8 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 						<h3><?=$total_members;?></h3>
 
 						<p><?=CMS::t('site_users_has_registered', [
+							'{ua:u1}' => utils::getRussianWordEndingByNumber($total_members, '', 'а', 'ів'),
+							'{ua:u2}' => utils::getRussianWordEndingByNumber($total_members, 'увався', 'увалися', 'овано'),
 							'{ru:u1}' => utils::getRussianWordEndingByNumber($total_members, 'ь', 'я', 'ей'),
 							'{ru:u2}' => utils::getRussianWordEndingByNumber($total_members, 'ся', 'ось', 'ись')
 						]);?></p>
@@ -148,7 +150,7 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 							<span class="label label-danger"><?=CMS::t('dashboard_new_members', [
 								'{n}' => $new_members,
 								'{ua:u1}' => utils::getUkrainianWordEndingByNumber($new_members, 'ий', 'их', 'их'),
-								'{ua:u2}' => utils::getUkrainianWordEndingByNumber($new_members, '', 'а', 'ів')
+								'{ua:u2}' => utils::getUkrainianWordEndingByNumber($new_members, '', 'а', 'ів'),
 								'{ru:u1}' => utils::getRussianWordEndingByNumber($new_members, 'й', 'х', 'х'),
 								'{ru:u2}' => utils::getRussianWordEndingByNumber($new_members, 'ь', 'я', 'ей')
 							]);?></span>

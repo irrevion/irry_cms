@@ -18,7 +18,7 @@ class articles_controller extends controller {
 
 	private static $runtime = [];
 
-	public static function action_list() { // 2016-12-04
+	public static function action_list() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_item_articles_list');
 
@@ -50,7 +50,7 @@ class articles_controller extends controller {
 		return self::render('articles_list', $params);
 	}
 
-	public static function action_add() { // 2016-12-05
+	public static function action_add() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_item_articles_add');
 
@@ -82,7 +82,7 @@ class articles_controller extends controller {
 		return self::render('articles_add', $params);
 	}
 
-	public static function action_edit() { // 2016-01-15
+	public static function action_edit() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_item_articles_edit');
 
@@ -127,7 +127,7 @@ class articles_controller extends controller {
 		return self::render('articles_edit', $params);
 	}
 
-	public static function action_delete() { // 2016-11-17
+	public static function action_delete() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('delete');
 
@@ -146,7 +146,7 @@ class articles_controller extends controller {
 		return self::render('cms_user_delete', $params);
 	}
 
-	public static function action_ajax_set_status() { // 2016-12-04
+	public static function action_ajax_set_status() {
 		header('Content-type: application/json; charset=utf-8');
 
 		$response = ['success' => false, 'message' => 'ajax_invalid_request'];
@@ -234,7 +234,7 @@ class articles_controller extends controller {
 		return json_encode($response);
 	}
 
-	public static function action_ajax_delete_image() { // 2016-12-05
+	public static function action_ajax_delete_image() {
 		header('Content-type: application/json; charset=utf-8');
 
 		$response = ['success' => false, 'message' => 'ajax_invalid_request'];

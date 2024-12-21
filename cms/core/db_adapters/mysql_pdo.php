@@ -11,8 +11,13 @@ class mysql_pdo {
 			run($sql, $params=[]) // returns query result
 			exec($sql, $params=[], $return_affected_rows=true) // executes not-select queries
 			add($target, $data, $return_id=true) // inserts data
+			addBulk($target, $data) // insert multiple rows
 			mod($target, $data, $where='', $params=[]) // updates data
 			save($target_table, $unique_index_key, $data) // insert or update data
+			arrayToCond($field, $values, $inverse=false) // generate IN(...) SQL statement
+			in(...$args) // alias for arrayToCond()
+			quote($val) // escape string to use in statement
+			quoteArray($arr) // escape array values to use in statement, returns string
 			getAll($sql, $params=[]) // returns [['id' => '1', 'name' => 'Record 1'], ['id' => '2', 'name' => 'Record 2']]
 			getList($sql, $params=[]) // returns ['1', '2']
 			getPairs($sql, $params=[]) // returns [['1' => 'Record 1'], ['2' => 'Record 2']]
@@ -132,6 +137,29 @@ class mysql_pdo {
 		return $affected;
 	}
 
+	public function addBulk($target, $data) {
+		if (empty($target) || !is_array($data) || !count($data)) {return false;}
+
+		$path = $this->preparePath($target);
+		if (empty($path)) {return false;}
+
+		$vals = [];
+		$rows = [];
+		foreach ($data as $row) {
+			$vals = [];
+			foreach ($row as $val) {
+				$vals[] = (is_null($val)? 'NULL': $this->pdo->quote($val));
+			}
+			$rows[] = "(".implode(", ", $vals).")";
+		}
+
+		$sql = "INSERT INTO {$path} (`".implode("`, `", array_keys($data[0]))."`) VALUES ".implode(", ", $rows);
+
+		$affected = $this->exec($sql);
+
+		return $affected;
+	}
+
 	public function mod($target, $data, $where='', $params=[]) {
 		if (empty($target) || !is_array($data) || !count($data)) {return false;}
 
@@ -169,7 +197,7 @@ class mysql_pdo {
 		return $affected;
 	}
 
-	public function save($target_table, $unique_index_key, $data) { // 2020-01-21
+	public function save($target_table, $unique_index_key, $data) {
 		if (!isset($data[$unique_index_key])) {return null;}
 
 		$params = [];
@@ -197,12 +225,51 @@ class mysql_pdo {
 		return $affected;
 	}
 
+	public function arrayToCond($field, $values, $inverse=false) {
+		$has_null = array_search(null, $values);
+
+		if ($has_null!==false) {
+			$non_null_values = [];
+			foreach ($values as $v) {
+				if (is_null($v)) {continue;}
+				$non_null_values[] = "{$v}";
+			}
+			$values = $non_null_values;
+		}
+
+		// $cond = $field.($inverse? ' NOT': '')." IN ('".implode("', '", $values)."')";
+		$cond = $field.($inverse? ' NOT': '')." IN (".$this->quoteArray($values).")";
+
+		if ($has_null!==false) {
+			if ($inverse) {
+				$cond = "({$field} IS NOT NULL AND {$cond})";
+			} else {
+				$cond = "({$field} IS NULL OR {$cond})";
+			}
+		}
+
+		return $cond;
+	}
+	public function in(...$args) {return $this->arrayToCond(...$args);}
+
 	public function query($sql, $params=[]) {
 		return $this->run($sql, $params);
 	}
 
 	public function quote($val) {
+		if (is_array($val)) {
+			return $this->quoteArray($val);
+		}
 		return $this->escape($val);
+	}
+	public function escape($val) {return $this->pdo->quote(@(string)$val);}
+
+	public function quoteArray($arr) {
+		$quoted_arr = [];
+		foreach ($arr as $i=>$v) {
+			$quoted_arr[$i] = $this->quote($v);
+		}
+		return implode(', ', $quoted_arr);
 	}
 
 
@@ -222,7 +289,7 @@ class mysql_pdo {
 				'message' => $e->getMessage()
 			];
 			return false;
-        }
+		}
 
 		if (empty($this->settings['charset'])) {
 			//$this->settings['charset'] = 'utf8';
@@ -340,10 +407,6 @@ class mysql_pdo {
 		$sql = $this->genSelectQuery($col, $tbl, $flt, $ord, $fr, $num);
 
 		return $this->get($sql);
-	}
-
-	public function escape($val) {
-		return $this->pdo->quote(@(string)$val);
 	}
 }
 

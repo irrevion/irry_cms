@@ -1,6 +1,6 @@
 <?php
 
-namespace core\db_adapters;
+namespace irrevion\irry_cms\core\db_adapters;
 
 use irrevion\irry_cms\core\db_adapters\mysql_pdo;
 
@@ -9,7 +9,7 @@ if (!defined('_VALID_PHP')) die('Direct access to this location is not allowed.'
 class mysql_pdo_encrypted extends mysql_pdo {
 	/*
 		This class provides methods to work with encrypted fields and construct such queries.
-		It extends tb\start_cms\db_adapters\mysql_pdo class.
+		It extends irrevion\irry_cms\core\db_adapters\mysql_pdo class.
 		There are
 			decrypt_field($f) // generates AES_DECRYPT statement with fieldname for search `... OR CONVERT(".CMS::$db->decrypt_field('c.name')." USING utf8) LIKE {$w}`
 				and where conditions `... AND ".CMS::$db->decrypt_field('gender')."=".CMS::$db->escape($gender)`

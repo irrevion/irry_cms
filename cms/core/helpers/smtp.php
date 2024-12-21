@@ -61,11 +61,13 @@ class smtp {
 		$msg = $command? ($command.(empty($arg)? '': (' '.$arg))."\r\n"): $arg;
 		$this->stack = array();
 		if (is_resource($this->connection)) {
-			$writed = fwrite($this->connection, $msg);
-			$this->log[] = 'SMTP::run() - '.($writed? ('Writed "'.$msg.'" ('.$writed.' bytes) ['.$this->getmicrotime_formatted().']'): ('Cannot send "'.$msg.'" string'));
-			if ($command=='QUIT') {
-				$this->stack[] = "221 {$this->host} Service closing transmission channel";
-				return '221'; // Optimize performance, DO NOT wait server's answer
+			if ($msg) {
+				$writed = fwrite($this->connection, $msg);
+				$this->log[] = 'SMTP::run() - '.($writed? ('Writed "'.$msg.'" ('.$writed.' bytes) ['.$this->getmicrotime_formatted().']'): ('Cannot send "'.$msg.'" string'));
+				if ($command=='QUIT') {
+					$this->stack[] = "221 {$this->host} Service closing transmission channel";
+					return '221'; // Optimize performance, DO NOT wait server's answer
+				}
 			}
 			$code = '';
 			while (!feof($this->connection)) {
@@ -118,8 +120,10 @@ class smtp {
 
 	private function transfer($email) {
 		$sended = false;
+		$this->run();
 		if ($this->user && $this->password) {
 			$code = $this->run('EHLO', $this->host);
+			//$code = $this->run('HELO', $this->host);
 			if ($code[0]=='2') {
 				$handshake = 1;
 				foreach ($this->stack as $line) {
