@@ -65,16 +65,16 @@ print view::outputJsList();
 			});
 		</script>
 	</head>
-	<body class="hold-transition sidebar-mini skin-green<?=($_SESSION[CMS::$sess_hash]['ses_adm_is_menu_collapsed']? ' sidebar-collapse': '');?>">
+	<body class="hold-transition sidebar-mini skin-irry<?=($_SESSION[CMS::$sess_hash]['ses_adm_is_menu_collapsed']? ' sidebar-collapse': '');?>">
 		<div class="wrapper">
 			<header class="main-header">
 
 				<!-- Logo -->
 				<a href="https://irrevion.dp.ua/" target="_blank" class="logo">
 					<!-- mini logo for sidebar mini 50x50 pixels -->
-					<span class="logo-mini"><img src="<?=IMAGE_DIR;?>logo.png" style="height: 24px;" /></span>
+					<span class="logo-mini"><img src="<?=IMAGE_DIR;?>logo.png" style="height: 50px;" /></span>
 					<!-- logo for regular state and mobile devices -->
-					<span class="logo-lg"><img src="<?=IMAGE_DIR;?>logo.png" style="height: 20px;" /> <?=CMS::$site_settings['cms_name_formatted'];?></span>
+					<span class="logo-lg"><img src="<?=IMAGE_DIR;?>logo.png" style="height: 42px;" /> <?=CMS::$site_settings['cms_name_formatted'];?></span>
 				</a>
 
 				<!-- Header Navbar: style can be found in header.less -->
