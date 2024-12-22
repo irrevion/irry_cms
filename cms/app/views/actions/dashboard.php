@@ -105,6 +105,8 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 						<h3><?=$total_articles;?></h3>
 
 						<p><?=CMS::t('dashboard_articles_posted', [
+							'{ua:u1}' => utils::getRussianWordEndingByNumber($total_articles, 'я', 'і', 'й'),
+							'{ua:u2}' => utils::getRussianWordEndingByNumber($total_articles, 'а', 'о', 'о'),
 							'{ru:u1}' => utils::getRussianWordEndingByNumber($total_articles, 'я', 'и', 'й'),
 							'{ru:u2}' => utils::getRussianWordEndingByNumber($total_articles, 'а', 'ы', 'о')
 						]);?></p>
@@ -124,6 +126,7 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 						<h3><?=$total_cms_users;?></h3>
 
 						<p><?=CMS::t('dashboard_cms_users_count', [
+							'{ua:u1}' => utils::getRussianWordEndingByNumber($total_articles, '', 'а', 'ів'),
 							'{ru:u1}' => utils::getRussianWordEndingByNumber($total_articles, 'ь', 'я', 'ей')
 						]);?></p>
 					</div>

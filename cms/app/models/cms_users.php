@@ -52,7 +52,7 @@ class cms_users {
 		return $list;
 	}
 
-	public static function addUserValidate() { // 2016-09-13
+	public static function addUserValidate() {
 		$response = ['success' => false, 'message' => 'undefined', 'errors' => []];
 
 		$user = [];
@@ -116,7 +116,7 @@ class cms_users {
 		return $response;
 	}
 
-	public static function addUserApprove() { // 2016-09-13
+	public static function addUserApprove() {
 		$response = ['success' => false, 'message' => 'insert_err', 'errors' => []];
 
 		if (empty($_SESSION['approvable_new_user'])) {
@@ -153,11 +153,11 @@ class cms_users {
 		return CMS::$db->selectRow('*', self::$users_tbl, ("id='".intval($id)."'"), '', '', 1);
 	}
 
-	public static function getUserByLogin($login) { // 2016-08-14
+	public static function getUserByLogin($login) {
 		return CMS::$db->getRow("SELECT * FROM `".self::$users_tbl."` WHERE login=:login LIMIT 1", [':login' => $login]);
 	}
 
-	public static function validateUserData($id) { // 2017-01-28
+	public static function validateUserData($id) {
 		$response = ['success' => false, 'message' => 'update_err'];
 
 		$user = self::getUser($id);
@@ -364,7 +364,7 @@ class cms_users {
 		return CMS::$db->getRow('SELECT `id` FROM '.self::$users_tbl.' WHERE `login`='.CMS::$db->quote($login));
 	}
 
-	public static function setUserStatus($id, $status) { // 2016-11-16
+	public static function setUserStatus($id, $status) {
 		$updated = CMS::$db->mod(self::$users_tbl.'#'.(int)$id, [
 			'is_blocked' => (($status=='on')? '0': '1')
 		]);
@@ -400,7 +400,7 @@ class cms_users {
 		return $deleted;
 	}
 
-	public static function getAllowedSections($user_id) { // 2016-05-25
+	public static function getAllowedSections($user_id) {
 		$sql = "SELECT menu_section_id FROM cms_users_menu_sections_rel WHERE cms_user_id=:user_id";
 		$params = [
 			':user_id' => $user_id
@@ -408,7 +408,7 @@ class cms_users {
 		return CMS::$db->getList($sql, $params);
 	}
 
-	public static function saveAllowedSections($user_id, $sections) { // 2016-05-25
+	public static function saveAllowedSections($user_id, $sections) {
 		$response = ['success' => false, 'message' => 'update_err'];
 
 		$old_sections = self::getAllowedSections($user_id);
@@ -501,7 +501,7 @@ class cms_users {
 		return $response;
 	}
 
-	public static function countUsers() { // 2016-01-04
+	public static function countUsers() {
 		return CMS::$db->get("SELECT COUNT(id) FROM `".self::$users_tbl."`");
 	}
 }

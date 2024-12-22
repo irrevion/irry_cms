@@ -289,7 +289,7 @@ return [
 	'article_image_original_size' => 'Розмір оригіналу',
 	'article_image_original_upload_datetime' => 'Завантажено на сервер',
 	'article_image_thumbnail_size' => 'Розмір ескізу',
-	'articles_list_details' => 'Знайдено{ua:u1} {count} публікації{ua:u2}',
+	'articles_list_details' => 'Знайден{ua:u1} {count} публікаці{ua:u2}',
 	'article_publish_datetime' => 'Дата та час, коли стаття буде опублікована',
 	'article_publish_date_placeholder' => 'Дата',
 	'article_publish_hour_placeholder' => 'Годинник',
@@ -351,7 +351,7 @@ return [
 
 	// Moderation - Site users
 
-	'site_users_list_details' => 'Знайдено{ua:u1} {count} користувачів{ua:u2}',
+	'site_users_list_details' => 'Знайден{ua:u1} {count} користувачів{ua:u2}',
 	'site_users_has_registered' => 'користувач{ua:u1} зареєстр{ua:u2}',
 	'site_user_profile_info' => 'Профіль',
 	'site_user_email' => 'E-mail',
