@@ -121,15 +121,30 @@ class utils {
 		return preg_match('|^[a-zA-Z0-9\.\_\-\+\!\@\#\$\%\^\&\*\(\)\=\`\~\{\[\]\}\;\:\>\<\?\'\"\/\\\]{6,64}$|', $pass);
 	}
 
-	public static function is_valid_email($email) {
+	#[\Deprecated(message: "use isValidEmail() instead", since: "2024-12-23")]
+	public static function is_valid_email($email) { // deprecated since 
 		return filter_var((string)$email, FILTER_VALIDATE_EMAIL);
 	}
 
+	public static function isValidEmail($email) {
+		return filter_var((string)$email, FILTER_VALIDATE_EMAIL);
+	}
+
+	#[\Deprecated(message: "use isValidUriElement() instead", since: "2024-12-23")]
 	public static function is_valid_URI_element($s) {
 		return preg_match('/^[0-9a-z\_\-]{1,255}$/i', $s);
 	}
 
+	public static function isValidUriElement($s) {
+		return preg_match('/^[0-9a-z\_\-]{1,255}$/i', $s);
+	}
+
+	#[\Deprecated(message: "use isValidHumanName() instead", since: "2024-12-23")]
 	public static function is_valid_human_name($name) {
+		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ\-\`\\\'\s]{2,64}$/u', (string)$name);
+	}
+
+	public static function isValidHumanName($name) {
 		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ\-\`\\\'\s]{2,64}$/u', (string)$name);
 	}
 
@@ -298,6 +313,14 @@ class utils {
 		return filter_var($url, FILTER_VALIDATE_URL);
 	}
 
+	public static function isInternalURL($url) { // returns false when URL is external
+		if (!self::validURL($url)) return false;
+		if ($_SERVER['SERVER_NAME']==='localhost') return true;
+		$lp = parse_url($url);
+		if (($lp['host']===$_SERVER['SERVER_NAME']) && (empty($lp['port']) || ($lp['port']==$_SERVER['SERVER_PORT']))) return true;
+		return false;
+	}
+
 	public static function checkIP($ip) {
 		if (preg_match('/^[0-9]{1,3}\.[0-9]{0,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $ip)) {
 			return true;
@@ -307,12 +330,9 @@ class utils {
 	}
 
 	public static function safeEcho($str, $return=false) {
-		$str = (is_scalar($str)? htmlspecialchars($str): '');
-		$str = strtr($str, [
-			'javascript:' => '',
-			'data:' => ''
-		]);
-		if (!$return) {print $str; return 1;}
+		$str = (is_scalar($str)? htmlspecialchars("$str"): '');
+		$str = str_ireplace(['javascript:', 'data:'], '', $str);
+		if (!$return) {print $str; return true;}
 		return $str;
 	}
 
@@ -325,7 +345,7 @@ class utils {
 
 		if (!$return) {
 			print $str;
-			return 1;
+			return true;
 		}
 
 		return $str;
@@ -333,7 +353,7 @@ class utils {
 
 	public static function safePostValue($key, $default='', $escape_default=false) {
 		if (isset($_POST[$key])) {
-			return self::safeEcho($_POST[$key], 1);
+			return self::safeEcho($_POST[$key], true);
 		}
 		if ($escape_default) {$default = htmlspecialchars($default, ENT_COMPAT, 'UTF-8');}
 		return $default;
