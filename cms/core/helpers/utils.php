@@ -10,19 +10,21 @@ class utils {
 		If you need to store method that uses any non-standard library, better
 		take a look to app\helpers\app class.
 
-		Validation functions:
+		Validation:
 			(bool) checkPIN($pin)
 			(bool) checkLogin($login)
 			(bool) checkPass($pass)
-			(bool) is_valid_email($email)
-			(bool) validEmail($email)
-			(bool) is_valid_URI_element($s)
-			(bool) validURL($url)
-			(bool) is_valid_human_name($name)
-			(bool) is_valid_human_nsp($nsp)
-			(bool) is_valid_phone($phone)
-			(bool) valid_date($date)
+			(bool) isValidEmail($email)
+			(bool) isValidUriElement($s)
+			(bool) isValidURL($url)
+   			(bool) isInternalURL($url)
+			(bool) isValidHumanName($name)
+			(bool) isValidHumanNSP($nsp)
+			(bool) isValidPhone($phone)
+			(bool) isValidMobilePhone($phone)
+			(bool) isValidDate($date)
 			(bool) checkDate($format, $date)
+			(bool) validateDatetime($date, $format="Y-m-d\TH:i:sP")
 			(bool) checkFieldName($name)
 			(bool) checkIP($ip)
 			(bool) variableHasValue($var)
@@ -32,6 +34,7 @@ class utils {
 			(string) stamp2date($timestamp)
 			(string) formatPlainDate($format, $date)
 			(int) parseMySQLDate($date)
+			(string) formatMySQLDate($format, $date)
 			(int) parseXLSXDate($date)
 			(string) formatXLSXDate($format, $date)
 			(string) changeDateFormat($fromFormat, $toFormat, $date)
@@ -122,8 +125,13 @@ class utils {
 	}
 
 	#[\Deprecated(message: "use isValidEmail() instead", since: "2024-12-23")]
-	public static function is_valid_email($email) { // deprecated since 
+	public static function is_valid_email($email) {
 		return filter_var((string)$email, FILTER_VALIDATE_EMAIL);
+	}
+
+	#[\Deprecated(message: "use isValidEmail() instead", since: "2024-12-23")]
+	public static function validEmail($email) {
+		return filter_var($email, FILTER_VALIDATE_EMAIL);
 	}
 
 	public static function isValidEmail($email) {
@@ -139,6 +147,18 @@ class utils {
 		return preg_match('/^[0-9a-z\_\-]{1,255}$/i', $s);
 	}
 
+	public static function isValidURL($url) {
+		return filter_var($url, FILTER_VALIDATE_URL);
+	}
+
+	public static function isInternalURL($url) { // returns false when URL is external
+		if (!self::isValidURL($url)) return false;
+		if ($_SERVER['SERVER_NAME']==='localhost') return true;
+		$lp = parse_url($url);
+		if (($lp['host']===$_SERVER['SERVER_NAME']) && (empty($lp['port']) || ($lp['port']==$_SERVER['SERVER_PORT']))) return true;
+		return false;
+	}
+
 	#[\Deprecated(message: "use isValidHumanName() instead", since: "2024-12-23")]
 	public static function is_valid_human_name($name) {
 		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ\-\`\\\'\s]{2,64}$/u', (string)$name);
@@ -148,6 +168,7 @@ class utils {
 		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ\-\`\\\'\s]{2,64}$/u', (string)$name);
 	}
 
+	#[\Deprecated(message: "use isValidHumanNSP() instead", since: "2024-12-23")]
 	public static function is_valid_human_nsp($nsp) {
 		$nsp = (string)$nsp;
 		$nsp = trim($nsp);
@@ -155,7 +176,15 @@ class utils {
 		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ]{2,}\s+[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ\-\`\\\'\s]+$/u', $nsp);
 	}
 
-	public static function is_valid_phone($phone) { // deprecated
+	public static function isValidHumanNSP($nsp) {
+		$nsp = (string)$nsp;
+		$nsp = trim($nsp);
+
+		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ]{2,}\s+[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ\-\`\\\'\s]+$/u', $nsp);
+	}
+
+	#[\Deprecated(message: "use isValidPhone() instead", since: "2024-12-23")]
+	public static function is_valid_phone($phone) {
 		return preg_match('/^\+994\d{9}$/u', (string)$phone);
 	}
 
@@ -167,12 +196,48 @@ class utils {
 		return preg_match('/^\+994(50|51|55|70|77)\d{7}$/u', (string)$phone);
 	}
 
-	public static function bigint2string($bigint) {
-		return sprintf('%.0f', $bigint);
-	}
-
+	#[\Deprecated(message: "use isValidDate() instead", since: "2024-12-23")]
 	public static function valid_date($date) {
 		return preg_match('/^\d{2}\.\d{2}\.\d{4}$/', $date);
+	}
+
+	#[\Deprecated(message: "use validateDatetime() instead", since: "2024-12-23")]
+	public static function isValidDate($date) { // for dd.mm.yyyy format
+		return preg_match('/^\d{2}\.\d{2}\.\d{4}$/', $date);
+	}
+
+	#[\Deprecated(message: "use validateDatetime() instead", since: "2024-12-23")]
+	public static function checkDate($format, $date) {
+		$date_parsed = date_parse_from_format($format, $date);
+		if ($date_parsed['error_count']) {return false;}
+		return checkdate($date_parsed['month'], $date_parsed['day'], $date_parsed['year']);
+	}
+
+	public static function validateDatetime($date, $format="Y-m-d\TH:i:sP") {
+		$d = \DateTime::createFromFormat($format, $date);
+		return ($d && ($d->format($format)==$date));
+	}
+
+	public static function checkFieldName($name) {
+		return @preg_match( '/^[0-9a-z\_]{2,32}$/i', $name);
+	}
+
+	public static function checkIP($ip) {
+		if (preg_match('/^[0-9]{1,3}\.[0-9]{0,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $ip)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public static function variableHasValue($var) {
+		return !(empty($var) && ($var!=='0') && ($var!==false));
+	}
+
+	/* Converting */
+
+	public static function bigint2string($bigint) {
+		return sprintf('%.0f', $bigint);
 	}
 
 	public static function date2stamp($time) {
@@ -200,14 +265,6 @@ class utils {
 		if (empty($date)) {return 0;}
 
 		$date_parts = [];
-		/* this code gives error in PHP8
-		if (preg_match('/^(\d{4})\-(\d{2})\-(\d{2})$/', $date, $date_parts)) {
-			$time_parts = [];
-			@preg_match('/^(\d{2})\:(\d{2})\:(\d{2})$/', $time, $time_parts);
-
-			return mktime(@$time_parts[1], @$time_parts[2], @$time_parts[3], $date_parts[2], $date_parts[3], $date_parts[1]);
-		}
-		*/
 		if (preg_match('/^(\d{4})\-(\d{2})\-(\d{2})$/', $date, $date_parts)) {
 			$time_parts = [];
 			@preg_match('/^(\d{2})\:(\d{2})\:(\d{2})$/', $time, $time_parts);
@@ -265,18 +322,6 @@ class utils {
 		return date($toFormat, $timestamp);
 	}
 
-	public static function checkDate($format, $date) {
-		$date_parsed = date_parse_from_format($format, $date);
-		if ($date_parsed['error_count']) {return false;}
-
-		return checkdate($date_parsed['month'], $date_parsed['day'], $date_parsed['year']);
-	}
-
-	public static function validateDatetime($date, $format="Y-m-d\TH:i:sP") {
-		$d = \DateTime::createFromFormat($format, $date);
-		return ($d && ($d->format($format)==$date));
-	}
-
 	public static function getYearsOld($birth_date) {
 		$years_old = date('Y')-self::changeDateFormat('Y-m-d', 'Y', $birth_date);
 		if (date('Y-m-d')<(date('Y').'-'.self::changeDateFormat('Y-m-d', 'm-d', $birth_date))) {
@@ -301,33 +346,7 @@ class utils {
 		return ['y' => $y, 'm' => $m];
 	}
 
-	public static function checkFieldName($name) {
-		return @preg_match( '/^[0-9a-z\_]{2,32}$/i', $name);
-	}
-
-	public static function validEmail($email) {
-		return filter_var($email, FILTER_VALIDATE_EMAIL);
-	}
-
-	public static function validURL($url) {
-		return filter_var($url, FILTER_VALIDATE_URL);
-	}
-
-	public static function isInternalURL($url) { // returns false when URL is external
-		if (!self::validURL($url)) return false;
-		if ($_SERVER['SERVER_NAME']==='localhost') return true;
-		$lp = parse_url($url);
-		if (($lp['host']===$_SERVER['SERVER_NAME']) && (empty($lp['port']) || ($lp['port']==$_SERVER['SERVER_PORT']))) return true;
-		return false;
-	}
-
-	public static function checkIP($ip) {
-		if (preg_match('/^[0-9]{1,3}\.[0-9]{0,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $ip)) {
-			return true;
-		}
-
-		return false;
-	}
+	/* HTML */
 
 	public static function safeEcho($str, $return=false) {
 		$str = (is_scalar($str)? htmlspecialchars("$str"): '');
@@ -654,10 +673,6 @@ class utils {
 	}
 
 	/* array */
-
-	public static function variableHasValue($var) {
-		return !(empty($var) && ($var!=='0') && ($var!==false));
-	}
 
 	public static function isEmptyArrayRecursive($arr, $zerosAreValue=1) {
 		if (empty($arr) && (!$zerosAreValue || ($zerosAreValue && !self::variableHasValue($arr)))) {return true;}
