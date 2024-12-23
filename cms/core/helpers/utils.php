@@ -152,8 +152,8 @@ class utils {
 	}
 
 	public static function isInternalURL($url) { // returns false when URL is external
-		if (!self::isValidURL($url)) return false;
-		if ($_SERVER['SERVER_NAME']==='localhost') return true;
+		// if (!self::isValidURL($url)) return false;
+		// if ($_SERVER['SERVER_NAME']==='localhost') return true;
 		$lp = parse_url($url);
 		if (($lp['host']===$_SERVER['SERVER_NAME']) && (empty($lp['port']) || ($lp['port']==$_SERVER['SERVER_PORT']))) return true;
 		return false;
@@ -201,7 +201,6 @@ class utils {
 		return preg_match('/^\d{2}\.\d{2}\.\d{4}$/', $date);
 	}
 
-	#[\Deprecated(message: "use validateDatetime() instead", since: "2024-12-23")]
 	public static function isValidDate($date) { // for dd.mm.yyyy format
 		return preg_match('/^\d{2}\.\d{2}\.\d{4}$/', $date);
 	}
@@ -374,7 +373,7 @@ class utils {
 		if (isset($_POST[$key])) {
 			return self::safeEcho($_POST[$key], true);
 		}
-		if ($escape_default) {$default = htmlspecialchars($default, ENT_COMPAT, 'UTF-8');}
+		if ($escape_default) {$default = htmlspecialchars(($default ?? ''), ENT_COMPAT, 'UTF-8');}
 		return $default;
 	}
 
@@ -421,7 +420,6 @@ class utils {
 	public static function strClear($str, $spch=0, $itag=0, $trim=1, $snqq=0, $skp=0) {
 		if (is_scalar($str)) {$str = strval($str);} else {return '';}
 		if ($trim) {$str = str_replace(["\r\n", "\r", "\n", "\t"], ' ', trim($str));}
-		// if (get_magic_quotes_gpc()) {$str = stripslashes($str);}
 		if ($itag) {$str = self::unescapeTagInnerHTML($str);}
 		if ($spch) {$str = htmlspecialchars($str, ($snqq? ENT_QUOTES: ENT_COMPAT), 'UTF-8');}
 		if ($skp) {$str = str_replace(["'"], ["\'"], $str);}

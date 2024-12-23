@@ -16,7 +16,7 @@ class site_users_controller extends controller {
 
 	private static $runtime = [];
 
-	public static function action_list() { // 2016-11-17
+	public static function action_list() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_item_site_users_list');
 
@@ -39,7 +39,7 @@ class site_users_controller extends controller {
 		return self::render('site_users_list', $params);
 	}
 
-	public static function action_delete() { // 2016-11-17
+	public static function action_delete() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('delete');
 
@@ -47,6 +47,11 @@ class site_users_controller extends controller {
 
 		$params['canWrite'] = CMS::hasAccessTo('site_users/delete', 'write');
 		$params['link_back'] = (empty($_GET['return'])? '?controller=site_users&action=list': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		$deleted = false;
 		if ($params['canWrite']) {
@@ -58,7 +63,7 @@ class site_users_controller extends controller {
 		return self::render('cms_user_delete', $params);
 	}
 
-	public static function action_view_info() { // 2016-11-17
+	public static function action_view_info() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_item_site_users_view_info');
 
@@ -66,6 +71,11 @@ class site_users_controller extends controller {
 
 		$params['canWrite'] = CMS::hasAccessTo('site_users/view_info', 'write');
 		$params['link_back'] = (empty($_GET['return'])? '?controller=site_users&action=list': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		$id = @(int)$_GET['id'];
 		$params['user'] = site_users::getUser($id);
@@ -80,7 +90,7 @@ class site_users_controller extends controller {
 		return self::render('site_user_info', $params);
 	}
 
-	public static function action_ajax_set_ban() { // 2016-11-16
+	public static function action_ajax_set_ban() {
 		header('Content-type: application/json; charset=utf-8');
 
 		$response = ['success' => false, 'message' => 'ajax_invalid_request'];

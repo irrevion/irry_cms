@@ -42,7 +42,7 @@ class articles {
 		'ru' => ['азербайджан', 'азербайджанский', 'республика', 'класс', 'для', 'год', 'также', 'почти', 'когда', 'после', 'этих', 'потому', 'поэтому', 'очень', 'всех', 'когда', 'тогда', 'которые', 'того', 'лишь', 'если', 'надо', 'даже', 'есть', 'все', 'это', 'или', 'как', 'под', 'просто']
 	];
 
-	private static function checkGallery(&$response, &$article, $article_id=0) { // 2016-05-17
+	private static function checkGallery(&$response, &$article, $article_id=0) {
 		$article['gallery_id'] = '0';
 		if (!empty($_POST['gallery_id'])) {
 			if (!CMS::$db->get("SELECT id FROM galleries WHERE id=:gallery_id AND is_deleted='0' LIMIT 1", [':gallery_id' => $_POST['gallery_id']])) {
@@ -53,7 +53,7 @@ class articles {
 		}
 	}
 
-	private static function checkSource(&$response, &$article, $article_id=0) { // 2016-05-24
+	private static function checkSource(&$response, &$article, $article_id=0) {
 		if (!empty($_POST['source_url']) || !empty($_POST['source_name'])) {
 			$article['source_url'] = @$_POST['source_url'];
 			$article['source_name'] = @$_POST['source_name'];
@@ -66,7 +66,7 @@ class articles {
 		}
 	}
 
-	private static function genKeywords($s, $lang='az') { // 2016-05-24
+	private static function genKeywords($s, $lang='az') {
 		// cleanup
 		$s = (string)$s;
 		$s = trim($s);
@@ -108,7 +108,7 @@ class articles {
 		return $words;
 	}
 
-	private static function genShorttext($s) { // 2016-05-17
+	private static function genShorttext($s) {
 		$s = (string)$s;
 		$s = trim($s);
 		$s = html_entity_decode($s);
@@ -123,7 +123,7 @@ class articles {
 		return $s;
 	}
 
-	public static function getArticlesList() { // 2016-12-04
+	public static function getArticlesList() {
 		$list = [];
 
 		$joins = [];
@@ -208,7 +208,7 @@ class articles {
 		return $list;
 	}
 
-	public static function addArticle() { // 2016-06-10
+	public static function addArticle() {
 		$response = ['success' => false, 'message' => 'insert_err'];
 
 		$article = [];
@@ -216,7 +216,7 @@ class articles {
 
 		$title = trim(@$_POST['title'][CMS::$default_site_lang]);
 
-		if (!utils::valid_date(@$_POST['publish_date'])) {
+		if (!utils::isValidDate(@$_POST['publish_date'])) {
 			$response['errors'][] = 'article_add_err_publish_date_invalid';
 		} else if (!isset($_POST['publish_hour']) || (@$_POST['publish_hour']<0) || (@$_POST['publish_hour']>23)) {
 			$response['errors'][] = 'article_add_err_publish_hour_invalid';
@@ -344,7 +344,7 @@ class articles {
 		return $response;
 	}
 
-	public static function editArticle($id) { // 2016-06-10
+	public static function editArticle($id) {
 		$response = ['success' => false, 'message' => 'update_err'];
 		$article = self::getArticle($id);
 		if (empty($article['id'])) {
@@ -391,7 +391,7 @@ class articles {
 			}
 		}
 
-		if (!utils::valid_date(@$_POST['publish_date'])) {
+		if (!utils::isValidDate(@$_POST['publish_date'])) {
 			$response['errors'][] = 'article_add_err_publish_date_invalid';
 		} else if (!isset($_POST['publish_hour']) || (@$_POST['publish_hour']<0) || (@$_POST['publish_hour']>23)) {
 			$response['errors'][] = 'article_add_err_publish_hour_invalid';
@@ -477,7 +477,7 @@ class articles {
 		return $response;
 	}
 
-	public static function setArticleStatus($id, $status) { // 2016-12-04
+	public static function setArticleStatus($id, $status) {
 		$updated = CMS::$db->mod(self::$tbl.'#'.(int)$id, [
 			'is_published' => (($status=='on')? '1': '0')
 		]);
@@ -494,7 +494,7 @@ class articles {
 		return $updated;
 	}
 
-	public static function deleteArticle($id) { // 2016-12-04
+	public static function deleteArticle($id) {
 		$deleted = CMS::$db->mod(self::$tbl.'#'.(int)$id, [
 			'is_deleted' => '1',
 		]);
@@ -511,7 +511,7 @@ class articles {
 		return $deleted;
 	}
 
-	public static function deleteArticleImages($id) { // 2016-12-04
+	public static function deleteArticleImages($id) {
 		$article = self::getArticle($id);
 		if (empty($article['id']) || empty($article['img'])) {return false;}
 
@@ -536,7 +536,7 @@ class articles {
 		return true;
 	}
 
-	public static function getArticle($id) { // 2016-12-04
+	public static function getArticle($id) {
 		$sql = "SELECT * FROM `".self::$tbl."` WHERE id=:article_id AND is_deleted='0' LIMIT 1";
 		$article = CMS::$db->getRow($sql, [
 			':article_id' => $id
@@ -545,7 +545,7 @@ class articles {
 		return $article;
 	}
 
-	public static function getArtCats($id) { // 2016-05-13
+	public static function getArtCats($id) {
 		$sql = "SELECT category_id FROM articles_cats_rel WHERE article_id=:article_id";
 		$params = [
 			':article_id' => $id
@@ -553,7 +553,7 @@ class articles {
 		return CMS::$db->getList($sql, $params);
 	}
 
-	public static function sortArticles($from, $to) { // 2016-05-09
+	public static function sortArticles($from, $to) {
 		$from = (int)$from;
 		$to = (int)$to;
 		if (empty($from) || empty($to) || ($from==$to)) {return false;}
@@ -591,7 +591,7 @@ class articles {
 		return true;
 	}
 
-	public static function sortArticlesPaged($item, $page) { // 2016-05-09
+	public static function sortArticlesPaged($item, $page) {
 		$item = (int)$item;
 		$page = (int)trim($page);
 		if (empty($item) || empty($page)) {return false;}
@@ -604,7 +604,7 @@ class articles {
 		return self::sortArticles($item, $page_first_item);
 	}
 
-	public static function getArticlesAutocomplete($q, $page=1) { // 2017-05-07
+	public static function getArticlesAutocomplete($q, $page=1) {
 		$data = [
 			'total_count' => 0,
 			'articles' => []
@@ -646,7 +646,7 @@ class articles {
 		return CMS::$db->getAll($sql);
 	}
 
-	public static function prefiltrateRestrictedCategories($allowed_cats) { // 2016-05-26
+	public static function prefiltrateRestrictedCategories($allowed_cats) {
 		if (!empty($allowed_cats)) { // prefiltrate categories if restricted
 			self::$runtime['original_filter_cats'] = @$_GET['filter']['cats'];
 			self::$runtime['editor_cats'] = self::$runtime['original_filter_cats'];
@@ -659,13 +659,13 @@ class articles {
 		}
 	}
 
-	public static function restoreCategoriesFilter($allowed_cats) { // 2016-05-26
+	public static function restoreCategoriesFilter($allowed_cats) {
 		if (!empty($allowed_cats)) { // restore categories filter
 			$_GET['filter']['cats'] = self::$runtime['original_filter_cats'];
 		}
 	}
 
-	public static function countArticleComments($article_id) { // 2017-01-04
+	public static function countArticleComments($article_id) {
 		$sql = "SELECT COUNT(c.id)
 			FROM comments c
 				JOIN site_users u ON u.id=c.user_id
@@ -675,7 +675,7 @@ class articles {
 		return CMS::$db->get($sql, $params);
 	}
 
-	public static function countArticles() { // 2017-01-04
+	public static function countArticles() {
 		$sql = "SELECT COUNT(a.id)
 			FROM `".self::$tbl."` a
 			WHERE a.is_deleted='0'";

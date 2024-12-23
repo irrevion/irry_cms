@@ -17,7 +17,7 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 class statistics_controller extends controller {
 	private static $runtime = [];
 
-	public static function action_dashboard() { // 2016-08-21
+	public static function action_dashboard() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_item_statistics_dashboard');
 

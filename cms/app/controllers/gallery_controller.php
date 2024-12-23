@@ -17,7 +17,7 @@ class gallery_controller extends controller {
 
 	private static $runtime = [];
 
-	public static function action_list() { // 2017-01-17
+	public static function action_list() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_item_gallery_list');
 
@@ -41,7 +41,7 @@ class gallery_controller extends controller {
 		return self::render('gallery_list', $params);
 	}
 
-	public static function action_ajax_set_status() { // 2017-01-18
+	public static function action_ajax_set_status() {
 		header('Content-type: application/json; charset=utf-8');
 
 		$response = ['success' => false, 'message' => 'ajax_invalid_request'];
@@ -63,7 +63,7 @@ class gallery_controller extends controller {
 		return json_encode($response);
 	}
 
-	public static function action_delete() { // 2017-01-18
+	public static function action_delete() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('delete');
 
@@ -71,6 +71,11 @@ class gallery_controller extends controller {
 
 		$params['canWrite'] = CMS::hasAccessTo('gallery/delete', 'write');
 		$params['link_back'] = (empty($_GET['return'])? '?controller=gallery&action=list': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		$deleted = false;
 		if ($params['canWrite']) {
@@ -82,7 +87,7 @@ class gallery_controller extends controller {
 		return self::render('cms_user_delete', $params);
 	}
 
-	public static function action_add() { // 2017-01-20
+	public static function action_add() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_item_gallery_add');
 
@@ -90,6 +95,11 @@ class gallery_controller extends controller {
 
 		$params['canWrite'] = CMS::hasAccessTo('gallery/add', 'write');
 		$params['link_back'] = (empty($_GET['return'])? '?controller=gallery&action=list': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		$params['langs'] = CMS::$site_langs;
 
@@ -103,7 +113,7 @@ class gallery_controller extends controller {
 		return self::render('gallery_add', $params);
 	}
 
-	public static function action_edit() { // 2017-01-21
+	public static function action_edit() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_item_gallery_edit');
 
@@ -111,6 +121,11 @@ class gallery_controller extends controller {
 
 		$params['canWrite'] = CMS::hasAccessTo('gallery/edit', 'write');
 		$params['link_back'] = (empty($_GET['return'])? '?controller=gallery&action=list': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		$id = @(int)$_GET['id'];
 		$params['gallery'] = gallery::getGalleryInfo($id);
@@ -136,7 +151,7 @@ class gallery_controller extends controller {
 		return self::render('gallery_edit', $params);
 	}
 
-	public static function action_ajax_get_autocomplete() { // 2016-12-05
+	public static function action_ajax_get_autocomplete() {
 		header('Content-type: application/json; charset=utf-8');
 
 		$response = ['success' => false, 'message' => 'ajax_invalid_request'];
@@ -158,7 +173,7 @@ class gallery_controller extends controller {
 		return json_encode($response);
 	}
 
-	public static function action_photos() { // 2017-01-23
+	public static function action_photos() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_item_gallery_list');
 
@@ -168,6 +183,11 @@ class gallery_controller extends controller {
 		$params['link_sc'] = utils::trueLink(['controller', 'action', 'gallery_id', 'q', 'filter']);
 		$params['link_return'] = urlencode(SITE.CMS_DIR.utils::trueLink(['controller', 'action', 'gallery_id', 'q', 'filter', 'page', 'no_pagination']));
 		$params['link_back'] = (empty($_GET['return'])? '?controller=gallery&action=list': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		$page = intval(@$_GET['page']);
 		gallery::$curr_pg = (empty($page)? 1: $page);
@@ -190,7 +210,7 @@ class gallery_controller extends controller {
 		return self::render('gallery_photos', $params);
 	}
 
-	public static function action_add_photo() { // 2017-02-01
+	public static function action_add_photo() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_item_gallery_add_photo');
 
@@ -198,6 +218,11 @@ class gallery_controller extends controller {
 
 		$params['canWrite'] = CMS::hasAccessTo('gallery/add_photo', 'write');
 		$params['link_back'] = (empty($_GET['return'])? '?controller=gallery&action=photos': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		$gallery_id = @(int)$_GET['gallery_id'];
 		$params['gallery'] = gallery::getGalleryInfo($gallery_id);
@@ -220,7 +245,7 @@ class gallery_controller extends controller {
 		return self::render('gallery_add_photo', $params);
 	}
 
-	public static function action_edit_photo() { // 2017-02-01
+	public static function action_edit_photo() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_item_gallery_edit_photo');
 
@@ -228,6 +253,11 @@ class gallery_controller extends controller {
 
 		$params['canWrite'] = CMS::hasAccessTo('gallery/edit_photo', 'write');
 		$params['link_back'] = (empty($_GET['return'])? '?controller=gallery&action=photos': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		$photo_id = @(int)$_GET['id'];
 		$params['photo'] = gallery::getPhoto($photo_id);
@@ -258,7 +288,7 @@ class gallery_controller extends controller {
 		return self::render('gallery_edit_photo', $params);
 	}
 
-	public static function action_delete_photo() { // 2017-02-01
+	public static function action_delete_photo() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('delete');
 
@@ -266,6 +296,11 @@ class gallery_controller extends controller {
 
 		$params['canWrite'] = CMS::hasAccessTo('gallery/delete_photo', 'write');
 		$params['link_back'] = (empty($_GET['return'])? '?controller=gallery&action=list': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		$deleted = false;
 		if ($params['canWrite']) {
@@ -277,7 +312,7 @@ class gallery_controller extends controller {
 		return self::render('cms_user_delete', $params);
 	}
 
-	public static function action_ajax_photos_sort() { // 2017-01-30
+	public static function action_ajax_photos_sort() {
 		header('Content-type: application/json; charset=utf-8');
 
 		$response = ['success' => false, 'message' => 'ajax_invalid_request'];

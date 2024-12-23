@@ -20,7 +20,7 @@ class nav_menu_tree_widget_controller extends widget {
 		'url' => 'fa fa-link'
 	];
 
-	private static function showNavTree($nav) { // 2016-05-11
+	private static function showNavTree($nav) {
 		static $time;
 		if (empty($time)) {$time = time();}
 

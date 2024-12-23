@@ -58,6 +58,11 @@ class articles_controller extends controller {
 
 		$params['canWrite'] = CMS::hasAccessTo('articles/add', 'write');
 		$params['link_back'] = (empty($_GET['return'])? '?controller=articles&action=list': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		if (ADMIN_TYPE!='admin') {
 			$allowed_cats = nav::getEditorAllowedCats(ADMIN_ID);
@@ -90,6 +95,11 @@ class articles_controller extends controller {
 
 		$params['canWrite'] = CMS::hasAccessTo('articles/edit', 'write');
 		$params['link_back'] = (empty($_GET['return'])? '?controller=articles&action=list': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		if (ADMIN_TYPE!='admin') {
 			$allowed_cats = nav::getEditorAllowedCats(ADMIN_ID);
@@ -135,6 +145,11 @@ class articles_controller extends controller {
 
 		$params['canWrite'] = CMS::hasAccessTo('articles/delete', 'write');
 		$params['link_back'] = (empty($_GET['return'])? '?controller=articles&action=list': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		$deleted = false;
 		if ($params['canWrite']) {

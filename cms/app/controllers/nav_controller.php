@@ -17,7 +17,7 @@ class nav_controller extends controller {
 
 	private static $runtime = [];
 
-	public static function action_list() { // 2017-04-16
+	public static function action_list() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_block_nav');
 
@@ -35,7 +35,7 @@ class nav_controller extends controller {
 		return self::render('nav', $params);
 	}
 
-	public static function action_edit() { // 2017-04-20
+	public static function action_edit() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_block_nav');
 
@@ -73,7 +73,7 @@ class nav_controller extends controller {
 		return self::render('nav', $params);
 	}
 
-	public static function action_add() { // 2017-04-29
+	public static function action_add() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('menu_block_nav');
 
@@ -83,6 +83,11 @@ class nav_controller extends controller {
 		$params['link_sc'] = utils::trueLink(['controller', 'action', 'item']);
 		$params['link_return'] = urlencode(SITE.CMS_DIR.utils::trueLink(['controller', 'action', 'item']));
 		$params['link_back'] = (empty($_GET['return'])? '?controller=nav&action=list': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		if (!empty($_GET['item'])) {
 			$params['item'] = nav::getNavItem($_GET['item']);
@@ -111,15 +116,20 @@ class nav_controller extends controller {
 		return self::render('nav', $params);
 	}
 
-	public static function action_delete() { // 2017-04-22
+	public static function action_delete() {
 		self::$layout = 'common_layout';
 		view::$title = CMS::t('delete');
 
 		$params = [];
 
 		$params['canWrite'] = CMS::hasAccessTo('nav/delete', 'write');
-		$params['link_back'] = (empty($_GET['return'])? '?controller=nav&action=list': $_GET['return']);
 		$params['link_sc'] = utils::trueLink(['controller', 'action', 'item']);
+		$params['link_back'] = (empty($_GET['return'])? '?controller=nav&action=list': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
 
 		$deleted = false;
 		if ($params['canWrite']) {
@@ -140,7 +150,7 @@ class nav_controller extends controller {
 		return self::render('cms_user_delete', $params);
 	}
 
-	public static function action_ajax_set_parent() { // 2017-05-08
+	public static function action_ajax_set_parent() {
 		header('Content-type: application/json; charset=utf-8');
 
 		$response = ['success' => false, 'message' => 'ajax_invalid_request'];
@@ -165,7 +175,7 @@ class nav_controller extends controller {
 		return json_encode($response);
 	}
 
-	public static function action_ajax_set_position() { // 2017-05-08
+	public static function action_ajax_set_position() {
 		header('Content-type: application/json; charset=utf-8');
 
 		$response = ['success' => false, 'message' => 'ajax_invalid_request'];

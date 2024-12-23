@@ -70,7 +70,7 @@ class menu_widget_controller extends widget {
 		]
 	];
 
-	private static function menu() { // 2017-04-06
+	private static function menu() {
 		$privilegies = CMS::getPrivilegies();
 
 		$html = '';

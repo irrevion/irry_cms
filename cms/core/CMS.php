@@ -9,7 +9,7 @@ use irrevion\irry_cms\core\helpers\utils;
 if (!defined('_VALID_PHP')) die('Direct access to this location is not allowed.');
 
 class CMS {
-	public static $version = '15.12.21';
+	public static $version = '15.12.24';
 	public static $db;
 	public static $lang;
 	public static $site_langs;
