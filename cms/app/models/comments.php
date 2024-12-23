@@ -15,7 +15,7 @@ class comments {
 
 	public static $tbl = 'comments';
 
-	public static function getCommentsList() { // 2016-12-04
+	public static function getCommentsList() {
 		$list = [];
 
 		$joins = [];
@@ -38,10 +38,10 @@ class comments {
 			$filter[] = "c.ref_table=".CMS::$db->escape($_GET['filter']['ref_table']);
 			$filter[] = "c.ref_id=".CMS::$db->escape($_GET['filter']['ref_id']);
 		}
-		if (utils::valid_date(@(string)$_GET['filter']['add_since'])) {
+		if (utils::isValidDate(@(string)$_GET['filter']['add_since'])) {
 			$filter[] = "c.add_datetime>=".CMS::$db->escape(utils::changeDateFormat('d.m.Y', 'Y-m-d', $_GET['filter']['add_since']));
 		}
-		if (utils::valid_date(@(string)$_GET['filter']['add_till'])) {
+		if (utils::isValidDate(@(string)$_GET['filter']['add_till'])) {
 			$filter[] = "DATE(c.add_datetime)<=".CMS::$db->escape(utils::changeDateFormat('d.m.Y', 'Y-m-d', $_GET['filter']['add_till']));
 		}
 		$where = (empty($filter)? '': ('WHERE '.implode(" AND ", $filter)));
@@ -71,7 +71,7 @@ class comments {
 		return $list;
 	}
 
-	public static function setCommentStatus($id, $status) { // 2016-12-04
+	public static function setCommentStatus($id, $status) {
 		$updated = CMS::$db->mod(self::$tbl.'#'.(int)$id, [
 			'is_published' => (($status=='on')? '1': '0')
 		]);
@@ -88,7 +88,7 @@ class comments {
 		return $updated;
 	}
 
-	public static function deleteComment($comment_id) { // 2016-12-04
+	public static function deleteComment($comment_id) {
 		$deleted = CMS::$db->mod(self::$tbl.'#'.(int)$comment_id, [
 			'is_deleted' => '1',
 		]);
@@ -105,7 +105,7 @@ class comments {
 		return $deleted;
 	}
 
-	public static function eraseComment($comment_id) { // 2016-12-04
+	public static function eraseComment($comment_id) {
 		$comment_id = (int)$comment_id;
 
 		$deleted = CMS::$db->exec('DELETE FROM `'.self::$tbl.'` WHERE `id`=:id', [':id' => $comment_id]);
@@ -124,11 +124,11 @@ class comments {
 		return $deleted;
 	}
 
-	public static function getComment($comment_id) { // 2016-12-04
+	public static function getComment($comment_id) {
 		return CMS::$db->getRow("SELECT * FROM `".self::$tbl."` WHERE id=:id AND is_deleted='0' LIMIT 1", [':id' => $comment_id]);
 	}
 
-	public static function editComment($comment_id) { // 2016-06-15
+	public static function editComment($comment_id) {
 		$response = ['success' => false, 'message' => 'update_err'];
 
 		$comment = self::getComment($comment_id);
@@ -166,7 +166,7 @@ class comments {
 		return $response;
 	}
 
-	public static function touchComment($comment_id) { // 2016-06-16
+	public static function touchComment($comment_id) {
 		$updated = CMS::$db->mod(self::$tbl.'#'.(int)$comment_id, ['is_inspected' => '1']);
 
 		if ($updated) {
@@ -181,14 +181,14 @@ class comments {
 		return $updated;
 	}
 
-	public static function countComments() { // 2016-12-04
+	public static function countComments() {
 		return CMS::$db->get("SELECT COUNT(c.id)
 			FROM `".self::$tbl."` c
 				JOIN `site_users` u ON u.id=c.user_id
 			WHERE c.is_deleted='0'");
 	}
 
-	public static function countUnreadComments() { // 2017-01-04
+	public static function countUnreadComments() {
 		return CMS::$db->get("SELECT COUNT(c.id)
 			FROM `".self::$tbl."` c
 				JOIN `site_users` u ON u.id=c.user_id

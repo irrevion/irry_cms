@@ -15,7 +15,7 @@ class site_users {
 
 	public static $users_tbl = 'site_users';
 
-	public static function getUsersList() { // 2016-06-09
+	public static function getUsersList() {
 		$list = [];
 
 		$where = [];
@@ -46,10 +46,10 @@ class site_users {
 				$where[] = "provider=".CMS::$db->escape($_GET['filter']['provider']);
 			}
 		}
-		if (utils::valid_date(@(string)@$_GET['filter']['reg_since'])) {
+		if (utils::isValidDate(@(string)@$_GET['filter']['reg_since'])) {
 			$where[] = "registration_datetime>=".CMS::$db->escape(utils::changeDateFormat('d.m.Y', 'Y-m-d', $_GET['filter']['reg_since']));
 		}
-		if (utils::valid_date(@(string)@$_GET['filter']['reg_till'])) {
+		if (utils::isValidDate(@(string)@$_GET['filter']['reg_till'])) {
 			$where[] = "DATE(registration_datetime)<=".CMS::$db->escape(utils::changeDateFormat('d.m.Y', 'Y-m-d', $_GET['filter']['reg_till']));
 		}
 
@@ -70,7 +70,7 @@ class site_users {
 		return $list;
 	}
 
-	public static function getLastRegistered() { // 2016-08-21
+	public static function getLastRegistered() {
 		$list = [];
 
 		$sql = "SELECT * FROM `".self::$users_tbl."` ORDER BY id DESC LIMIT 8";
@@ -79,15 +79,15 @@ class site_users {
 		return $list;
 	}
 
-	public static function countUsers() { // 2016-12-04
+	public static function countUsers() {
 		return CMS::$db->get("SELECT COUNT(id) FROM `".self::$users_tbl."`");
 	}
 
-	public static function getCountNewComers() { // 2016-08-21
+	public static function getCountNewComers() {
 		return CMS::$db->get("SELECT COUNT(id) FROM `".self::$users_tbl."` WHERE registration_datetime>='".date('Y-m-d', mktime(0, 0, 0, date('n')-1))."'");
 	}
 
-	public static function setUserStatus($id, $status) { // 2016-11-16
+	public static function setUserStatus($id, $status) {
 		$updated = CMS::$db->mod(self::$users_tbl.'#'.(int)$id, [
 			'is_blocked' => (($status=='on')? '0': '1')
 		]);
@@ -104,7 +104,7 @@ class site_users {
 		return $updated;
 	}
 	
-	public static function deleteUser($user_id) { // 2016-06-09
+	public static function deleteUser($user_id) {
 		$user_id = (int)$user_id;
 
 		$deleted = CMS::$db->exec('DELETE FROM `'.self::$users_tbl.'` WHERE `id`=:id', [':id' => $user_id]);
@@ -124,15 +124,15 @@ class site_users {
 		return $deleted;
 	}
 
-	public static function getProvidersAvailable() { // 2016-06-10
+	public static function getProvidersAvailable() {
 		return CMS::$db->getList('SELECT DISTINCT provider FROM `'.self::$users_tbl.'` ORDER BY provider');
 	}
 
-	public static function getUser($user_id) { // 2016-06-10
+	public static function getUser($user_id) {
 		return CMS::$db->getRow('SELECT * FROM `'.self::$users_tbl.'` WHERE id=:id LIMIT 1', [':id' => $user_id]);
 	}
 
-	public static function countUserComments($user_id) { // 2016-06-13
+	public static function countUserComments($user_id) {
 		return CMS::$db->get('SELECT COUNT(id) FROM comments WHERE user_id=:id', [':id' => $user_id]);
 	}
 }
