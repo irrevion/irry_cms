@@ -34,7 +34,7 @@ class base_controller extends controller {
 		return self::render('403');
 	}
 
-	public static function action_sign_in() { // 2016-08-14
+	public static function action_sign_in() {
 		self::$layout = 'simple_layout';
 		view::$title = CMS::t('login_title');
 
@@ -42,12 +42,20 @@ class base_controller extends controller {
 			'success' => false,
 			'message' => 'undefined'
 		];
+
+		$now_ts = time();
 		if (isset($_POST['ad_send'])) {
 			$user = cms_users::getUserByLogin(@$_POST['ad_login']);
 			if (empty($user['id'])) {
 				$response['errors'][] = 'login_err';
+			} else if (((int)$user['login_attempts']>=(int)CMS::$site_settings['cms_max_login_attempts']) && !is_null($user['last_login_attempt']) && ((strtotime($user['last_login_attempt'])+CMS::$site_settings['cms_login_cooldown'])>$now_ts)) {
+				$response['errors'][] = 'login_cooldown_err';
 			} else if (!security::validatePassword($user['password'], @$_POST['ad_password'], CMS::$salt)) {
 				$response['errors'][] = 'login_err';
+				CMS::$db->mod(cms_users::$users_tbl.'#'.$user['id'], [
+					'last_login_attempt' => date('Y-m-d H:i:s'),
+					'login_attempts' => ($user['login_attempts']+1),
+				]);
 			} else if ($user['is_blocked']) {
 				$response['errors'][] = 'login_err_blocked';
 			} else {

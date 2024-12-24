@@ -8,6 +8,7 @@ return [
 	'az' => 'Azərbaycan',
 	'en' => 'İnqilis',
 	'ru' => 'Rus',
+	'ua' => 'Ukrayna',
 
 	'access' => 'Daxil olmağının icazəsi',
 	'access_granted' => 'İcazə verilib',
@@ -118,6 +119,7 @@ return [
 	'login_social_facebook' => 'Facebook vasitəsi ilə daxil ol',
 	'login_social_googleplus' => 'Google+ vasitəsi ilə daxil ol',
 	'login_err' => 'Elektron ünvan və ya şifrə səhvdir',
+	'login_cooldown_err' => 'Səhv daxil olunmaq cəhdlərin sayı limit həddi aşdığına görə giriş imkanı müvəqqəti məhdudlaşdırılmışdır. Bir az sonra yenidən cəhd edin.',
 	'login_err_blocked' => 'Giriş gadağandır',
 	'login_social_err' => 'Seçilmiş istifadəçi ({usermail}, {username}) üçün şəxsi kabineti yaratmayıb',
 	'login_suc' => 'Xoş gəlmişsiniz!',

@@ -152,9 +152,12 @@ class CMS {
 	}
 
 	public static function getAdminUser($login) {
+		return self::$db->getRow("SELECT * FROM cms_users WHERE login=:login AND ".self::$db->in('role', array_keys(self::$roles))." AND is_blocked='0' LIMIT 1", [':login' => $login]);
+		/*
 		$sql = "SELECT * FROM cms_users WHERE login=".self::$db->escape($login)." AND role IN ('".implode("', '", array_keys(self::$roles))."') AND is_blocked='0' LIMIT 1";
 		$user = self::$db->getRow($sql);
 		return $user;
+		*/
 	}
 
 	public static function login($user) {
@@ -172,8 +175,11 @@ class CMS {
 			$_SESSION[self::$sess_hash]['LAST_REQUEST_TIME'] = time();
 			$_SESSION[self::$sess_hash]['ses_adm_privilegies'] = self::getPrivilegies($user['id']);
 
+			$now = date('Y-m-d H:i:s');
 			self::$db->mod('cms_users#'.$user['id'], [
-				'last_login_date' => date('Y-m-d H:i:s')
+				'last_login_date' => $now,
+				'last_login_attempt' => $now,
+				'login_attempts' => 0
 			]);
 
 			return true;

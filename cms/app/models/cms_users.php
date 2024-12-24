@@ -230,7 +230,7 @@ class cms_users {
 		return $response;
 	}
 
-	public static function saveUserData($id, $data) { // 2016-11-15
+	public static function saveUserData($id, $data) {
 		$response = ['success' => false, 'message' => 'update_err'];
 
 		if (empty($data)) {

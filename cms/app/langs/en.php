@@ -8,6 +8,7 @@ return [
 	'az' => 'Azerbaijani',
 	'en' => 'English',
 	'ru' => 'Russian',
+	'ua' => 'Ukrainian',
 
 	'access' => 'Access',
 	'access_granted' => 'Granted',
@@ -118,6 +119,7 @@ return [
 	'login_social_facebook' => 'Facebook',
 	'login_social_googleplus' => 'Google+',
 	'login_err' => 'Invalid E-mail or password',
+	'login_cooldown_err' => 'Too many login attempts. The user`s ability to sign in is temporarily disabled. Try again soon.',
 	'login_err_blocked' => 'This profile is plocked',
 	'login_social_err' => 'There is no profile registered for this user ({usermail}, {username})',
 	'login_suc' => 'Welcome',

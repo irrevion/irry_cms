@@ -11,7 +11,7 @@
  Target Server Version : 100432 (10.4.32-MariaDB)
  File Encoding         : 65001
 
- Date: 22/12/2024 00:49:21
+ Date: 24/12/2024 13:31:36
 */
 
 SET NAMES utf8mb4;
@@ -32,7 +32,7 @@ CREATE TABLE `articles`  (
   `show_on_main_page` enum('0','1') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
   `is_highlighted` enum('0','1') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
   `ordering` int UNSIGNED NOT NULL,
-  `add_by` int NOT NULL,
+  `add_by` int UNSIGNED NOT NULL,
   `add_datetime` datetime NOT NULL,
   `mod_by` int UNSIGNED NULL DEFAULT NULL,
   `mod_datetime` datetime NULL DEFAULT NULL,
@@ -421,6 +421,8 @@ CREATE TABLE `cms_users`  (
   `last_login_date` datetime NULL DEFAULT NULL,
   `is_menu_collapsed` enum('0','1') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
   `is_blocked` enum('0','1') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
+  `login_attempts` int UNSIGNED NULL DEFAULT 0,
+  `last_login_attempt` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `login`(`login`) USING BTREE,
   INDEX `reg_by`(`reg_by`) USING BTREE
@@ -429,11 +431,11 @@ CREATE TABLE `cms_users`  (
 -- ----------------------------
 -- Records of cms_users
 -- ----------------------------
-INSERT INTO `cms_users` VALUES (1, 'irrevion@gmail.com', 'admin', '5f8ff37217339e11afa5b85ab31af34014a4d66ddd78ea540280f43dce69b10abb12c42434c42b4754ec9f01851a8aac', 'Super Admin 🌭', NULL, 'ua', 1, '2015-03-26 12:26:32', '2024-12-22 00:34:36', '0', '0');
-INSERT INTO `cms_users` VALUES (16, 'user@domain.com', 'admin', 'bvfbngfsngfdfbfdsbf', 'Padre Domini', 'i.jpg', 'ru', 1, '2016-09-12 11:33:17', NULL, '0', '0');
-INSERT INTO `cms_users` VALUES (17, 'obama@penthagon.us', 'editor', '9ba225066b8eb8b8b6580a7e850a4a8c8513719977a4b5f64dde11b6becb619b659382647d5bc37cef787217ff39e539', 'Obama Barack Mustafa Ibrahim ex', 'obama-2.jpg', 'az', 1, '2016-09-12 13:41:08', NULL, '0', '0');
-INSERT INTO `cms_users` VALUES (18, 'maestro@contoso.com', 'editor', '0ce6f6f0797ad8ed1dd2fe30eb0fe8d6d86b104746fb2ff1e208a90cb7143438cefb830cd732e995da526da216a27825', 'Ivan Drago <script>alert(\'Damn!\');</script>', 'ivan-drago.jpg', 'en', 1, '2016-09-14 22:34:18', NULL, '0', '0');
-INSERT INTO `cms_users` VALUES (19, 'mero@matrix.com', 'editor', 'd8510708b82fca67ded397f65e039a01f57b73f40d371981484d4d323e15bf1c2cd347f1e8db56e8c8432b6b09b722b2', 'Merovingen Franchaise', '13863134908390.jpg', 'az', 1, '2016-09-14 22:47:45', NULL, '0', '1');
+INSERT INTO `cms_users` VALUES (1, 'irrevion@gmail.com', 'admin', '5f8ff37217339e11afa5b85ab31af34014a4d66ddd78ea540280f43dce69b10abb12c42434c42b4754ec9f01851a8aac', 'Super Admin 🌭', NULL, 'ua', 1, '2015-03-26 12:26:32', '2024-12-24 13:30:57', '0', '0', 0, '2024-12-24 13:30:57');
+INSERT INTO `cms_users` VALUES (16, 'user@domain.com', 'admin', 'bvfbngfsngfdfbfdsbf', 'Padre Domini', 'i.jpg', 'ru', 1, '2016-09-12 11:33:17', NULL, '0', '0', 0, NULL);
+INSERT INTO `cms_users` VALUES (17, 'obama@penthagon.us', 'editor', '9ba225066b8eb8b8b6580a7e850a4a8c8513719977a4b5f64dde11b6becb619b659382647d5bc37cef787217ff39e539', 'Obama Barack Mustafa Ibrahim ex', 'obama-2.jpg', 'az', 1, '2016-09-12 13:41:08', NULL, '0', '0', 0, NULL);
+INSERT INTO `cms_users` VALUES (18, 'maestro@contoso.com', 'editor', '0ce6f6f0797ad8ed1dd2fe30eb0fe8d6d86b104746fb2ff1e208a90cb7143438cefb830cd732e995da526da216a27825', 'Ivan Drago <script>alert(\'Damn!\');</script>', 'ivan-drago.jpg', 'en', 1, '2016-09-14 22:34:18', NULL, '0', '0', 0, NULL);
+INSERT INTO `cms_users` VALUES (19, 'mero@matrix.com', 'editor', 'd8510708b82fca67ded397f65e039a01f57b73f40d371981484d4d323e15bf1c2cd347f1e8db56e8c8432b6b09b722b2', 'Merovingen Franchaise', '13863134908390.jpg', 'az', 1, '2016-09-14 22:47:45', NULL, '0', '1', 0, NULL);
 
 -- ----------------------------
 -- Table structure for cms_users_actions
@@ -969,7 +971,7 @@ CREATE TABLE `site_settings`  (
   `value` char(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `option`(`option`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Records of site_settings
@@ -980,6 +982,8 @@ INSERT INTO `site_settings` VALUES (3, 'cms_name', 'Irry CMS');
 INSERT INTO `site_settings` VALUES (4, 'cms_default_lang', 'ua');
 INSERT INTO `site_settings` VALUES (5, 'cms_name_formatted', '<b>Irry</b>CMS');
 INSERT INTO `site_settings` VALUES (7, 'cms_sender_email', 'admin@irrevion.dp.ua');
+INSERT INTO `site_settings` VALUES (8, 'cms_max_login_attempts', '3');
+INSERT INTO `site_settings` VALUES (9, 'cms_login_cooldown', '900');
 
 -- ----------------------------
 -- Table structure for site_users

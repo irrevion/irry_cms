@@ -11,7 +11,7 @@
  Target Server Version : 100432 (10.4.32-MariaDB)
  File Encoding         : 65001
 
- Date: 21/12/2024 19:16:45
+ Date: 24/12/2024 13:31:25
 */
 
 SET NAMES utf8mb4;
@@ -32,7 +32,7 @@ CREATE TABLE `articles`  (
   `show_on_main_page` enum('0','1') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
   `is_highlighted` enum('0','1') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
   `ordering` int UNSIGNED NOT NULL,
-  `add_by` int NOT NULL,
+  `add_by` int UNSIGNED NOT NULL,
   `add_datetime` datetime NOT NULL,
   `mod_by` int UNSIGNED NULL DEFAULT NULL,
   `mod_datetime` datetime NULL DEFAULT NULL,
@@ -105,6 +105,8 @@ CREATE TABLE `cms_users`  (
   `last_login_date` datetime NULL DEFAULT NULL,
   `is_menu_collapsed` enum('0','1') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
   `is_blocked` enum('0','1') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
+  `login_attempts` int UNSIGNED NULL DEFAULT 0,
+  `last_login_attempt` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `login`(`login`) USING BTREE,
   INDEX `reg_by`(`reg_by`) USING BTREE
@@ -350,7 +352,7 @@ CREATE TABLE `site_settings`  (
   `value` char(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `option`(`option`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Table structure for site_users
