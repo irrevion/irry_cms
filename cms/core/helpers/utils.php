@@ -165,7 +165,7 @@ class utils {
 	}
 
 	public static function isValidHumanName($name) {
-		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ\-\`\\\'\s]{2,64}$/u', (string)$name);
+		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁєіїЄІЇʼ\-\`\\\'\s]{2,64}$/u', (string)$name);
 	}
 
 	#[\Deprecated(message: "use isValidHumanNSP() instead", since: "2024-12-23")]
@@ -180,7 +180,7 @@ class utils {
 		$nsp = (string)$nsp;
 		$nsp = trim($nsp);
 
-		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ]{2,}\s+[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ\-\`\\\'\s]+$/u', $nsp);
+		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁєіїЄІЇʼ]{2,}\s+[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁєіїЄІЇʼ\-\`\\\'\s]+$/u', $nsp);
 	}
 
 	#[\Deprecated(message: "use isValidPhone() instead", since: "2024-12-23")]
@@ -579,7 +579,7 @@ class utils {
 		</script>";
 	}
 
-	public static function trueLink($allowed_keys) { // 2016-11-24
+	public static function trueLink($allowed_keys) {
 		foreach ($_GET as $key=>$val) {
 			if (!in_array($key, $allowed_keys)) {continue;}
 
@@ -929,7 +929,8 @@ die();
 		return ((@$_SERVER['CONTENT_LENGTH']>$maxPostSize) && ($_SERVER['REQUEST_METHOD']=='POST'));
 	}
 
-	public static function getFileExt($fname, &$fname_stripped=false) { // deprecated. use pathinfo() instead
+	#[\Deprecated(message: "use pathinfo() instead", since: "2016-11-24")]
+	public static function getFileExt($fname, &$fname_stripped=false) {
 		if (empty($fname)) {return '';}
 		$fname_start_pos = strrpos($fname, '/');
 		if ($fname_start_pos!==false) {
@@ -1257,17 +1258,17 @@ die();
 		if (!is_dir($directory)) {return false;}
 		if (!is_writable($directory)) {return false;}
 
-		$dir = @opendir($directory);
+		$dir = opendir($directory);
 		while ($file=@readdir($dir)) {
 			$fname = $directory.'/'.$file;
 			if (is_file($fname)) {
-				@unlink($fname);
+				unlink($fname);
 			} else if (is_dir($fname) && ($file!='.') && ($file!='..')) {
 				self::deleteDir($fname);
 			}
 		}
-		@closedir($dir);
-		@rmdir($directory);
+		closedir($dir);
+		rmdir($directory);
 
 		return true;
 	}

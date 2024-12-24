@@ -80,7 +80,7 @@ class cms_users {
 		}
 
 		$name = trim(@(string)$_POST['name']);
-		if (empty($name)) {
+		if (empty($name) || !utils::isValidHumanNSP($name)) {
 			$response['errors'][] = 'cms_user_name_err';
 		} else {
 			$user['name'] = $name;
@@ -180,7 +180,7 @@ class cms_users {
 		}
 
 		$name = trim(@(string)$_POST['name']);
-		if (empty($name)) {
+		if (empty($name) || !utils::isValidHumanNSP($name)) {
 			$response['errors'][] = 'cms_user_name_err';
 		} else {
 			$upd['name'] = $name;
