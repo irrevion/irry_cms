@@ -7,7 +7,7 @@ use irrevion\irry_cms\core\helpers\view;
 if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.');}
 
 ?><!DOCTYPE html>
-<html lang="<?= ($_SESSION[CMS::$sess_hash]['ses_adm_lang'] ?? 'en'); ?>">
+<html lang="<?= ($_SESSION[CMS::$sess_hash]['ses_adm_lang'] ?? CMS::$site_settings['cms_default_lang']); ?>">
 	<head>
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -53,17 +53,15 @@ view::appendJs(SITE.CMS_DIR.JS_DIR.'custom-skin.js');
 print view::outputJsList();
 
 ?>
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$('.fancybox').fancybox();
-			});
-			//alert(utils.toQueryParams({key1: 'val1', key2: /*'val2'*/ {subkey1: 'subval1', subkey2: 'subval2'}}));
-			//alert(utils.isLinkGlobal('https://mycareerhub.mmu.ac.uk/help/api/guide/security#client-credentials-grant'));
-			//alert(utils.genHtmlTagAttrs({name: 'Valentin', surname: 'Belousov'}, 'data-'));
-			//alert(utils.truncateStr('forever', 3));
+		<script>
+// <![CDATA[
+$(document).ready(function() {
+	$('.fancybox').fancybox();
+});
+// ]]>
 		</script>
 
 	</head>
 
-	<?=$content;?>
+	<?= $content; ?>
 </html>

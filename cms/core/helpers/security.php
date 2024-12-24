@@ -7,12 +7,13 @@ use irrevion\irry_cms\core\helpers\utils;
 if (!defined('_VALID_PHP')) die('Direct access to this location is not allowed.');
 
 class security {
+	public static $salt;
 	public static $CSRF_token;
 
 	public static function getCSRF_token() {
-		return md5(session_id().'-'.$_SERVER['REMOTE_ADDR'].'-'.$_SERVER['HTTP_USER_AGENT']);
+		return md5(self::$salt.'-'.session_id().'-'.$_SERVER['REMOTE_ADDR'].'-'.$_SERVER['HTTP_USER_AGENT']);
 	}
-	
+
 	public static function checkCSRF_token($input_token) {
 		$ref = @(string)$_SERVER['HTTP_REFERER'];
 		$scheme = parse_url($ref, PHP_URL_SCHEME);
@@ -25,6 +26,20 @@ class security {
 			header('HTTP/1.0 400 Bad Request');
 			die('400 Bad Request');
 		}
+	}
+
+	public static function generateSessionHash() {
+		// self::$sess_hash = md5(SITE.self::$salt.session_id());
+		return md5(SITE.self::$salt.session_id());
+	}
+
+	public static function generateAccountHash($user, $action) {
+		return md5(md5($user['login'].$action).md5($user['password']));
+	}
+
+	public static function checkAccountHash($hash, $user, $action) {
+		$etalon = self::generateAccountHash($user, $action);
+		return hash_equals($etalon, $hash);
 	}
 
 	public static function getRandStr($length=8) {
@@ -97,8 +112,8 @@ class security {
 		$random_salt = substr($hash, 64, 32);
 		if (!$random_salt || (strlen($hash)<96)) {return false;}
 		$input_hash = hash_hmac('sha256', md5($pwd), $random_salt.$salt);
-		//die($input_hash.$random_salt);
-		return ($input_hash==substr($hash, 0, 64));
+		// return ($input_hash==substr($hash, 0, 64));
+		return hash_equals(substr($hash, 0, 64), $input_hash);
 	}
 }
 

@@ -12,7 +12,7 @@ class app {
 	/*
 		This class is supposed to provide access to non-system pan-application functions.
 		Any procedures that have dependencies that prevents from putting function into
-		`tb\start_cms\helpers\utils` but need to be available globally in application can
+		`irrevion\irry_cms\core\helpers\utils` but need to be available globally in application can
 		be placed here.
 	*/
 

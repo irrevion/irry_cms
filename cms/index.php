@@ -19,7 +19,7 @@ define('CONFIG_DIR', 'app/config/');
 require_once CONFIG_DIR.'app.php';
 require_once CORE_DIR.'CMS.php';
 spl_autoload_register(['irrevion\irry_cms\core\CMS', 'autoload']);
-CMS::init();
+CMS::init($app_config);
 
 header('Content-type: text/html; charset=utf-8');
 header('X-Frame-Options: DENY');

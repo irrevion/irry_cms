@@ -72,7 +72,7 @@ class cms_users_controller extends controller {
 				CMS::logout();
 				return '';
 			}
-			if (!security::validatePassword($user['password'], @$_POST['password'], CMS::$salt)) {
+			if (!security::validatePassword($user['password'], @$_POST['password'], security::$salt)) {
 				CMS::logout();
 				return '';
 			}
@@ -157,7 +157,7 @@ class cms_users_controller extends controller {
 				CMS::logout();
 				return '';
 			}
-			if (!security::validatePassword($user['password'], @$_POST['password'], CMS::$salt)) {
+			if (!security::validatePassword($user['password'], @$_POST['password'], security::$salt)) {
 				CMS::logout();
 				return '';
 			}

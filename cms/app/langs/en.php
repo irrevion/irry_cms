@@ -72,6 +72,16 @@ return [
 	'update_suc' => 'Data successfully saved',
 	'view' => 'Preview',
 
+	// Units
+
+	'y' => 'years',
+	'mn' => 'months',
+	'w' => 'weeks',
+	'd' => 'days',
+	'h' => 'hours',
+	'm' => 'minutes',
+	's' => 'seconds',
+
 	// Password Generator
 
 	'password_generator' => 'Password Generator',

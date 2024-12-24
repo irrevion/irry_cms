@@ -9,7 +9,7 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 ?>
 
 
-<script type="text/javascript">
+<script>
 // <![CDATA[
 /*
 var auth = function(token) {

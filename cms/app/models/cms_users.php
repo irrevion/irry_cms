@@ -70,7 +70,7 @@ class cms_users {
 		if (!utils::checkPass($_POST['pwd'])) {
 			$response['errors'][] = 'cms_user_pwd_err';
 		} else {
-			$user['password'] = security::generatePasswordHash($_POST['pwd'], CMS::$salt);
+			$user['password'] = security::generatePasswordHash($_POST['pwd'], security::$salt);
 		}
 
 		if (!in_array(@$_POST['role'], array_keys(CMS::$roles))) {
@@ -199,7 +199,7 @@ class cms_users {
 			if (!utils::checkPass($_POST['pwd'])) {
 				$response['errors'][] = 'cms_user_pwd_err';
 			} else {
-				$upd['password'] = security::generatePasswordHash($_POST['pwd'], CMS::$salt);
+				$upd['password'] = security::generatePasswordHash($_POST['pwd'], security::$salt);
 			}
 		}
 
@@ -309,14 +309,14 @@ class cms_users {
 					$response['errors'][] = 'cms_user_pwd_not_equal_err';
 				} else {
 					$admin_pwd = CMS::$db->get("SELECT password FROM ".self::$users_tbl." WHERE login=".CMS::$db->escape($_SESSION[CMS::$sess_hash]['ses_adm_login'])." LIMIT 1");
-					if (!security::validatePassword($admin_pwd, $_POST['pwd_approve'.$_SESSION[CMS::$sess_hash]['autofill_fix']], CMS::$salt)) {
+					if (!security::validatePassword($admin_pwd, $_POST['pwd_approve'.$_SESSION[CMS::$sess_hash]['autofill_fix']], security::$salt)) {
 						$_SESSION[CMS::$sess_hash]['security_violation_attempts'] = (empty($_SESSION[CMS::$sess_hash]['security_violation_attempts'])? 1: ($_SESSION[CMS::$sess_hash]['security_violation_attempts']+1));
 						if ($_SESSION[CMS::$sess_hash]['security_violation_attempts']>=3) {
 							utils::redirect('?page=close&direct_output=1');
 						}
 						$response['errors'][] = sprintf(CMS::t('cms_user_pwd_approve_err'), (3-$_SESSION[CMS::$sess_hash]['security_violation_attempts']));
 					} else {
-						$upd['password'] = security::generatePasswordHash($_POST['pwd'.$_SESSION[CMS::$sess_hash]['autofill_fix']], CMS::$salt);
+						$upd['password'] = security::generatePasswordHash($_POST['pwd'.$_SESSION[CMS::$sess_hash]['autofill_fix']], security::$salt);
 					}
 				}
 			}

@@ -50,7 +50,13 @@ class base_controller extends controller {
 				$response['errors'][] = 'login_err';
 			} else if (((int)$user['login_attempts']>=(int)CMS::$site_settings['cms_max_login_attempts']) && !is_null($user['last_login_attempt']) && ((strtotime($user['last_login_attempt'])+CMS::$site_settings['cms_login_cooldown'])>$now_ts)) {
 				$response['errors'][] = 'login_cooldown_err';
-			} else if (!security::validatePassword($user['password'], @$_POST['ad_password'], CMS::$salt)) {
+				$response['errors'][] = '⏱ '.utils::formatDuration(((strtotime($user['last_login_attempt'])+CMS::$site_settings['cms_login_cooldown'])-$now_ts), [
+					'd' => CMS::t('d'),
+					'h' => CMS::t('h'),
+					'm' => CMS::t('m'),
+					's' => CMS::t('s'),
+				]);
+			} else if (!security::validatePassword($user['password'], @$_POST['ad_password'], security::$salt)) {
 				$response['errors'][] = 'login_err';
 				CMS::$db->mod(cms_users::$users_tbl.'#'.$user['id'], [
 					'last_login_attempt' => date('Y-m-d H:i:s'),
@@ -121,7 +127,7 @@ class base_controller extends controller {
 			'message' => 'undefined'
 		];
 		if (!empty($_POST['recover'])) {
-			if (!utils::is_valid_email($_POST['email'])) {
+			if (!utils::isValidEmail($_POST['email'])) {
 				$response['errors'][] = 'password_recovery_err_email_invalid';
 			} else {
 				$user = CMS::getAdminUser($_POST['email']);
@@ -130,10 +136,10 @@ class base_controller extends controller {
 				} else {
 					$to = $user['login'];
 					$msg = [
-						'subject' => 'Irry CMS '.CMS::$version.' - '.CMS::t('password_recovery_subj'),
+						'subject' => 'Irry CMS - '.CMS::t('password_recovery_subj'),
 						'message' => CMS::t('password_recovery_msg', [
 							'{username}' => $user['name'],
-							'{recovery_link}' => utils::safeEcho(SITE.CMS_DIR.'?controller=base&action=change_password&login='.$user['login'].'&hash='.CMS::generateAccountHash($user, 'password_recovery'), 1)
+							'{recovery_link}' => utils::safeEcho(SITE.CMS_DIR.'?controller=base&action=change_password&login='.$user['login'].'&hash='.security::generateAccountHash($user, 'password_recovery'), 1)
 						])
 					];
 					$sended = app::sendEmail($to, $msg);
@@ -168,10 +174,10 @@ class base_controller extends controller {
 				$user = CMS::getAdminUser($_GET['login']);
 				if (empty($user['id'])) {
 					$response['errors'][] = 'password_recovery_err_user_not_found';
-				} else if (!CMS::checkAccountHash(@$_GET['hash'], $user, 'password_recovery')) {
+				} else if (!security::checkAccountHash(($_GET['hash'] ?? ''), $user, 'password_recovery')) {
 					$response['errors'][] = 'password_change_err_account_hash_expired';
 				} else {
-					$new_hash = security::generatePasswordHash($_POST['password'], CMS::$salt);
+					$new_hash = security::generatePasswordHash($_POST['password'], security::$salt);
 					CMS::$db->mod('cms_users#'.$user['id'], [
 						'password' => $new_hash
 					]);

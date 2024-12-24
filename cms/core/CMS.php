@@ -15,7 +15,7 @@ class CMS {
 	public static $site_langs;
 	public static $default_site_lang;
 	public static $sess_hash = '';
-	public static $salt = 'm3GTr_72*oL@';	// must be project-unique
+	// public static $salt = 'm3GTr_72*oL@';	// must be project-unique
 	public static $roles = [
 		'admin' => [],
 		'editor' => []
@@ -55,7 +55,7 @@ class CMS {
 		return false;
 	}
 
-	public static function init() {
+	public static function init($params) {
 		/*
 			CMS environtment initialization.
 			Enables CSRF protection for POST forms globally.
@@ -66,12 +66,13 @@ class CMS {
 			Loads CMS language file specified by settings or user.
 		*/
 
+		security::$salt = $params['salt'];
 		security::$CSRF_token = security::getCSRF_token();
 		if ($_SERVER['REQUEST_METHOD']=='POST') {
 			security::checkCSRF_token(@$_POST['CSRF_token']);
 		}
 
-		self::generateSessionHash();
+		self::$sess_hash = security::generateSessionHash();
 
 		self::$db = new mysql_pdo([
 			'host' => DB_HOST,
@@ -95,20 +96,6 @@ class CMS {
 
 		self::$site_langs = self::getLangsRegistered();
 		self::$default_site_lang = self::getDefaultSiteLang();
-	}
-
-	public static function generateSessionHash() {
-		self::$sess_hash = md5(SITE.self::$salt.session_id());
-	}
-
-	public static function generateAccountHash($user, $action) {
-		$hash = md5(md5($user['login'].$action).md5($user['password']));
-		return $hash;
-	}
-
-	public static function checkAccountHash($hash, $user, $action) {
-		$etalon = self::generateAccountHash($user, $action);
-		return ($hash==$etalon);
 	}
 
 	public static function t($key, $params=[]) {
@@ -153,11 +140,6 @@ class CMS {
 
 	public static function getAdminUser($login) {
 		return self::$db->getRow("SELECT * FROM cms_users WHERE login=:login AND ".self::$db->in('role', array_keys(self::$roles))." AND is_blocked='0' LIMIT 1", [':login' => $login]);
-		/*
-		$sql = "SELECT * FROM cms_users WHERE login=".self::$db->escape($login)." AND role IN ('".implode("', '", array_keys(self::$roles))."') AND is_blocked='0' LIMIT 1";
-		$user = self::$db->getRow($sql);
-		return $user;
-		*/
 	}
 
 	public static function login($user) {

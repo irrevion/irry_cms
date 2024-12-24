@@ -72,6 +72,16 @@ return [
 	'update_suc' => 'Dəyişikliklər müvəffəqiyyətlə yerinə yetirildi',
 	'view' => 'Baxış',
 
+	// Units
+
+	'y' => 'il',
+	'mn' => 'ay',
+	'w' => 'həftə',
+	'd' => 'gün',
+	'h' => 'saat',
+	'm' => 'dəqiqə',
+	's' => 'saniyə',
+
 	// Password Generator
 
 	'password_generator' => 'Şifrənin avtomatik yaradılması',
