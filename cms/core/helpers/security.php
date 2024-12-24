@@ -21,7 +21,7 @@ class security {
 			$site = $scheme.':'.$site;
 		}
 
-		if ((self::$CSRF_token!=$input_token) || (strpos($ref, $site)!==0)) {
+		if (!hash_equals(self::$CSRF_token, $input_token) || (strpos($ref, $site)!==0)) {
 			header('HTTP/1.0 400 Bad Request');
 			die('400 Bad Request');
 		}

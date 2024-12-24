@@ -40,6 +40,7 @@ class utils {
 			(string) changeDateFormat($fromFormat, $toFormat, $date)
 			(int) getYearsOld($birth_date)
 			(array/string) getAge($birth_date, $stringify=true)
+			(string) formatDuration($duration_in_seconds, $units=[])
 		HTML:
 			(string) safeEcho($str, $return=false)
 			(string) safeJsEcho($str, $return=false)
@@ -343,6 +344,20 @@ class utils {
 		}
 
 		return ['y' => $y, 'm' => $m];
+	}
+
+	public static function formatDuration($duration_in_seconds, $units=[]) {
+		$is_negative = ($duration_in_seconds < 0);
+		if ($is_negative) {
+			$duration_in_seconds = Math.abs($duration_in_seconds);
+		}
+
+		$d = floor($duration_in_seconds / 86400);
+		$h = floor(($duration_in_seconds - ($d * 86400)) / 3600);
+		$m = floor(($duration_in_seconds - ($d * 86400) - ($h * 3600)) / 60);
+		$s = floor($duration_in_seconds) - ($d * 86400) - ($h * 3600) - ($m * 60);
+
+		return (($is_negative? '-': '').($d? ($d.' '.($units['d']? $units['d']: 'd').' '): '').($h? ($h.' '.($units['h']? $units['h']: 'h').' '): '').($m? ($m.' '.($units['m']? $units['m']: 'm').' '): '').$s.' '.($units['s']? $units['s']: 's'));
 	}
 
 	/* HTML */
