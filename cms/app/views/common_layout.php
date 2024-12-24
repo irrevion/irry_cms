@@ -318,12 +318,12 @@ print view::outputJsList();
 							<li class="dropdown user user-menu">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 									<?php if (!empty($_SESSION[CMS::$sess_hash]['avatar'])) { ?>
-									<img src="<?=$_SESSION[CMS::$sess_hash]['avatar'];?>" alt="" class="user-image" />
+									<img src="<?= $_SESSION[CMS::$sess_hash]['avatar']; ?>" alt="" class="user-image" />
 									<?php } else { ?>
-									<?=view::gravatar($_SESSION[CMS::$sess_hash]['ses_adm_login'], 160, ['class' => 'user-image']);?>
+									<?= view::gravatar($_SESSION[CMS::$sess_hash]['ses_adm_login'], 160, ['class' => 'user-image']); ?>
 									<?php } ?>
 
-									<span class="hidden-xs"><?=ADMIN_INFO;?></span>
+									<span class="hidden-xs"><?= utils::safeEcho(ADMIN_INFO, 1); ?></span>
 								</a>
 
 								<ul class="dropdown-menu">
@@ -336,8 +336,8 @@ print view::outputJsList();
 										<?php } ?>
 
 										<p>
-											<?=ADMIN_INFO;?> - <?=CMS::t('cms_users_role_'.$_SESSION[CMS::$sess_hash]['ses_adm_type']);?>
-											<small><?=CMS::t('cms_user_reg_date');?> <?=utils::formatMySQLDate('d.m.Y', $_SESSION[CMS::$sess_hash]['ses_adm_reg_date']);?></small>
+											<?= utils::safeEcho(ADMIN_INFO, 1); ?> - <?= CMS::t('cms_users_role_'.$_SESSION[CMS::$sess_hash]['ses_adm_type']); ?>
+											<small><?= CMS::t('cms_user_reg_date'); ?> <?= utils::formatMySQLDate('d.m.Y', $_SESSION[CMS::$sess_hash]['ses_adm_reg_date']); ?></small>
 										</p>
 									</li>
 
@@ -388,8 +388,8 @@ print view::outputJsList();
 						</div>
 
 						<div class="pull-left info">
-							<p><?=ADMIN_INFO;?></p>
-							<a><i class="fa fa-circle text-success"></i> <?=CMS::t('cms_user_is_online');?></a>
+							<p><?= utils::safeEcho(ADMIN_INFO, 1); ?></p>
+							<a><i class="fa fa-circle text-success"></i> <?= CMS::t('cms_user_is_online'); ?></a>
 						</div>
 					</div> -->
 
@@ -406,9 +406,9 @@ print view::outputJsList();
 
 					<!-- sidebar menu: : style can be found in sidebar.less -->
 					<ul class="sidebar-menu">
-						<li class="header"><?=CMS::t('menu_title');?></li>
+						<li class="header"><?= CMS::t('menu_title'); ?></li>
 
-						<?=view::widget('menu');?>
+						<?= view::widget('menu'); ?>
 
 						<!-- <li><a href="documentation/index.html"><i class="fa fa-book"></i> <span>Documentation</span></a></li> -->
 					</ul>
@@ -419,17 +419,17 @@ print view::outputJsList();
 
 			<!-- Content Wrapper. Contains page content -->
 			<div class="content-wrapper">
-				<?=$content;?>
+				<?= $content; ?>
 			</div>
 			<!-- /.content-wrapper -->
 
 
 			<footer class="main-footer">
 				<div class="pull-right hidden-xs">
-					<b>Version</b> <?=CMS::$version;?>
+					<b>Version</b> <?= CMS::$version; ?>
 				</div>
 
-				<strong>Copyright &copy; 2009-<?=date('Y');?> <a href="https://irrevion.dp.ua" target="_blank">Irrevion <i class="fa fa-external-link" aria-hidden="true"></i>
+				<strong>Copyright &copy; 2009-<?= date('Y'); ?> <a href="https://irrevion.dp.ua" target="_blank">Irrevion <i class="fa fa-external-link" aria-hidden="true"></i>
 </a>.</strong> All rights reserved.
 			</footer>
 		</div>
