@@ -125,12 +125,12 @@ class utils {
 		return preg_match('|^[a-zA-Z0-9\.\_\-\+\!\@\#\$\%\^\&\*\(\)\=\`\~\{\[\]\}\;\:\>\<\?\'\"\/\\\]{6,64}$|', $pass);
 	}
 
-	#[\Deprecated(message: "use isValidEmail() instead", since: "2024-12-23")]
+	#[\Deprecated(message: "use utils::isValidEmail() instead", since: "2024-12-23")]
 	public static function is_valid_email($email) {
 		return filter_var((string)$email, FILTER_VALIDATE_EMAIL);
 	}
 
-	#[\Deprecated(message: "use isValidEmail() instead", since: "2024-12-23")]
+	#[\Deprecated(message: "use utils::isValidEmail() instead", since: "2024-12-23")]
 	public static function validEmail($email) {
 		return filter_var($email, FILTER_VALIDATE_EMAIL);
 	}
@@ -139,7 +139,7 @@ class utils {
 		return filter_var((string)$email, FILTER_VALIDATE_EMAIL);
 	}
 
-	#[\Deprecated(message: "use isValidUriElement() instead", since: "2024-12-23")]
+	#[\Deprecated(message: "use utils::isValidUriElement() instead", since: "2024-12-23")]
 	public static function is_valid_URI_element($s) {
 		return preg_match('/^[0-9a-z\_\-]{1,255}$/i', $s);
 	}
@@ -156,11 +156,12 @@ class utils {
 		// if (!self::isValidURL($url)) return false;
 		// if ($_SERVER['SERVER_NAME']==='localhost') return true;
 		$lp = parse_url($url);
+		if (empty($lp['host'])) return true;
 		if (($lp['host']===$_SERVER['SERVER_NAME']) && (empty($lp['port']) || ($lp['port']==$_SERVER['SERVER_PORT']))) return true;
 		return false;
 	}
 
-	#[\Deprecated(message: "use isValidHumanName() instead", since: "2024-12-23")]
+	#[\Deprecated(message: "use utils::isValidHumanName() instead", since: "2024-12-23")]
 	public static function is_valid_human_name($name) {
 		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ\-\`\\\'\s]{2,64}$/u', (string)$name);
 	}
@@ -169,7 +170,7 @@ class utils {
 		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁєіїЄІЇʼ\-\`\\\'\s]{2,64}$/u', (string)$name);
 	}
 
-	#[\Deprecated(message: "use isValidHumanNSP() instead", since: "2024-12-23")]
+	#[\Deprecated(message: "use utils::isValidHumanNSP() instead", since: "2024-12-23")]
 	public static function is_valid_human_nsp($nsp) {
 		$nsp = (string)$nsp;
 		$nsp = trim($nsp);
@@ -206,7 +207,7 @@ class utils {
 		return preg_match('/^\d{2}\.\d{2}\.\d{4}$/', $date);
 	}
 
-	#[\Deprecated(message: "use validateDatetime() instead", since: "2024-12-23")]
+	#[\Deprecated(message: "use utils::validateDatetime() instead", since: "2024-12-23")]
 	public static function checkDate($format, $date) {
 		$date_parsed = date_parse_from_format($format, $date);
 		if ($date_parsed['error_count']) {return false;}
@@ -789,6 +790,7 @@ class utils {
 		return $arr;
 	}
 
+	#[\Deprecated(message: "use array_is_list() instead", since: "2024-12-25")]
 	public function array_is_assoc($arr) {
 		return (count(array_filter(array_keys($arr), 'is_string'))>0);
 	}

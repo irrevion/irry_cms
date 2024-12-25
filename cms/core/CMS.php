@@ -36,7 +36,6 @@ class CMS {
 		$is_app = preg_match('/^app\\\/', $class);
 		$is_core = (substr($class, 0, 23)==='irrevion\\irry_cms\\core\\');
 
-		// $path = ($is_app? '': VENDOR_DIR).str_replace('\\', '/', $class).'.php';
 		// $path = $class;
 		$path = '';
 		if ($is_app) {
