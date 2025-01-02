@@ -243,7 +243,7 @@ return [
 	'cms_user_edit_approvable_data_lost_err' => 'Упс, здається дані загубилися :(',
 	'cms_user_is_online' => 'Онлайн',
 	'cms_users_list' => 'Список користувачів',
-	'cms_users_list_details' => 'Знайдено{ru:u1} {count} користувачів{ru:u2}',
+	'cms_users_list_details' => 'Знайден{ua:u1} {count} користувач{ua:u2}',
 	'cms_users_search' => 'Пошук користувачів',
 	//'cms_users_top_menu_item' => 'Адміністрація',
 	'edit_cms_user' => 'Редагувати користувача',
@@ -253,7 +253,7 @@ return [
 	// Photo Gallery
 
 	'gallery' => 'Галерея',
-	'gallery_list_details' => '{count} галереї{ua:u1} знайдено{ua:u2}',
+	'gallery_list_details' => '{count} галере{ua:u1} знайден{ua:u2}',
 	'gallery_album_add' => 'Додати альбом',
 	'gallery_album_add_datetime' => 'Дата додавання',
 	'gallery_album_edit' => 'Редагувати альбом',
@@ -269,7 +269,7 @@ return [
 	'gallery_photo_subtext' => 'Підпис до зображення',
 	'gallery_photos_add' => 'Додати зображення',
 	'gallery_photos_list' => 'Список картинок',
-	'gallery_photos_list_details' => '{count} зображено{ua:u1} знайдено{ua:u2}',
+	'gallery_photos_list_details' => '{count} зображен{ua:u1} знайден{ua:u2}',
 	'gallery_photos_num' => 'Кількість картинок',
 	'gallery_edit_err_name_empty' => 'Назва альбому не може бути порожньою',
 

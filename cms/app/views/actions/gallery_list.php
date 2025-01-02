@@ -96,12 +96,12 @@ $(document).ready(function() {
 
 	<!-- Info boxes -->
 
-	<!-- <pre><?php /*var_export($users);*/ ?></pre> -->
-
 	<div class="box">
 		<div class="box-header with-border">
 			<h3 class="box-title"><?=CMS::t('gallery_list_details', [
 				'{count}' => $count,
+				'{ua:u1}' => utils::getRussianWordEndingByNumber($count, 'я', 'ї', 'й'),
+				'{ua:u2}' => utils::getRussianWordEndingByNumber($count, 'а', 'о', 'о'),
 				'{ru:u1}' => utils::getRussianWordEndingByNumber($count, 'я', 'и', 'й'),
 				'{ru:u2}' => utils::getRussianWordEndingByNumber($count, 'а', 'ы', 'о')
 			]);?></h3>

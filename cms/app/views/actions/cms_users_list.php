@@ -101,6 +101,8 @@ $(document).ready(function() {
 		<div class="box-header with-border">
 			<h3 class="box-title"><?=CMS::t('cms_users_list_details', [
 				'{count}' => $count,
+				'{ua:u1}' => utils::getRussianWordEndingByNumber($count, '', 'о', 'о'),
+				'{ua:u2}' => utils::getRussianWordEndingByNumber($count, '', 'а', 'ів'),
 				'{ru:u1}' => utils::getRussianWordEndingByNumber($count, '', 'ы', 'о'),
 				'{ru:u2}' => utils::getRussianWordEndingByNumber($count, 'ь', 'я', 'ей')
 			]);?></h3>
