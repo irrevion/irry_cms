@@ -31,31 +31,29 @@ class CMS {
 		8 => 'upl_extension_err'			// A PHP extension stopped the file upload
 	];
 
-	public static function autoload($class) {
+	public static function autoload(string $class): void {
 		$is_app = preg_match('/^app\\\/', $class);
 		$is_core = (substr($class, 0, 23)==='irrevion\\irry_cms\\core\\');
 
-		// $path = $class;
 		$path = '';
 		if ($is_app) {
 			$path = APP_DIR.str_replace('\\', '/', substr($class, 4)).'.php';
 		} else if ($is_core) {
 			$path = CORE_DIR.str_replace('\\', '/', substr($class, 23)).'.php';
-			//die($path);
 		}
 
 		if ($path && is_file($path)) {
 			include $path;
-			return true;
+			return;
 		}
 
-		throw new \Error("The file at path `$path` is not found. Namespace is `$class`.");
-		return false;
+		//throw new \Error("The file at path `$path` is not found. Namespace is `$class`.");
+		return;
 	}
 
 	public static function init($params) {
 		/*
-			CMS environtment initialization.
+			CMS initialization.
 			Enables CSRF protection for POST forms globally.
 			Generated session hash to isolate CMS session data from the rest of domain session data.
 			Connects to database.

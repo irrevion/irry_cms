@@ -41,3 +41,4 @@ trash/
 /cms/app/config/app.php
 /cms/app/config/db.php
 /cms/app/config/dirs.php
+/cms/vendor/*

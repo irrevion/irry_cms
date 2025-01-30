@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use abeautifulsite\simple_image\SimpleImage;
+use claviska\SimpleImage;
 use irrevion\irry_cms\core\CMS;
 use irrevion\irry_cms\core\helpers\security;
 use irrevion\irry_cms\core\helpers\utils;

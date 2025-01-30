@@ -1,0 +1,20 @@
+{
+    "name": "irrevion/irry_cms",
+    "description": "mini-cms",
+    "type": "project",
+    "license": "mit",
+    "authors": [
+        {
+            "name": "Valentin Belousov",
+            "email": "irrevion@gmail.com"
+        }
+    ],
+	"config": {
+        "vendor-dir": "cms/vendor"
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "claviska/simpleimage": "4.2.1",
+        "irrevion/science": "^0.0.5"
+    }
+}

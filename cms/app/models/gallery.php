@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use abeautifulsite\simple_image\SimpleImage;
+use claviska\SimpleImage;
 use irrevion\irry_cms\core\CMS;
 use irrevion\irry_cms\core\helpers\tr;
 use irrevion\irry_cms\core\helpers\utils;
@@ -433,11 +433,11 @@ class gallery {
 					} else {
 						// resize thumb image
 						$thumb = new SimpleImage(self::$dir.'gallery_'.$gallery['id'].'/original/'.$image);
-						$thumb->thumbnail(self::$dimensions['thumb']['width'], self::$dimensions['thumb']['height'])->save(self::$dir.'gallery_'.$gallery['id'].'/thumb/'.$image);
+						$thumb->thumbnail(self::$dimensions['thumb']['width'], self::$dimensions['thumb']['height'])->toFile(self::$dir.'gallery_'.$gallery['id'].'/thumb/'.$image);
 
 						// resize big image
 						$big = new SimpleImage(self::$dir.'gallery_'.$gallery['id'].'/original/'.$image);
-						$big->thumbnail(self::$dimensions['big']['width'], self::$dimensions['big']['height'])->save(self::$dir.'gallery_'.$gallery['id'].'/big/'.$image);
+						$big->thumbnail(self::$dimensions['big']['width'], self::$dimensions['big']['height'])->toFile(self::$dir.'gallery_'.$gallery['id'].'/big/'.$image);
 
 						// save
 						$max_ordering = CMS::$db->select('MAX(ordering)', 'gallery_photos', "gallery_id='{$gallery['id']}'");
@@ -510,12 +510,12 @@ class gallery {
 
 				// resize thumb image
 				$thumb = new SimpleImage(self::$dir.'gallery_'.$gallery['id'].'/original/'.$image);
-				$thumb->thumbnail(self::$dimensions['thumb']['width'], self::$dimensions['thumb']['height'])->save(self::$dir.'gallery_'.$gallery['id'].'/thumb/'.$image);
+				$thumb->thumbnail(self::$dimensions['thumb']['width'], self::$dimensions['thumb']['height'])->toFile(self::$dir.'gallery_'.$gallery['id'].'/thumb/'.$image);
 				@unlink(self::$dir.'gallery_'.$gallery['id'].'/thumb/'.$old_data['image']);
 
 				// resize big image
 				$big = new SimpleImage(self::$dir.'gallery_'.$gallery['id'].'/original/'.$image);
-				$big->thumbnail(self::$dimensions['big']['width'], self::$dimensions['big']['height'])->save(self::$dir.'gallery_'.$gallery['id'].'/big/'.$image);
+				$big->thumbnail(self::$dimensions['big']['width'], self::$dimensions['big']['height'])->toFile(self::$dir.'gallery_'.$gallery['id'].'/big/'.$image);
 				@unlink(self::$dir.'gallery_'.$gallery['id'].'/big/'.$old_data['image']);
 
 				$photo['image'] = $image;

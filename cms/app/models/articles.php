@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use abeautifulsite\simple_image\SimpleImage;
+use claviska\SimpleImage;
 use irrevion\irry_cms\core\CMS;
 use irrevion\irry_cms\core\helpers\tr;
 use irrevion\irry_cms\core\helpers\utils;
@@ -250,7 +250,8 @@ class articles {
 					foreach (self::$dimensions as $dir=>$size) {
 						@mkdir(UPLOADS_DIR.'articles/'.$dir.'/', 0777, true);
 						$img = new SimpleImage(UPLOADS_DIR.'articles/originals/'.$article['img']);
-						$img->thumbnail($size['width'], $size['height'])->save(UPLOADS_DIR.'articles/'.$dir.'/'.$article['img']);
+						//$img->thumbnail($size['width'], $size['height'])->save(UPLOADS_DIR.'articles/'.$dir.'/'.$article['img']);
+						$img->thumbnail($size['width'], $size['height'])->toFile(UPLOADS_DIR.'articles/'.$dir.'/'.$article['img']);
 					}
 				}
 			} else {
@@ -383,7 +384,7 @@ class articles {
 					foreach (self::$dimensions as $dir=>$size) {
 						@unlink(UPLOADS_DIR.'articles/'.$dir.'/'.$article['img']);
 						$img = new SimpleImage(UPLOADS_DIR.'articles/originals/'.$uploaded);
-						$img->thumbnail($size['width'], $size['height'])->save(UPLOADS_DIR.'articles/'.$dir.'/'.$uploaded);
+						$img->thumbnail($size['width'], $size['height'])->toFile(UPLOADS_DIR.'articles/'.$dir.'/'.$uploaded);
 					}
 				}
 			} else {
