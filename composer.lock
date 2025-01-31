@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "76d966ec95a7c9bb7a107aec14ddbc9e",
+    "content-hash": "95a315980423a1f135f39f436166410e",
     "packages": [
         {
             "name": "claviska/simpleimage",
@@ -61,21 +61,22 @@
         },
         {
             "name": "irrevion/science",
-            "version": "0.0.5",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/irrevion/science.git",
-                "reference": "7b0993da3e070ccd3ab46ae64e11241ab03269c7"
+                "reference": "45dab8c359e22be47321e9a1e218e0a3cdcb4e97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/irrevion/science/zipball/7b0993da3e070ccd3ab46ae64e11241ab03269c7",
-                "reference": "7b0993da3e070ccd3ab46ae64e11241ab03269c7",
+                "url": "https://api.github.com/repos/irrevion/science/zipball/45dab8c359e22be47321e9a1e218e0a3cdcb4e97",
+                "reference": "45dab8c359e22be47321e9a1e218e0a3cdcb4e97",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.1"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -107,9 +108,9 @@
             ],
             "support": {
                 "issues": "https://github.com/irrevion/science/issues",
-                "source": "https://github.com/irrevion/science/tree/v0.0.5"
+                "source": "https://github.com/irrevion/science/tree/main"
             },
-            "time": "2024-01-23T22:05:06+00:00"
+            "time": "2025-01-03T23:07:24+00:00"
         },
         {
             "name": "league/color-extractor",
@@ -176,10 +177,17 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "irrevion/science": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": {},
+    "platform": {
+        "php": "^8.4"
+    },
     "platform-dev": {},
+    "platform-overrides": {
+        "php": "8.4"
+    },
     "plugin-api-version": "2.6.0"
 }
