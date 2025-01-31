@@ -20,5 +20,8 @@
 		"php": "^8.4",
 		"claviska/simpleimage": "4.2.1",
 		"irrevion/science": "@dev"
+	},
+	"require-dev": {
+		"phpstan/phpstan": "^2.1"
 	}
 }

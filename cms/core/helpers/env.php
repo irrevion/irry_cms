@@ -12,7 +12,7 @@ class env {
 
 	public static function get(string $key, ?string $default=null): mixed {
 		if (!self::$loaded) self::load();
-		$val = (self::$use_cache? $cache[$key]: getenv($key));
+		$val = (self::$use_cache? self::$cache[$key]: getenv($key));
 		if ($val===false) $val = null;
 		return ($val ?? $default);
 	}

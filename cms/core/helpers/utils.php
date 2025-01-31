@@ -106,15 +106,15 @@ class utils {
 			copyDir($source, $dest)
 			(string) copyFile($source, $dest='')
 			(string) upload($file, $source, $to, $valid_extensions)
-			(string) tmpfile_put_contents($content) // wrights content to a tamporary file and returns filename
+			(string) tmpfile_put_contents($content) // writes content to a tamporary file and returns filename
 		misc:
 			(string) getuniqid()
 	*/
 
 	/* validation */
 
-	public static function checkPIN($pin) {
-		return preg_match('/^[0-9A-Z]{7}$/i', $pin);
+	public static function checkPIN(string $pin): bool {
+		return !!preg_match('/^[0-9A-Z]{7}$/i', $pin);
 	}
 
 	public static function checkLogin($login) {
@@ -1027,7 +1027,8 @@ die();
 		return $canonical_path;
 	}
 
-	public static function dirCreate($dir, $chmod=0777) {
+	#[\Deprecated(message: "use mkdir() instead", since: "2017-08-21")]
+	public static function dirCreate(string $dir, int $chmod=0777): bool {
 		if (is_dir($dir)) {return true;}
 		$dir = self::dirCanonicalPath($dir);
 		$destination = dirname($dir);
@@ -1039,7 +1040,8 @@ die();
 		return mkdir($dir, $chmod);
 	}
 
-	public static function rename($old_dir,$dir,$file) {
+	#[\Deprecated(message: "use rename() instead", since: "2025-01-31")]
+	public static function rename($old_dir, $dir, $file) {
 		$oldfile = $old_dir.$file;
 		$newfile = $dir.$file;
 		if (!@opendir($dir)) {mkdir($dir, 0777, true);}
@@ -1050,11 +1052,11 @@ die();
 		return false;
     }
 
-	public static function renameFolder($in_source, $source_dir, $in_dest, $dest_dir, $chmod='0755') {
+	#[\Deprecated(message: "use rename() instead", since: "2025-01-31")]
+	public static function renameFolder(string $in_source, string $source_dir, string $in_dest, string $dest_dir, int $chmod=0755): string {
 		if (is_dir($in_source.'/'.$source_dir) || is_dir($in_dest.'/'.$dest_dir)) {
 			if (!file_exists($in_dest.$dest_dir)) {
-				$mk = self::makeFolder($in_dest, $dest_dir, $chmod);
-//				echo $dest_dir;
+				mkdir($in_dest.$dest_dir, $chmod, true);
 				self::copyDir($in_source.$source_dir, $in_dest.$dest_dir);
 				self::deleteDir($in_source.'/'.$source_dir);
 				return $dest_dir;
@@ -1065,21 +1067,21 @@ die();
 		}
 	}
 
-	public static function copyDir($source, $dest) {
+	public static function copyDir(string $source, string $dest): void {
 		if (is_dir($source) || is_dir($dest)) {
 			if ($dh = opendir($source)) {
-    			while (($file = readdir($dh)) !== false) {
-    				if ($file != '.' && $file != '..') {
-    					if (is_file($source.'/'.$file)) {
-        					copy($source.'/'.$file, $dest.'/'.$file);
-    					} else {
-    						$folder = self::makeFolder($dest.'/', $file);
-//    						echo "$source/$file, $dest/$folder";
-    						self::copyDir($source.'/'.$file, $dest.'/'.$folder);
-	    				}
-	    			}
-	    		}
-    			closedir($dh);
+				while (($file = readdir($dh)) !== false) {
+					if (($file!='.') && ($file!='..')) {
+						if (is_file($source.'/'.$file)) {
+							copy($source.'/'.$file, $dest.'/'.$file);
+						} else if (is_dir($source.'/'.$file)) {
+							$dir = $dest.'/'.$file
+							mkdir($dir, 0777);
+							self::copyDir($source.'/'.$file, $dir);
+						}
+					}
+				}
+				closedir($dh);
 			}
 		}
 	}
@@ -1145,8 +1147,8 @@ die();
 		return false;
 	}
 
-	public static function tmpfile_put_contents($content) {
-		$tmp_file = tempnam(sys_get_temp_dir());
+	public static function tmpfile_put_contents(mixed $content): string {
+		$tmp_file = tempnam(sys_get_temp_dir(), 'cms');
 		if ($tmp_file) {
 			file_put_contents($tmp_file, $content);
 		}
