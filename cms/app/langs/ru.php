@@ -202,6 +202,7 @@ return [
 	'menu_item_site_languages' => 'Языковые версии',
 	'menu_item_edit_lang' => 'Редактировать переводы в языковом файле',
 	'menu_block_subdomains' => 'Поддомены',
+	'menu_item_subdomains_list' => 'Поддомены',
 
 	// Dashboard
 
@@ -419,6 +420,10 @@ return [
 	'complaints_chat_with' => 'Переписка с пользователем {username}',
 	'complaints_answered' => 'Обращение успешно отвечено',
 	'complaints_give_answer' => 'Ответить',
+
+	// Moderation - Feedback
+
+	'subdomains_list_details' => 'Найден{ru:u2} {count} субдомен{ru:u1}',
 
 ];
 

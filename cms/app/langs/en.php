@@ -202,6 +202,7 @@ return [
 	'menu_item_site_languages' => 'Language versions',
 	'menu_item_edit_lang' => 'Edit translations',
 	'menu_block_subdomains' => 'Subdomains',
+	'menu_item_subdomains_list' => 'Subdomains',
 
 	// Dashboard
 
@@ -419,6 +420,10 @@ return [
 	'complaints_chat_with' => 'Chat with {username}',
 	'complaints_answered' => 'Complaint answered',
 	'complaints_give_answer' => 'Give answer',
+
+	// Moderation - Feedback
+
+	'subdomains_list_details' => '{count} subdomain found',
 
 ];
 

@@ -202,6 +202,7 @@ return [
 	'menu_item_site_languages' => 'Dil versiyaları',
 	'menu_item_edit_lang' => 'Dili redaktə et',
 	'menu_block_subdomains' => 'Subdomenlər',
+	'menu_item_subdomains_list' => 'Subdomenlər',
 
 	// Dashboard
 
@@ -419,6 +420,10 @@ return [
 	'complaints_chat_with' => '{username} istifadəçi ilə yazışma',
 	'complaints_answered' => 'Müraciət müvəffəqiyyətlə cavablandırılıb',
 	'complaints_give_answer' => 'Cavab ver',
+
+	// Moderation - Feedback
+
+	'subdomains_list_details' => '{count} subdomen tapıldı',
 
 ];
 

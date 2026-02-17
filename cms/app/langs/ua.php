@@ -202,6 +202,7 @@ return [
 	'menu_item_site_languages' => 'Мовні версії',
 	'menu_item_edit_lang' => 'Редагувати переклади в мовному файлі',
 	'menu_block_subdomains' => 'Субдомени',
+	'menu_item_subdomains_list' => 'Субдомени',
 
 	// Dashboard
 
@@ -419,6 +420,10 @@ return [
 	'complaints_chat_with' => 'Листування з користувачем {username}',
 	'complaints_answered' => 'Звернення успішно відповідати',
 	'complaints_give_answer' => 'Відповісти',
+
+	// Moderation - Feedback
+
+	'subdomains_list_details' => '{count} субдомен{ua:u1} у наявності',
 
 ];
 
