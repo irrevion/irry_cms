@@ -201,6 +201,7 @@ return [
 	'menu_block_settings' => 'Налаштування сайту',
 	'menu_item_site_languages' => 'Мовні версії',
 	'menu_item_edit_lang' => 'Редагувати переклади в мовному файлі',
+	'menu_block_subdomains' => 'Субдомени',
 
 	// Dashboard
 

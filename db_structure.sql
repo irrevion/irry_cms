@@ -11,7 +11,7 @@
  Target Server Version : 100432 (10.4.32-MariaDB)
  File Encoding         : 65001
 
- Date: 24/12/2024 13:31:25
+ Date: 17/02/2026 22:07:07
 */
 
 SET NAMES utf8mb4;
@@ -44,7 +44,7 @@ CREATE TABLE `articles`  (
   INDEX `sef`(`sef`) USING BTREE,
   INDEX `add_by`(`add_by`) USING BTREE,
   INDEX `mod_by`(`mod_by`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 30 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '\'keywords\', \'descr\', \'title\', \'short\', \'full\'' ROW_FORMAT = Fixed;
+) ENGINE = MyISAM AUTO_INCREMENT = 31 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '\'keywords\', \'descr\', \'title\', \'short\', \'full\'' ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Table structure for articles_cats_rel
@@ -86,7 +86,7 @@ CREATE TABLE `cms_log`  (
   INDEX `subj_table`(`subj_table`, `subj_id`) USING BTREE,
   INDEX `action`(`action`) USING BTREE,
   INDEX `cms_user_id`(`cms_user_id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 264 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 265 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for cms_users
@@ -234,7 +234,7 @@ CREATE TABLE `counters`  (
   `counter` int UNSIGNED NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `ref_table`(`ref_table` ASC, `ref_id` ASC, `type` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 81 CHARACTER SET = ascii COLLATE = ascii_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 85 CHARACTER SET = ascii COLLATE = ascii_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for galleries
@@ -399,6 +399,19 @@ CREATE TABLE `site_users_events`  (
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for subdomains
+-- ----------------------------
+DROP TABLE IF EXISTS `subdomains`;
+CREATE TABLE `subdomains`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `db` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `is_deleted` tinyint(1) UNSIGNED NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_url`(`url` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for translates
 -- ----------------------------
 DROP TABLE IF EXISTS `translates`;
@@ -412,6 +425,6 @@ CREATE TABLE `translates`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `ref_table_2`(`ref_table`, `ref_id`, `lang`, `fieldname`) USING BTREE,
   INDEX `ref_table`(`ref_table`, `ref_id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 607 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 622 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

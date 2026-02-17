@@ -67,6 +67,12 @@ class menu_widget_controller extends widget {
 				]
 			],*/
 			'url' => '?controller=cms_users&action=list'
+		],
+		[
+			'name' => 'menu_block_subdomains',
+			'icon' => 'server',
+			'selected' => ['subdomains/list', 'subdomains/add', 'subdomains/delete', 'subdomains/edit'],
+			'url' => '?controller=subdomains&action=list'
 		]
 	];
 

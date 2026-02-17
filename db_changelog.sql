@@ -1,3 +1,5 @@
+CREATE TABLE `subdomains`
+
 -- LOW RATE LIMIT ATTACK FIX 2024-12-24
 
 ALTER TABLE `irry_cms`.`cms_users` 

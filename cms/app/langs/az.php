@@ -201,6 +201,7 @@ return [
 	'menu_block_settings' => 'Saytın sazlanmaları',
 	'menu_item_site_languages' => 'Dil versiyaları',
 	'menu_item_edit_lang' => 'Dili redaktə et',
+	'menu_block_subdomains' => 'Subdomenlər',
 
 	// Dashboard
 

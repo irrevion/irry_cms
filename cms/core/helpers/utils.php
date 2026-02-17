@@ -1075,7 +1075,7 @@ die();
 						if (is_file($source.'/'.$file)) {
 							copy($source.'/'.$file, $dest.'/'.$file);
 						} else if (is_dir($source.'/'.$file)) {
-							$dir = $dest.'/'.$file
+							$dir = $dest.'/'.$file;
 							mkdir($dir, 0777);
 							self::copyDir($source.'/'.$file, $dir);
 						}

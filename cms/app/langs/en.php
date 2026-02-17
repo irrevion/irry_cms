@@ -201,6 +201,7 @@ return [
 	'menu_block_settings' => 'Site settings',
 	'menu_item_site_languages' => 'Language versions',
 	'menu_item_edit_lang' => 'Edit translations',
+	'menu_block_subdomains' => 'Subdomains',
 
 	// Dashboard
 
