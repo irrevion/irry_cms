@@ -426,6 +426,10 @@ return [
 
 	'subdomains_list_details' => 'Найден{ru:u2} {count} поддомен{ru:u1}',
 	'activate_subdomain_confirmation' => 'Вы уверены что хотите перевести админ-панель в режим редактирования контента выбранного поддомена?',
+	'activate_subdomain' => 'Активация поддомена',
+	'activate_subdomain_suc' => 'Поддомен был успешно активирован',
+	'activate_subdomain_err' => 'Невозможно активировать выбранный поддомен',
+	'subdomain_not_selected_err' => 'Поддомен не выбран',
 
 ];
 

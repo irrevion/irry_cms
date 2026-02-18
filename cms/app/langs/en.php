@@ -426,6 +426,10 @@ return [
 
 	'subdomains_list_details' => '{count} subdomain found',
 	'activate_subdomain_confirmation' => 'Are you sure you want to switch the admin panel to the content editing mode for the selected subdomain?',
+	'activate_subdomain' => 'Subdomain activation',
+	'activate_subdomain_suc' => 'The subdomain was successfully activated',
+	'activate_subdomain_err' => 'The selected subdomain cannot be activated',
+	'subdomain_not_selected_err' => 'No subdomain selected',
 
 ];
 

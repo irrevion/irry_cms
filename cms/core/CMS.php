@@ -9,7 +9,7 @@ use irrevion\irry_cms\core\helpers\utils;
 if (!defined('_VALID_PHP')) die('Direct access to this location is not allowed.');
 
 class CMS {
-	public static $version = '17.2.0';
+	public static $version = '17.2.1';
 	public static $db;
 	public static $lang;
 	public static $site_langs;
@@ -172,7 +172,7 @@ class CMS {
 		utils::redirect(SITE.CMS_DIR);
 	}
 
-	public static function sess(string $param, $val='_N/A_') {
+	public static function sess(string $param, mixed $val='_N/A_') {
 		if ($val!=='_N/A_') {$_SESSION[self::$sess_hash]['ses_adm_'.$param] = $val;}
 		if (isset($_SESSION[CMS::$sess_hash]['ses_adm_'.$param])) {
 			return $_SESSION[CMS::$sess_hash]['ses_adm_'.$param];

@@ -157,7 +157,7 @@ $(document).ready(function() {
 								<td>
 									<?php if (CMS::hasAccessTo('subdomains/activate')) { ?>
 									<a href="?controller=subdomains&amp;action=activate&amp;id=<?= $subdomain['id']; ?>&amp;return=<?= $link_return; ?>&amp;<?= time(); ?>" title="<?= CMS::t('select'); ?>" class="content-action-link" data-item-id="<?= $subdomain['id']; ?>" id="aActivateSubdomain_<?=$subdomain['id'];?>">
-										<i class="fa fa-star<?= ((empty($active_subdomain) || ($active_subdomain!=$subdomain['url']))? '-o': ''); ?>" aria-hidden="true"></i> <?= CMS::t('select'); ?>
+										<i class="fa fa-star<?= ((empty($active_subdomain) || ($active_subdomain!=$subdomain['id']))? '-o': ''); ?>" aria-hidden="true"></i> <?= CMS::t('select'); ?>
 									</a>
 									<script type="text/javascript">
 utils.setConfirmation('click', '#aActivateSubdomain_<?= $subdomain['id']; ?>', '<?= CMS::t('activate_subdomain_confirmation'); ?>', function($el) {

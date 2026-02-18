@@ -426,6 +426,10 @@ return [
 
 	'subdomains_list_details' => '{count} субдомен{ua:u1} у наявності',
 	'activate_subdomain_confirmation' => 'Ви впевнені, що хочете перевести адмін-панель у режим редагування контенту вибраного субдомену?',
+	'activate_subdomain' => 'Активація субдомену',
+	'activate_subdomain_suc' => 'Піддомен був успішно активований',
+	'activate_subdomain_err' => 'Неможливо активувати вибраний піддомен',
+	'subdomain_not_selected_err' => 'Субдомен не обраний',
 
 ];
 
