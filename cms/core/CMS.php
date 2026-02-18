@@ -172,6 +172,14 @@ class CMS {
 		utils::redirect(SITE.CMS_DIR);
 	}
 
+	public static function sess(string $param, $val='_N/A_') {
+		if ($val!=='_N/A_') {$_SESSION[self::$sess_hash]['ses_adm_'.$param] = $val;}
+		if (isset($_SESSION[CMS::$sess_hash]['ses_adm_'.$param])) {
+			return $_SESSION[CMS::$sess_hash]['ses_adm_'.$param];
+		}
+		return null;
+	}
+
 	public static function getPrivilegiesByRole($role) {
 		return CMS::$db->getPairs("SELECT CONCAT_WS('/', controller, action), is_readonly FROM `cms_users_roles_actions` WHERE role=:role", [':role' => $role]);
 	}

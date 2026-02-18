@@ -64,6 +64,7 @@ return [
 	'save' => 'Сохранить',
 	'search' => 'Поиск',
 	'search_query' => 'введите поисковой запрос',
+	'select' => 'Выбрать',
 	'show_site' => 'Показать сайт',
 	'status' => 'Статус',
 	'toggle_navigation' => 'Скрыть/показать меню',
@@ -421,9 +422,10 @@ return [
 	'complaints_answered' => 'Обращение успешно отвечено',
 	'complaints_give_answer' => 'Ответить',
 
-	// Moderation - Feedback
+	// Subdomains
 
-	'subdomains_list_details' => 'Найден{ru:u2} {count} субдомен{ru:u1}',
+	'subdomains_list_details' => 'Найден{ru:u2} {count} поддомен{ru:u1}',
+	'activate_subdomain_confirmation' => 'Вы уверены что хотите перевести админ-панель в режим редактирования контента выбранного поддомена?',
 
 ];
 

@@ -64,6 +64,7 @@ return [
 	'save' => 'Save',
 	'search' => 'Search',
 	'search_query' => 'search query',
+	'select' => 'Select',
 	'show_site' => 'Show Site',
 	'status' => 'Status',
 	'toggle_navigation' => 'Toggle navigation',
@@ -421,9 +422,10 @@ return [
 	'complaints_answered' => 'Complaint answered',
 	'complaints_give_answer' => 'Give answer',
 
-	// Moderation - Feedback
+	// Subdomains
 
 	'subdomains_list_details' => '{count} subdomain found',
+	'activate_subdomain_confirmation' => 'Are you sure you want to switch the admin panel to the content editing mode for the selected subdomain?',
 
 ];
 

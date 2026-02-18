@@ -7,6 +7,7 @@ use irrevion\irry_cms\core\helpers\view;
 if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.');}
 
 $count = count($subdomains);
+$active_subdomain = CMS::sess('active_subdomain');
 
 ?>
 
@@ -60,6 +61,13 @@ $(document).ready(function() {
 	<form action="?controller=subdomains&amp;action=delete" method="post" id="formDeleteItem">
 		<input type="hidden" name="CSRF_token" value="<?=$CSRF_token;?>" />
 		<input type="hidden" name="delete" value="0" />
+	</form>
+
+
+	<!-- Activation hidden form -->
+	<form action="?controller=subdomains&amp;action=activate" method="post" id="formActivateSubdomain">
+		<input type="hidden" name="CSRF_token" value="<?= $CSRF_token; ?>" />
+		<input type="hidden" name="activate" value="0" />
 	</form>
 
 
@@ -147,14 +155,28 @@ $(document).ready(function() {
 									<?= utils::safeEcho($subdomain['db'], 1); ?>
 								</td>
 								<td>
-									<?php if (CMS::hasAccessTo('subdomains/edit')) { ?>
-									<a href="?controller=subdomains&amp;action=edit&amp;id=<?=$subdomain['id'];?>&amp;return=<?=$link_return;?>&amp;<?=time();?>" title="<?= CMS::t('edit'); ?>">
-										<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+									<?php if (CMS::hasAccessTo('subdomains/activate')) { ?>
+									<a href="?controller=subdomains&amp;action=activate&amp;id=<?= $subdomain['id']; ?>&amp;return=<?= $link_return; ?>&amp;<?= time(); ?>" title="<?= CMS::t('select'); ?>" class="content-action-link" data-item-id="<?= $subdomain['id']; ?>" id="aActivateSubdomain_<?=$subdomain['id'];?>">
+										<i class="fa fa-star<?= ((empty($active_subdomain) || ($active_subdomain!=$subdomain['url']))? '-o': ''); ?>" aria-hidden="true"></i> <?= CMS::t('select'); ?>
 									</a>
+									<script type="text/javascript">
+utils.setConfirmation('click', '#aActivateSubdomain_<?= $subdomain['id']; ?>', '<?= CMS::t('activate_subdomain_confirmation'); ?>', function($el) {
+	var id = $el.attr('data-item-id');
+	var $form = $('#formActivateSubdomain');
+	$('[name="activate"]', $form).val(id);
+	$form.submit();
+});
+									</script>
 									<?php } ?>
 
+									<!-- <?php if (CMS::hasAccessTo('subdomains/edit')) { ?>
+									<a href="?controller=subdomains&amp;action=edit&amp;id=<?= $subdomain['id']; ?>&amp;return=<?= $link_return; ?>&amp;<?=time();?>" title="<?= CMS::t('edit'); ?>" class="content-action-link">
+										<i class="fa fa-pencil-square-o" aria-hidden="true"></i> <?= CMS::t('edit'); ?>
+									</a>
+									<?php } ?> -->
+
 									<!-- <?php if (CMS::hasAccessTo('subdomains/delete', 'write')) { ?>
-									<a href="#" title="<?=CMS::t('delete');?>" class="text-red" style="margin-left: 15px;" id="aDeleteItem_<?=$subdomain['id'];?>" data-item-id="<?=$subdomain['id'];?>">
+									<a href="#" title="<?=CMS::t('delete');?>" class="content-action-link text-red" id="aDeleteItem_<?=$subdomain['id'];?>" data-item-id="<?=$subdomain['id'];?>">
 										<i class="fa fa-trash" aria-hidden="true"></i>
 									</a>
 									<script type="text/javascript">

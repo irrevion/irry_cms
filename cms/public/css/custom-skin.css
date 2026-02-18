@@ -413,3 +413,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .skin-irry.layout-top-nav .main-header > .logo:hover {
   background-color: #3b8ab8;
 }
+.skin-irry .content-action-link {
+	margin-right: 5px;
+}

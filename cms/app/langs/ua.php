@@ -64,6 +64,7 @@ return [
 	'save' => 'Зберегти',
 	'search' => 'Пошук',
 	'search_query' => 'введіть пошуковий запит',
+	'select' => 'Обрати',
 	'show_site' => 'Показати сайт',
 	'status' => 'Статус',
 	'toggle_navigation' => 'Приховати/показати меню',
@@ -421,9 +422,10 @@ return [
 	'complaints_answered' => 'Звернення успішно відповідати',
 	'complaints_give_answer' => 'Відповісти',
 
-	// Moderation - Feedback
+	// Subdomains
 
 	'subdomains_list_details' => '{count} субдомен{ua:u1} у наявності',
+	'activate_subdomain_confirmation' => 'Ви впевнені, що хочете перевести адмін-панель у режим редагування контенту вибраного субдомену?',
 
 ];
 

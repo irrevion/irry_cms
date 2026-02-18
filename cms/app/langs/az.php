@@ -64,6 +64,7 @@ return [
 	'save' => 'Yadda saxla',
 	'search' => 'Axtar',
 	'search_query' => 'sorğunuzu daxil edin',
+	'select' => 'Seç',
 	'show_site' => 'Saytın görünüşü',
 	'status' => 'Dərc edilməsi',
 	'toggle_navigation' => 'Menyunu gizlət/göstər',
@@ -421,9 +422,10 @@ return [
 	'complaints_answered' => 'Müraciət müvəffəqiyyətlə cavablandırılıb',
 	'complaints_give_answer' => 'Cavab ver',
 
-	// Moderation - Feedback
+	// Subdomains
 
 	'subdomains_list_details' => '{count} subdomen tapıldı',
+	'activate_subdomain_confirmation' => 'Seçilmiş alt domen üçün admin panelini məzmun redaktə rejiminə keçirmək istədiyinizə əminsinizmi?',
 
 ];
 
