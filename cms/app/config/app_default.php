@@ -4,12 +4,14 @@ defined('_VALID_PHP') or die('No direct script access.');
 
 ini_set('session.cookie_httponly', true);
 //ini_set('session.cookie_secure', true);
+@session_start();
 date_default_timezone_set('Asia/Baku');
 
-require_once CONFIG_DIR.'db.php';
 require_once CONFIG_DIR.'dirs.php';
 
 $app_config = [
+	'salt' => '************', // must be project-unique
+	'db' => require_once(CONFIG_DIR.'db.php'),
 	'smtp' => [
 		'protocol' => 'ssl://',
 		'host' => 'smtp.gmail.com',

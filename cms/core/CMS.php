@@ -10,7 +10,9 @@ if (!defined('_VALID_PHP')) die('Direct access to this location is not allowed.'
 
 class CMS {
 	public static $version = '17.2.1';
+	public static $config;
 	public static $db;
+	public static $db_subdomain;
 	public static $lang;
 	public static $site_langs;
 	public static $default_site_lang;
@@ -62,6 +64,7 @@ class CMS {
 			Loads CMS language file specified by settings or user.
 		*/
 
+		self::$config = $params;
 		security::$salt = $params['salt'];
 		security::$CSRF_token = security::getCSRF_token();
 		if ($_SERVER['REQUEST_METHOD']=='POST') {
@@ -70,13 +73,7 @@ class CMS {
 
 		self::$sess_hash = security::generateSessionHash();
 
-		self::$db = new mysql_pdo([
-			'host' => DB_HOST,
-			'name' => DB_NAME,
-			'user' => DB_USER,
-			'password' => DB_PASSWORD,
-			'charset' => DB_CHARSET
-		]);
+		self::$db = new mysql_pdo(self::$config['db']);
 
 		self::loadSiteSettings();
 
@@ -88,10 +85,13 @@ class CMS {
 			if (is_file($user_lang_file)) {
 				self::$lang = include $user_lang_file;
 			}
-		}
 
-		self::$site_langs = self::getLangsRegistered();
-		self::$default_site_lang = self::getDefaultSiteLang();
+			// check active subdomain
+			self::checkActiveSubdomain();
+
+			self::$site_langs = self::getLangsRegistered();
+			self::$default_site_lang = self::getDefaultSiteLang();
+		}
 	}
 
 	public static function t($key, $params=[]) {
@@ -249,6 +249,25 @@ class CMS {
 		}
 		unset($_SESSION[self::$sess_hash]['ses_adm_id']);
 		//session_destroy();
+		return false;
+	}
+
+	public static function checkActiveSubdomain() {
+		$id = self::sess('active_subdomain');
+		if (!empty($id)) {
+			$subdomain = CMS::$db->getRow("SELECT * FROM subdomains WHERE id=:subdomain_id LIMIT 1", [':subdomain_id' => $id]);
+			if (empty($subdomain['id'])) {
+				// subdomain is not exists, unset session value
+				self::sess('active_subdomain', null);
+				self::sess('active_subdomain_info', null);
+			} else {
+				// update subdomain info
+				self::sess('active_subdomain_info', $subdomain);
+				// create DB connection
+				self::$db_subdomain = new mysql_pdo(require_once(CONFIG_DIR.'db_'.$subdomain['db'].'.php'));
+				return true;
+			}
+		}
 		return false;
 	}
 
