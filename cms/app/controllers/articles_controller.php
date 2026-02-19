@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\helpers\app;
 use app\models\articles;
+use app\models\cms_users;
 use app\models\gallery;
 use app\models\nav;
 use irrevion\irry_cms\core\CMS;
@@ -44,6 +45,7 @@ class articles_controller extends controller {
 		$params['link_return'] = urlencode(SITE.CMS_DIR.utils::trueLink(['controller', 'action', 'q', 'filter', 'page']));
 
 		$params['authors'] = articles::getAuthors();
+		$params['authors_names'] = cms_users::getIdNameArr(array_column($params['articles'], 'id'));
 		$params['allowed_cats'] = @$allowed_cats;
 		$params['cats'] = nav::getCats();
 

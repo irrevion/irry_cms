@@ -269,7 +269,9 @@ $(document).ready(function() {
 								?><a href="?controller=cms_users&amp;action=edit&amp;id=<?=$a['add_by'];?>"><i class="fa fa-user" aria-hidden="true"></i> <?php
 								}
 
-								utils::safeEcho($a['author_name']);
+								$author_name = $authors_names[$a['add_by']];
+								// utils::safeEcho($a['author_name']);
+								utils::safeEcho($author_name);
 
 								if (CMS::hasAccessTo('cms_users/edit')) {
 								?></a><?php
@@ -367,14 +369,14 @@ $(document).ready(function() {
 			</div>
 
 			<div class="popupFormInputsBlock">
-				<label for="selectAuthor" class="form-label"><?=CMS::t('author');?></label>
+				<label for="selectAuthor" class="form-label"><?= CMS::t('author'); ?></label>
 
 				<select name="filter[author]" id="selectAuthor" class="form-control" form="formSearchAndFilter">
 					<option value=""><?=CMS::t('filter_no_matter');?></option>
 					<?php
 					if (!empty($authors) && is_array($authors)) {
 						foreach ($authors as $user) {
-					?><option value="<?=$user['id'];?>"<?=((@$_GET['filter']['author']==$user['id'])? ' selected="selected"': '');?>><?=$user['name'];?> (<?=CMS::t($user['role']);?>)</option><?php
+					?><option value="<?= $user['id']; ?>"<?= ((@$_GET['filter']['author']==$user['id'])? ' selected="selected"': ''); ?>><?= utils::safeEcho($user['name'], 1); ?> (<?= CMS::t($user['role']); ?>)</option><?php
 						}
 					}
 					?>
@@ -393,7 +395,7 @@ $(document).ready(function() {
 			</div>
 
 			<div class="popupFormInputsBlock">
-				<label class="form-label"><?=CMS::t('article_category');?></label>
+				<label class="form-label"><?= CMS::t('article_category'); ?></label>
 				<div class="form-div-multicheckbox">
 					<?php if (empty($allowed_cats)) { ?>
 					<input type="checkbox" name="filter[cats][none]" value="1"<?=(isset($_GET['filter']['cats']['none'])? ' checked="checked"': '');?> id="multichoiceCat_None" form="formSearchAndFilter" /><label for="multichoiceCat_None"> <?=CMS::t('article_category_none');?></label><br />
@@ -402,7 +404,7 @@ $(document).ready(function() {
 						foreach ($cats as $c) {
 							if (!empty($allowed_cats) && !in_array($c['id'], $allowed_cats)) {continue;}
 					?>
-					<input type="checkbox" name="filter[cats][]" value="<?=$c['id'];?>"<?=(@in_array($c['id'], ($_GET['filter']['cats'] ?? []))? ' checked="checked"': '');?> id="multichoiceCat_<?=$c['id'];?>" form="formSearchAndFilter" /><label for="multichoiceCat_<?=$c['id'];?>"> <?=$c['name'];?><?php if (!empty($c['parent']['id'])) { ?> <span style="color: #aaa;">&crarr; <?=$c['parent']['name'];?></span><?php } ?></label><br />
+					<input type="checkbox" name="filter[cats][]" value="<?=$c['id'];?>"<?=(@in_array($c['id'], ($_GET['filter']['cats'] ?? []))? ' checked="checked"': '');?> id="multichoiceCat_<?=$c['id'];?>" form="formSearchAndFilter" /><label for="multichoiceCat_<?=$c['id'];?>"> <?= utils::safeEcho($c['name'], 1); ?><?php if (!empty($c['parent']['id'])) { ?> <span style="color: #aaa;">&crarr; <?= utils::safeEcho($c['parent']['name'], 1); ?></span><?php } ?></label><br />
 					<?php
 						}
 					?>

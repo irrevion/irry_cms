@@ -12,7 +12,7 @@ class subdomains {
 	public static $table = 'subdomains';
 
 	public static function getList() {
-		$sql = "SELECT * FROM ".self::$table." ORDER BY url";
+		$sql = "SELECT * FROM ".self::$table." WHERE is_deleted='0' ORDER BY url";
 		return CMS::$db->getAll($sql);
 	}
 
@@ -27,7 +27,7 @@ class subdomains {
 	}
 
 	public static function getSubdomainById($subdomain_id) {
-		return CMS::$db->getRow("SELECT * FROM ".self::$table." WHERE id=:subdomain_id LIMIT 1", [':subdomain_id' => $subdomain_id]);
+		return CMS::$db->getRow("SELECT * FROM ".self::$table." WHERE id=:subdomain_id AND is_deleted='0' LIMIT 1", [':subdomain_id' => $subdomain_id]);
 	}
 }
 

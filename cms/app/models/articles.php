@@ -45,7 +45,7 @@ class articles {
 	private static function checkGallery(&$response, &$article, $article_id=0) {
 		$article['gallery_id'] = '0';
 		if (!empty($_POST['gallery_id'])) {
-			if (!CMS::$db->get("SELECT id FROM galleries WHERE id=:gallery_id AND is_deleted='0' LIMIT 1", [':gallery_id' => $_POST['gallery_id']])) {
+			if (!CMS::db()->get("SELECT id FROM galleries WHERE id=:gallery_id AND is_deleted='0' LIMIT 1", [':gallery_id' => $_POST['gallery_id']])) {
 				$response['errors'][] = 'article_add_err_gallery_not_exists';
 			} else {
 				$article['gallery_id'] = (int)$_POST['gallery_id'];
@@ -128,14 +128,14 @@ class articles {
 
 		$joins = [];
 		$joins['tr'] = "LEFT JOIN translates tr ON tr.ref_table='".self::$tbl."' AND tr.ref_id=a.id AND tr.lang=:default_site_lang AND tr.fieldname='title'";
-		$joins['cu'] = "LEFT JOIN cms_users cu ON cu.id=a.add_by";
+		//$joins['cu'] = "LEFT JOIN cms_users cu ON cu.id=a.add_by";
 		$filter = [];
 		$filter[] = "a.is_deleted='0'";
 		if (!empty($_GET['q'])) {
 			$filter[] = "tr.text LIKE '%".utils::makeSearchable($_GET['q'])."%'";
 		}
 		if (in_array(@$_GET['filter']['status'], ['0', '1'])) {
-			$filter[] = "a.is_published=".CMS::$db->escape($_GET['filter']['status']);
+			$filter[] = "a.is_published=".CMS::db()->escape($_GET['filter']['status']);
 		}
 		if (!empty($_GET['filter']['author'])) {
 			$filter[] = "a.add_by='".(int)$_GET['filter']['author']."'";
@@ -146,7 +146,7 @@ class articles {
 			'highlighted' => ['is_highlighted', '1']
 		];
 		if (in_array(@$_GET['filter']['assignment'], array_keys($assignment_fields))) {
-			$filter[] = "a.".$assignment_fields[$_GET['filter']['assignment']][0]."=".CMS::$db->escape($assignment_fields[$_GET['filter']['assignment']][1]);
+			$filter[] = "a.".$assignment_fields[$_GET['filter']['assignment']][0]."=".CMS::db()->escape($assignment_fields[$_GET['filter']['assignment']][1]);
 		}
 		if (!empty($_GET['filter']['cats']) && is_array($_GET['filter']['cats'])) {
 			$filter_cats = $_GET['filter']['cats'];
@@ -171,14 +171,14 @@ class articles {
 		}
 		$where = (empty($filter)? '': ('WHERE '.implode(" AND ", $filter)));
 
-		$c = CMS::$db->get("SELECT COUNT(a.id)
+		$c = CMS::db()->get("SELECT COUNT(a.id)
 			FROM `".self::$tbl."` a
 				".implode("\n", $joins)."
 			{$where}", [
 			':default_site_lang' => CMS::$default_site_lang
 		]);
 		self::$items_amount = $c;
-		//print "<pre>RESULT:\n{$c}\n\nQUERIES:\n".var_export(CMS::$db->queries, 1)."\n\nERRORS:\n".var_export(CMS::$db->errors, 1)."\n</pre>";
+		//print "<pre>RESULT:\n{$c}\n\nQUERIES:\n".var_export(CMS::db()->queries, 1)."\n\nERRORS:\n".var_export(CMS::db()->errors, 1)."\n</pre>";
 		$pages_amount = ceil($c/self::$pp);
 
 		if ($pages_amount>0) {
@@ -186,9 +186,9 @@ class articles {
 			self::$curr_pg = ((self::$curr_pg>self::$pages_amount)? self::$pages_amount: self::$curr_pg);
 			$start_from = (self::$curr_pg-1)*self::$pp;
 
-			$list = CMS::$db->getAll("SELECT a.id, a.sef, a.img, a.publish_datetime, a.ordering, a.add_by, a.add_datetime, a.mod_by, a.mod_datetime, a.is_published,
+			$list = CMS::db()->getAll("SELECT a.id, a.sef, a.img, a.publish_datetime, a.ordering, a.add_by, a.add_datetime, a.mod_by, a.mod_datetime, a.is_published,
 					tr.text AS title,
-					cu.name AS author_name,
+					-- cu.name AS author_name,
 					(
 						SELECT COUNT(c.id)
 							FROM comments c
@@ -202,7 +202,7 @@ class articles {
 				LIMIT ".(($start_from>0)? ($start_from.', '): '').self::$pp, [
 				':default_site_lang' => CMS::$default_site_lang
 			]);
-			// print "<pre>RESULT:\n".var_export($list, 1)."\n\nQUERIES:\n".var_export(CMS::$db->queries, 1)."\n\nERRORS:\n".var_export(CMS::$db->errors, 1)."\n</pre>";
+			// print "<pre>RESULT:\n".var_export($list, 1)."\n\nQUERIES:\n".var_export(CMS::db()->queries, 1)."\n\nERRORS:\n".var_export(CMS::db()->errors, 1)."\n</pre>";
 		}
 
 		return $list;
@@ -287,14 +287,14 @@ class articles {
 
 		//$response['errors'][] = 'prevent saving';
 		if (empty($response['errors'])) {
-			$article['ordering'] = CMS::$db->get("SELECT MAX(ordering) FROM `".self::$tbl."`")+1;
+			$article['ordering'] = CMS::db()->get("SELECT MAX(ordering) FROM `".self::$tbl."`")+1;
 			$article['is_published'] = (empty($_POST['is_published'])? '0': '1');
 			$article['show_on_main_page'] = (empty($_POST['show_on_main_page'])? '0': '1');
 			$article['is_highlighted'] = (empty($_POST['is_highlighted'])? '0': '1');
 			$article['add_by'] = $_SESSION[CMS::$sess_hash]['ses_adm_id'];
 			$article['add_datetime'] = date('Y-m-d H:i:s');
 
-			$article_id = CMS::$db->add(self::$tbl, $article);
+			$article_id = CMS::db()->add(self::$tbl, $article);
 
 			if ($article_id) {
 				$response['success'] = true;
@@ -315,7 +315,7 @@ class articles {
 
 				// saving categories
 				if (!empty($_POST['cats']) && is_array($_POST['cats'])) foreach ($_POST['cats'] as $c) {
-					CMS::$db->add('articles_cats_rel', [
+					CMS::db()->add('articles_cats_rel', [
 						'article_id' => $article_id,
 						'category_id' => $c,
 					]);
@@ -324,7 +324,7 @@ class articles {
 				// creating counters
 				$types = ['like', 'dislike', 'view', 'comment'];
 				foreach ($types as $e) {
-					CMS::$db->add('counters', [
+					CMS::db()->add('counters', [
 						'ref_table' => self::$tbl,
 						'ref_id' => $article_id,
 						'type' => $e,
@@ -428,7 +428,7 @@ class articles {
 			$upd['mod_by'] = $_SESSION[CMS::$sess_hash]['ses_adm_id'];
 			$upd['mod_datetime'] = date('Y-m-d H:i:s');
 
-			$updated = CMS::$db->mod(self::$tbl.'#'.(int)$id, $upd);
+			$updated = CMS::db()->mod(self::$tbl.'#'.(int)$id, $upd);
 
 			// saving translates
 			foreach ($translates as $lang=>$tr_data) {
@@ -451,13 +451,13 @@ class articles {
 			$del = array_diff($old_cats, $new_cats);
 			$ins = array_diff($new_cats, $old_cats);
 			foreach ($del as $cid) {
-				CMS::$db->run("DELETE FROM articles_cats_rel WHERE article_id=:article_id AND category_id=:category_id", [
+				CMS::db()->run("DELETE FROM articles_cats_rel WHERE article_id=:article_id AND category_id=:category_id", [
 					':article_id' => $id,
 					':category_id' => $cid
 				]);
 			}
 			foreach ($ins as $cid) {
-				CMS::$db->add('articles_cats_rel', [
+				CMS::db()->add('articles_cats_rel', [
 					'article_id' => $id,
 					'category_id' => $cid,
 				]);
@@ -479,7 +479,7 @@ class articles {
 	}
 
 	public static function setArticleStatus($id, $status) {
-		$updated = CMS::$db->mod(self::$tbl.'#'.(int)$id, [
+		$updated = CMS::db()->mod(self::$tbl.'#'.(int)$id, [
 			'is_published' => (($status=='on')? '1': '0')
 		]);
 
@@ -496,7 +496,7 @@ class articles {
 	}
 
 	public static function deleteArticle($id) {
-		$deleted = CMS::$db->mod(self::$tbl.'#'.(int)$id, [
+		$deleted = CMS::db()->mod(self::$tbl.'#'.(int)$id, [
 			'is_deleted' => '1',
 		]);
 
@@ -516,7 +516,7 @@ class articles {
 		$article = self::getArticle($id);
 		if (empty($article['id']) || empty($article['img'])) {return false;}
 
-		$updated = CMS::$db->mod(self::$tbl.'#'.(int)$id, [
+		$updated = CMS::db()->mod(self::$tbl.'#'.(int)$id, [
 			'img' => null
 		]);
 
@@ -539,7 +539,7 @@ class articles {
 
 	public static function getArticle($id) {
 		$sql = "SELECT * FROM `".self::$tbl."` WHERE id=:article_id AND is_deleted='0' LIMIT 1";
-		$article = CMS::$db->getRow($sql, [
+		$article = CMS::db()->getRow($sql, [
 			':article_id' => $id
 		]);
 		if (!empty($article['id'])) {$article['translates'] = tr::get(self::$tbl, $id);}
@@ -551,7 +551,7 @@ class articles {
 		$params = [
 			':article_id' => $id
 		];
-		return CMS::$db->getList($sql, $params);
+		return CMS::db()->getList($sql, $params);
 	}
 
 	public static function sortArticles($from, $to) {
@@ -565,29 +565,29 @@ class articles {
 		нужно изменить ордеринг всех элементов, чей ордеринг между старой позицией перетаскиваемого элемента и новой позицией
 		перетаскиваемый элемент становится на место $to
 		*/
-		$from_ord = CMS::$db->get("SELECT ordering FROM `".self::$tbl."` WHERE id=:from_id LIMIT 1", [
+		$from_ord = CMS::db()->get("SELECT ordering FROM `".self::$tbl."` WHERE id=:from_id LIMIT 1", [
 			':from_id' => $from
 		]);
-		$to_ord = CMS::$db->get("SELECT ordering FROM `".self::$tbl."` WHERE id=:to_id LIMIT 1", [
+		$to_ord = CMS::db()->get("SELECT ordering FROM `".self::$tbl."` WHERE id=:to_id LIMIT 1", [
 			':to_id' => $to
 		]);
 		if (($from_ord===false) || ($to_ord===false) || ($from_ord==$to_ord)) {return false;}
 
-		CMS::$db->run("UPDATE `".self::$tbl."`
+		CMS::db()->run("UPDATE `".self::$tbl."`
 			SET ordering=(ordering".(($to_ord>$from_ord)? '-': '+')."1)
 			WHERE ordering".(($to_ord>$from_ord)? '>': '<').":from AND ordering".(($to_ord>$from_ord)? '<': '>')."=:to",
 			[
 			':from' => $from_ord,
 			':to' => $to_ord
 		]);
-		CMS::$db->run("UPDATE `".self::$tbl."`
+		CMS::db()->run("UPDATE `".self::$tbl."`
 			SET ordering=:to_ord
 			WHERE id=:from_id",
 			[
 			':from_id' => $from,
 			':to_ord' => $to_ord
 		]);
-		//file_put_contents('ordering.txt', var_export(CMS::$db->queries, 1)."\n\n".var_export(CMS::$db->errors, 1));
+		//file_put_contents('ordering.txt', var_export(CMS::db()->queries, 1)."\n\n".var_export(CMS::db()->errors, 1));
 
 		return true;
 	}
@@ -618,7 +618,7 @@ class articles {
 
 		$params[':lang'] = CMS::$default_site_lang;
 
-		$c = CMS::$db->get("SELECT COUNT(a.id)
+		$c = CMS::db()->get("SELECT COUNT(a.id)
 			FROM `".self::$tbl."` a
 				LEFT JOIN translates tr ON tr.ref_table='".self::$tbl."' AND tr.ref_id=a.id AND tr.lang=:lang AND tr.fieldname='title'
 			WHERE a.is_deleted='0' AND tr.text LIKE :q", $params);
@@ -632,19 +632,27 @@ class articles {
 			ORDER BY tr.text
 			LIMIT ".(($start_from>0)? ($start_from.', '): '').$pp;
 
-		$data['articles'] = CMS::$db->getAll($sql, $params);
+		$data['articles'] = CMS::db()->getAll($sql, $params);
 
 		return $data;
 	}
 
-	public static function getAuthors() { // 2016-05-31
-		$sql = "SELECT cu.id, cu.name, cu.role
-			FROM cms_users cu
-				JOIN `".self::$tbl."` a ON a.add_by=cu.id
-			WHERE cu.role IN ('".implode("', '", array_keys(CMS::$roles))."') AND a.is_deleted='0'
-			GROUP BY cu.id
-			ORDER BY cu.name ASC";
-		return CMS::$db->getAll($sql);
+	public static function getAuthors() {
+		if (CMS::sess('active_subdomain')) {
+			$sql = "SELECT cu.id, cu.name, cu.role
+				FROM cms_users cu
+				WHERE cu.role IN ('".implode("', '", array_keys(CMS::$roles))."')
+				ORDER BY cu.name ASC";
+			return CMS::$db->getAll($sql);
+		} else {
+			$sql = "SELECT cu.id, cu.name, cu.role
+				FROM cms_users cu
+					JOIN `".self::$tbl."` a ON a.add_by=cu.id
+				WHERE cu.role IN ('".implode("', '", array_keys(CMS::$roles))."') AND a.is_deleted='0'
+				GROUP BY cu.id
+				ORDER BY cu.name ASC";
+			return CMS::db()->getAll($sql);
+		}
 	}
 
 	public static function prefiltrateRestrictedCategories($allowed_cats) {
@@ -673,7 +681,7 @@ class articles {
 			WHERE c.ref_table='".self::$tbl."' AND c.ref_id=:id";
 		$params = [':id' => $article_id];
 
-		return CMS::$db->get($sql, $params);
+		return CMS::db()->get($sql, $params);
 	}
 
 	public static function countArticles() {
@@ -681,7 +689,7 @@ class articles {
 			FROM `".self::$tbl."` a
 			WHERE a.is_deleted='0'";
 
-		return CMS::$db->get($sql);
+		return CMS::db()->get($sql);
 	}
 }
 

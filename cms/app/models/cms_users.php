@@ -504,6 +504,15 @@ class cms_users {
 	public static function countUsers() {
 		return CMS::$db->get("SELECT COUNT(id) FROM `".self::$users_tbl."`");
 	}
+
+	public static function getIdNameArr(array $narrow_down_ids=[]): array {
+		$sql = "SELECT id, name FROM `".self::$users_tbl."`";
+		if (!empty($narrow_down_ids)) {
+			$sql.=" WHERE ".CMS::$db->in('id', $narrow_down_ids);
+		}
+		$pairs = CMS::$db->getPairs($sql);
+		return ($pairs? $pairs: []);
+	}
 }
 
 ?>

@@ -255,7 +255,7 @@ class CMS {
 	public static function checkActiveSubdomain() {
 		$id = self::sess('active_subdomain');
 		if (!empty($id)) {
-			$subdomain = CMS::$db->getRow("SELECT * FROM subdomains WHERE id=:subdomain_id LIMIT 1", [':subdomain_id' => $id]);
+			$subdomain = self::$db->getRow("SELECT * FROM subdomains WHERE id=:subdomain_id AND is_deleted='0' LIMIT 1", [':subdomain_id' => $id]);
 			if (empty($subdomain['id'])) {
 				// subdomain is not exists, unset session value
 				self::sess('active_subdomain', null);
@@ -269,6 +269,15 @@ class CMS {
 			}
 		}
 		return false;
+	}
+
+	public static function db() {
+		// return connection to active database
+		$active_subdomain = self::sess('active_subdomain');
+		if (!empty($active_subdomain)) {
+			return self::$db_subdomain;
+		}
+		return self::$db;
 	}
 
 	public static function getCMSLangsRegistered() {

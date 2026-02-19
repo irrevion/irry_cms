@@ -6,13 +6,16 @@ use irrevion\irry_cms\core\helpers\view;
 
 if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.');}
 
+$active_subdomain = CMS::sess('active_subdomain');
+$subdomain = ($active_subdomain? CMS::sess('active_subdomain_info'): []);
+
 ?>
 
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>
 			<?=CMS::t('menu_item_statistics_dashboard');?>
-			<!-- <small>Subtitile</small> -->
+			<?php if ($active_subdomain) { ?><small><?= utils::safeEcho($subdomain['url'], 1); ?></small><?php } ?>
 		</h1>
 
 		<!-- <ol class="breadcrumb">
