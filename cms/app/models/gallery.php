@@ -42,7 +42,7 @@ class gallery {
 	public static $tr_fields = ['name', 'is_published_lang'];
 
 
-	private static function processTranslates(&$response, &$translates) { // 2016-05-16
+	private static function processTranslates(&$response, &$translates) {
 		foreach (CMS::$site_langs as $lng) {
 			foreach (self::$tr_fields as $f) {
 				if (in_array($f, ['name'])) {
@@ -65,7 +65,7 @@ class gallery {
 	}
 
 
-	public static function addGallery() { // 2016-05-16
+	public static function addGallery() {
 		$response = ['success' => false, 'message' => 'insert_err'];
 
 		$gallery = [];
@@ -78,7 +78,7 @@ class gallery {
 			$gallery['add_by'] = $_SESSION[CMS::$sess_hash]['ses_adm_id'];
 			$gallery['add_datetime'] = date('Y-m-d H:i:s');
 
-			$gallery_id = CMS::$db->add('galleries', $gallery);
+			$gallery_id = CMS::db()->add('galleries', $gallery);
 
 			if (!empty($gallery_id)) {
 				$response['success'] = true;
@@ -110,7 +110,7 @@ class gallery {
 		return $response;
 	}
 
-	public static function editGallery($gallery_id) { // 2016-05-16
+	public static function editGallery($gallery_id) {
 		$response = ['success' => false, 'message' => 'update_err'];
 
 		$old_data = self::getGalleryInfo($gallery_id);
@@ -129,7 +129,7 @@ class gallery {
 			$gallery['mod_by'] = $_SESSION[CMS::$sess_hash]['ses_adm_id'];
 			$gallery['mod_datetime'] = date('Y-m-d H:i:s');
 
-			$updated = CMS::$db->mod('galleries#'.$gallery_id, $gallery);
+			$updated = CMS::db()->mod('galleries#'.$gallery_id, $gallery);
 
 			// saving translates
 			foreach ($translates as $lang=>$tr_data) {
@@ -170,22 +170,22 @@ class gallery {
 			$filter[] = "tr.text LIKE '%".utils::makeSearchable($_GET['q'])."%'";
 		}
 		if (in_array(@$_GET['filter']['status'], ['0', '1'])) {
-			$filter[] = "g.is_published=".CMS::$db->escape($_GET['filter']['status']);
+			$filter[] = "g.is_published=".CMS::db()->escape($_GET['filter']['status']);
 		}
 		if (!empty($_GET['filter']['author'])) {
 			$filter[] = "g.add_by='".(int)$_GET['filter']['author']."'";
 		}
 		$where = (empty($filter)? '': ('WHERE '.implode(" AND ", $filter)));
 
-		//$c = CMS::$db->select('COUNT(id)', 'galleries', $where);
-		$c = CMS::$db->get("SELECT COUNT(g.id)
+		//$c = CMS::db()->select('COUNT(id)', 'galleries', $where);
+		$c = CMS::db()->get("SELECT COUNT(g.id)
 			FROM galleries g
 				".implode("\n", $joins)."
 			{$where}", [
 			':default_site_lang' => CMS::$default_site_lang
 		]);
 		self::$items_amount = $c;
-		//print "<pre>RESULT:\n{$c}\n\nQUERIES:\n".var_export(CMS::$db->queries, 1)."\n\nERRORS:\n".var_export(CMS::$db->errors, 1)."\n</pre>";
+		//print "<pre>RESULT:\n{$c}\n\nQUERIES:\n".var_export(CMS::db()->queries, 1)."\n\nERRORS:\n".var_export(CMS::db()->errors, 1)."\n</pre>";
 		$pages_amount = ceil($c/self::$pp);
 
 		if ($pages_amount>0) {
@@ -193,7 +193,7 @@ class gallery {
 			self::$curr_pg = ((self::$curr_pg>self::$pages_amount)? self::$pages_amount: self::$curr_pg);
 			$start_from = (self::$curr_pg-1)*self::$pp;
 
-			$list = CMS::$db->getAll("SELECT g.*, COUNT(f.id) AS photos_num, tr.text AS name, cu.name AS author_name
+			$list = CMS::db()->getAll("SELECT g.*, COUNT(f.id) AS photos_num, tr.text AS name, cu.name AS author_name
 				FROM galleries g
 					LEFT JOIN gallery_photos f ON f.gallery_id=g.id
 					".implode("\n", $joins)."
@@ -203,7 +203,7 @@ class gallery {
 				LIMIT ".($start_from? ($start_from.', '): '').self::$pp, [
 				':default_site_lang' => CMS::$default_site_lang
 			]);
-			// print "<pre>RESULT:\n".var_export($list, 1)."\n\nQUERIES:\n".var_export(CMS::$db->queries, 1)."\n\nERRORS:\n".var_export(CMS::$db->errors, 1)."\n</pre>";
+			// print "<pre>RESULT:\n".var_export($list, 1)."\n\nQUERIES:\n".var_export(CMS::db()->queries, 1)."\n\nERRORS:\n".var_export(CMS::db()->errors, 1)."\n</pre>";
 		}
 
 		return $list;
@@ -217,13 +217,13 @@ class gallery {
 				LEFT JOIN cms_users mcu ON mcu.id=g.mod_by
 			WHERE g.id=:gallery_id AND g.is_deleted='0'
 			LIMIT 1";
-		$gallery = CMS::$db->getRow($sql, [
+		$gallery = CMS::db()->getRow($sql, [
 			':gallery_id' => $gallery_id
 		]);
 
 		if (!empty($gallery['id'])) {
 			foreach (CMS::$site_langs as $lng) {
-				$translates = CMS::$db->getPairs("SELECT fieldname, text FROM translates WHERE ref_table='galleries' AND ref_id=:gallery_id AND lang=:lang", [
+				$translates = CMS::db()->getPairs("SELECT fieldname, text FROM translates WHERE ref_table='galleries' AND ref_id=:gallery_id AND lang=:lang", [
 					':gallery_id' => $gallery_id,
 					':lang' => $lng['language_dir']
 				]);
@@ -234,8 +234,8 @@ class gallery {
 		return $gallery;
 	}
 
-	public static function moveGalleryToBin($gallery_id) { // 2016-05-16
-		$deleted = CMS::$db->mod('galleries#'.(int)$gallery_id, [
+	public static function moveGalleryToBin($gallery_id) {
+		$deleted = CMS::db()->mod('galleries#'.(int)$gallery_id, [
 			'is_deleted' => '1',
 		]);
 
@@ -254,15 +254,15 @@ class gallery {
 	public static function deleteGallery($gallery_id) {
 		if (empty($gallery_id)) {return false;} else {$gallery_id = intval($gallery_id);}
 
-		$photos = CMS::$db->selectAll('*', 'gallery_photos', "gallery_id='{$gallery_id}'");
+		$photos = CMS::db()->selectAll('*', 'gallery_photos', "gallery_id='{$gallery_id}'");
 		if (is_array($photos) && count($photos)) foreach ($photos as $f) {
 			self::deletePhoto($f['id']);
 		}
 
 		utils::deleteDir(self::$dir.'gallery_'.$gallery_id.'/');
 
-		$deleted = CMS::$db->exec("DELETE FROM galleries WHERE id='{$gallery_id}'");
-		CMS::$db->exec("OPTIMIZE TABLE galleries");
+		$deleted = CMS::db()->exec("DELETE FROM galleries WHERE id='{$gallery_id}'");
+		CMS::db()->exec("OPTIMIZE TABLE galleries");
 
 		if ($deleted) {
 			CMS::log([
@@ -276,8 +276,8 @@ class gallery {
 		return $deleted;
 	}
 
-	public static function setGalleryStatus($gallery_id, $status) { // 2017-01-18
-		$updated = CMS::$db->mod(self::$tbl.'#'.(int)$gallery_id, [
+	public static function setGalleryStatus($gallery_id, $status) {
+		$updated = CMS::db()->mod(self::$tbl.'#'.(int)$gallery_id, [
 			'is_published' => (($status=='on')? '1': '0')
 		]);
 
@@ -293,7 +293,7 @@ class gallery {
 		return $updated;
 	}
 
-	public static function getAutocomplete($q, $page=1) { // 2017-04-02
+	public static function getAutocomplete($q, $page=1) {
 		$data = [
 			'total_count' => 0,
 			'galleries' => []
@@ -302,7 +302,7 @@ class gallery {
 		$start_from = ($page-1)*$pp;
 
 		$params = [':q' => "%".utils::makeSearchable($q)."%"];
-		$c = CMS::$db->get("SELECT COUNT(g.id)
+		$c = CMS::db()->get("SELECT COUNT(g.id)
 			FROM galleries g
 				LEFT JOIN translates tr ON tr.ref_table='galleries' AND tr.ref_id=g.id AND tr.lang='az' AND tr.fieldname='name'
 			WHERE g.is_deleted='0' AND tr.text LIKE :q", $params);
@@ -315,19 +315,19 @@ class gallery {
 			WHERE g.is_deleted='0' AND tr.text LIKE :q
 			ORDER BY tr.text
 			LIMIT ".(($start_from>0)? ($start_from.', '): '').$pp;
-		$data['galleries'] = CMS::$db->getAll($sql, $params);
+		$data['galleries'] = CMS::db()->getAll($sql, $params);
 
 		return $data;
 	}
 
-	public static function getAuthors() { // 2016-05-31
+	public static function getAuthors() {
 		$sql = "SELECT cu.id, cu.name, cu.role
 			FROM cms_users cu
 				JOIN galleries g ON g.add_by=cu.id
 			WHERE cu.role IN ('".implode("', '", array_keys(CMS::$roles))."') AND g.is_deleted='0'
 			GROUP BY cu.id
 			ORDER BY cu.name ASC";
-		return CMS::$db->getAll($sql);
+		return CMS::db()->getAll($sql);
 	}
 
 
@@ -340,13 +340,13 @@ class gallery {
 				LEFT JOIN cms_users mcu ON mcu.id=f.mod_by
 			WHERE f.id=:photo_id
 			LIMIT 1";
-		$f = CMS::$db->getRow($sql, [
+		$f = CMS::db()->getRow($sql, [
 			':photo_id' => $photo_id
 		]);
 
 		if (!empty($f['id'])) {
 			foreach (CMS::$site_langs as $lng) {
-				$translates = CMS::$db->getPairs("SELECT fieldname, text FROM translates WHERE ref_table='gallery_photos' AND ref_id=:photo_id AND lang=:lang", [
+				$translates = CMS::db()->getPairs("SELECT fieldname, text FROM translates WHERE ref_table='gallery_photos' AND ref_id=:photo_id AND lang=:lang", [
 					':photo_id' => $photo_id,
 					':lang' => $lng['language_dir']
 				]);
@@ -380,17 +380,17 @@ class gallery {
 		$where = (empty($filter)? '': ('WHERE '.implode(" AND ", $filter)));
 
 		if (!empty($_GET['no_pagination'])) {
-			$photos = CMS::$db->getAll("SELECT f.*, tr.text AS name, cu.name AS author_name
+			$photos = CMS::db()->getAll("SELECT f.*, tr.text AS name, cu.name AS author_name
 				FROM gallery_photos f
 					".implode("\n", $joins)."
 				{$where}
 				ORDER BY f.ordering ASC", $params);
 		} else {
-			$c = CMS::$db->get("SELECT COUNT(f.id)
+			$c = CMS::db()->get("SELECT COUNT(f.id)
 				FROM gallery_photos f
 					".implode("\n", $joins)."
 				{$where}", $params);
-			//print "<pre>RESULT:\n{$c}\n\nQUERIES:\n".var_export(CMS::$db->queries, 1)."\n\nERRORS:\n".var_export(CMS::$db->errors, 1)."\n</pre>";
+			//print "<pre>RESULT:\n{$c}\n\nQUERIES:\n".var_export(CMS::db()->queries, 1)."\n\nERRORS:\n".var_export(CMS::db()->errors, 1)."\n</pre>";
 			self::$items_amount = $c;
 			$pages_amount = ceil($c/self::$pp);
 
@@ -399,13 +399,13 @@ class gallery {
 				self::$curr_pg = ((self::$curr_pg>self::$pages_amount)? self::$pages_amount: self::$curr_pg);
 				$start_from = (self::$curr_pg-1)*self::$pp;
 
-				$photos = CMS::$db->getAll("SELECT f.*, tr.text AS name, cu.name AS author_name
+				$photos = CMS::db()->getAll("SELECT f.*, tr.text AS name, cu.name AS author_name
 					FROM gallery_photos f
 						".implode("\n", $joins)."
 					{$where}
 					ORDER BY f.ordering ASC
 					LIMIT ".(($start_from>0)? ($start_from.', '): '').self::$pp, $params);
-				// print "<pre>RESULT:\n".var_export($photos, 1)."\n\nQUERIES:\n".var_export(CMS::$db->queries, 1)."\n\nERRORS:\n".var_export(CMS::$db->errors, 1)."\n</pre>";
+				// print "<pre>RESULT:\n".var_export($photos, 1)."\n\nQUERIES:\n".var_export(CMS::db()->queries, 1)."\n\nERRORS:\n".var_export(CMS::db()->errors, 1)."\n</pre>";
 			}
 		}
 
@@ -440,7 +440,7 @@ class gallery {
 						$big->thumbnail(self::$dimensions['big']['width'], self::$dimensions['big']['height'])->toFile(self::$dir.'gallery_'.$gallery['id'].'/big/'.$image);
 
 						// save
-						$max_ordering = CMS::$db->select('MAX(ordering)', 'gallery_photos', "gallery_id='{$gallery['id']}'");
+						$max_ordering = CMS::db()->select('MAX(ordering)', 'gallery_photos', "gallery_id='{$gallery['id']}'");
 						$data = [
 							'gallery_id' => $gallery['id'],
 							'image' => $image,
@@ -449,7 +449,7 @@ class gallery {
 							'add_by' => $_SESSION[CMS::$sess_hash]['ses_adm_id'],
 							'add_datetime' => date('Y-m-d H:i:s')
 						];
-						$inserted = CMS::$db->add('gallery_photos', $data);
+						$inserted = CMS::db()->add('gallery_photos', $data);
 
 						if ($inserted) {
 							$statuses[$i] = 'insert_suc';
@@ -527,7 +527,7 @@ class gallery {
 			$photo['mod_by'] = $_SESSION[CMS::$sess_hash]['ses_adm_id'];
 			$photo['mod_datetime'] = date('Y-m-d H:i:s');
 
-			$updated = CMS::$db->mod('gallery_photos#'.$old_data['id'], $photo);
+			$updated = CMS::db()->mod('gallery_photos#'.$old_data['id'], $photo);
 
 			// saving translates
 			foreach ($translates as $lang=>$tr_data) {
@@ -576,7 +576,7 @@ class gallery {
 			таким образом у нас грантирована последовательная сортировка и не может быть дублирующихся значений
 		*/
 
-		$old_ordering = CMS::$db->getAll("SELECT * FROM gallery_photos WHERE gallery_id='{$gallery['id']}' ORDER BY ordering ASC");
+		$old_ordering = CMS::db()->getAll("SELECT * FROM gallery_photos WHERE gallery_id='{$gallery['id']}' ORDER BY ordering ASC");
 
 		$indexes = []; // вспомогательный массив с индексами фоток из массива $old_ordering хранящимися под ключом из ID соответствующей фотки. нужен чтоб бысто находить или удалять фотку из массива
 		foreach ($old_ordering as $i=>$f) {
@@ -590,10 +590,10 @@ class gallery {
 		}
 
 		// минимальный ордеринг фоток с текущей страницы
-		$min_ordering = CMS::$db->get("SELECT MIN(ordering) FROM gallery_photos WHERE gallery_id='{$gallery['id']}' AND id IN ('".implode("', '", $resorted_photos)."')");
+		$min_ordering = CMS::db()->get("SELECT MIN(ordering) FROM gallery_photos WHERE gallery_id='{$gallery['id']}' AND id IN ('".implode("', '", $resorted_photos)."')");
 
 		// последняя фотка перед первой фоткой с текущей страницы
-		$stop_at = CMS::$db->get("SELECT id FROM gallery_photos WHERE gallery_id='{$gallery['id']}' AND ordering<'{$min_ordering}' ORDER BY ordering DESC LIMIT 1");
+		$stop_at = CMS::db()->get("SELECT id FROM gallery_photos WHERE gallery_id='{$gallery['id']}' AND ordering<'{$min_ordering}' ORDER BY ordering DESC LIMIT 1");
 
 		$current_ordering = 1;
 
@@ -601,7 +601,7 @@ class gallery {
 		if ($stop_at && isset($indexes[$stop_at])) {
 			foreach ($old_ordering as $i=>$f) {
 				if ($f['ordering']!=$current_ordering) {
-					CMS::$db->mod('gallery_photos#'.$f['id'], ['ordering' => $current_ordering]);
+					CMS::db()->mod('gallery_photos#'.$f['id'], ['ordering' => $current_ordering]);
 				}
 				$current_ordering++;
 				unset($indexes[$f['id']]); // убираем обработанную фотку из индекса чтобы остались только необработанные
@@ -613,7 +613,7 @@ class gallery {
 		foreach ($page_ordering as $fid) {
 			$f = $old_ordering[$indexes[$fid]];
 			if ($f['ordering']!=$current_ordering) {
-				CMS::$db->mod('gallery_photos#'.$f['id'], ['ordering' => $current_ordering]);
+				CMS::db()->mod('gallery_photos#'.$f['id'], ['ordering' => $current_ordering]);
 			}
 			$current_ordering++;
 			unset($indexes[$f['id']]);
@@ -624,7 +624,7 @@ class gallery {
 			foreach ($indexes as $id=>$i) {
 				$f = $old_ordering[$i];
 				if ($f['ordering']!=$current_ordering) {
-					CMS::$db->mod('gallery_photos#'.$f['id'], ['ordering' => $current_ordering]);
+					CMS::db()->mod('gallery_photos#'.$f['id'], ['ordering' => $current_ordering]);
 				}
 				$current_ordering++;
 			}
@@ -637,14 +637,14 @@ class gallery {
 		if (empty($photo_id)) {return false;} else {$photo_id = intval($photo_id);}
 		$status = (empty($status)? '0': '1');
 
-		$updated = CMS::$db->mod('gallery_photos#'.$photo_id, ['status' => $status]);
+		$updated = CMS::db()->mod('gallery_photos#'.$photo_id, ['status' => $status]);
 
 		if ($updated) {
 			CMS::log([
 				'subj_table' => 'gallery_photos',
 				'subj_id' => $photo_id,
 				'action' => 'edit',
-				'descr' => 'Gallery photo of album #'.CMS::$db->select('gallery_id', 'gallery_photos', "id='".$photo_id."'").' modified by '.$_SESSION[CMS::$sess_hash]['ses_adm_type'].' '.ADMIN_INFO,
+				'descr' => 'Gallery photo of album #'.CMS::db()->select('gallery_id', 'gallery_photos', "id='".$photo_id."'").' modified by '.$_SESSION[CMS::$sess_hash]['ses_adm_type'].' '.ADMIN_INFO,
 			]);
 		}
 
@@ -654,13 +654,13 @@ class gallery {
 	public static function deletePhoto($photo_id) {
 		if (empty($photo_id)) {return false;} else {$photo_id = intval($photo_id);}
 
-		$photo = CMS::$db->getRow("SELECT * FROM gallery_photos WHERE id='{$photo_id}' LIMIT 1");
+		$photo = CMS::db()->getRow("SELECT * FROM gallery_photos WHERE id='{$photo_id}' LIMIT 1");
 		if (empty($photo['id'])) {return false;}
 
 		foreach (self::$subdirs as $d) @unlink(self::$dir.'gallery_'.$photo['gallery_id'].'/'.$d.'/'.$photo['image']);
 
-		$deleted = CMS::$db->exec("DELETE FROM gallery_photos WHERE id='{$photo_id}'");
-		CMS::$db->exec("OPTIMIZE TABLE gallery_photos");
+		$deleted = CMS::db()->exec("DELETE FROM gallery_photos WHERE id='{$photo_id}'");
+		CMS::db()->exec("OPTIMIZE TABLE gallery_photos");
 
 		tr::del('gallery_photos', $photo_id);
 

@@ -264,7 +264,7 @@ class CMS {
 				// update subdomain info
 				self::sess('active_subdomain_info', $subdomain);
 				// create DB connection
-				self::$db_subdomain = new mysql_pdo(require_once(CONFIG_DIR.'db_'.$subdomain['db'].'.php'));
+				self::$db_subdomain = new mysql_pdo(require(CONFIG_DIR.'db_'.$subdomain['db'].'.php'));
 				return true;
 			}
 		}

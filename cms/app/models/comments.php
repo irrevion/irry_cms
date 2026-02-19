@@ -26,32 +26,32 @@ class comments {
 			$filter[] = "c.text LIKE '%".utils::makeSearchable($_GET['q'])."%'";
 		}
 		if (in_array(@$_GET['filter']['is_published'], ['0', '1'])) {
-			$filter[] = "c.is_published=".CMS::$db->escape($_GET['filter']['is_published']);
+			$filter[] = "c.is_published=".CMS::db()->escape($_GET['filter']['is_published']);
 		}
 		if (in_array(@$_GET['filter']['is_inspected'], ['0', '1'])) {
-			$filter[] = "c.is_inspected=".CMS::$db->escape($_GET['filter']['is_inspected']);
+			$filter[] = "c.is_inspected=".CMS::db()->escape($_GET['filter']['is_inspected']);
 		}
 		if (!empty($_GET['filter']['user_id'])) {
-			$filter[] = "c.user_id=".CMS::$db->escape($_GET['filter']['user_id']);
+			$filter[] = "c.user_id=".CMS::db()->escape($_GET['filter']['user_id']);
 		}
 		if (!empty($_GET['filter']['ref_table']) && !empty($_GET['filter']['ref_id'])) {
-			$filter[] = "c.ref_table=".CMS::$db->escape($_GET['filter']['ref_table']);
-			$filter[] = "c.ref_id=".CMS::$db->escape($_GET['filter']['ref_id']);
+			$filter[] = "c.ref_table=".CMS::db()->escape($_GET['filter']['ref_table']);
+			$filter[] = "c.ref_id=".CMS::db()->escape($_GET['filter']['ref_id']);
 		}
 		if (utils::isValidDate(@(string)$_GET['filter']['add_since'])) {
-			$filter[] = "c.add_datetime>=".CMS::$db->escape(utils::changeDateFormat('d.m.Y', 'Y-m-d', $_GET['filter']['add_since']));
+			$filter[] = "c.add_datetime>=".CMS::db()->escape(utils::changeDateFormat('d.m.Y', 'Y-m-d', $_GET['filter']['add_since']));
 		}
 		if (utils::isValidDate(@(string)$_GET['filter']['add_till'])) {
-			$filter[] = "DATE(c.add_datetime)<=".CMS::$db->escape(utils::changeDateFormat('d.m.Y', 'Y-m-d', $_GET['filter']['add_till']));
+			$filter[] = "DATE(c.add_datetime)<=".CMS::db()->escape(utils::changeDateFormat('d.m.Y', 'Y-m-d', $_GET['filter']['add_till']));
 		}
 		$where = (empty($filter)? '': ('WHERE '.implode(" AND ", $filter)));
 
-		$c = CMS::$db->get('SELECT COUNT(c.id)
+		$c = CMS::db()->get('SELECT COUNT(c.id)
 			FROM '.self::$tbl.' c
 				'.implode("\n", $joins).'
 			'.$where);
 		self::$items_amount = $c;
-		// print "<pre>RESULT:\n{$c}\n\nQUERIES:\n".var_export(CMS::$db->queries, 1)."\n\nERRORS:\n".var_export(CMS::$db->errors, 1)."\n</pre>";
+		// print "<pre>RESULT:\n{$c}\n\nQUERIES:\n".var_export(CMS::db()->queries, 1)."\n\nERRORS:\n".var_export(CMS::db()->errors, 1)."\n</pre>";
 		$pages_amount = ceil($c/self::$pp);
 
 		if ($pages_amount>0) {
@@ -59,20 +59,20 @@ class comments {
 			self::$curr_pg = ((self::$curr_pg>self::$pages_amount)? self::$pages_amount: self::$curr_pg);
 			$start_from = (self::$curr_pg-1)*self::$pp;
 
-			$list = CMS::$db->getAll('SELECT c.*, u.id AS user_id, u.first_name, u.last_name
+			$list = CMS::db()->getAll('SELECT c.*, u.id AS user_id, u.first_name, u.last_name
 			FROM '.self::$tbl.' c
 				'.implode("\n", $joins).'
 			'.$where.'
 			ORDER BY c.is_inspected ASC, c.id DESC
 			LIMIT '.(($start_from>0)? ($start_from.', '): '').self::$pp);
-			//print "<pre>RESULT:\n".var_export($list, 1)."\n\nQUERIES:\n".var_export(CMS::$db->queries, 1)."\n\nERRORS:\n".var_export(CMS::$db->errors, 1)."\n</pre>";
+			//print "<pre>RESULT:\n".var_export($list, 1)."\n\nQUERIES:\n".var_export(CMS::db()->queries, 1)."\n\nERRORS:\n".var_export(CMS::db()->errors, 1)."\n</pre>";
 		}
 
 		return $list;
 	}
 
 	public static function setCommentStatus($id, $status) {
-		$updated = CMS::$db->mod(self::$tbl.'#'.(int)$id, [
+		$updated = CMS::db()->mod(self::$tbl.'#'.(int)$id, [
 			'is_published' => (($status=='on')? '1': '0')
 		]);
 
@@ -89,7 +89,7 @@ class comments {
 	}
 
 	public static function deleteComment($comment_id) {
-		$deleted = CMS::$db->mod(self::$tbl.'#'.(int)$comment_id, [
+		$deleted = CMS::db()->mod(self::$tbl.'#'.(int)$comment_id, [
 			'is_deleted' => '1',
 		]);
 
@@ -108,10 +108,10 @@ class comments {
 	public static function eraseComment($comment_id) {
 		$comment_id = (int)$comment_id;
 
-		$deleted = CMS::$db->exec('DELETE FROM `'.self::$tbl.'` WHERE `id`=:id', [':id' => $comment_id]);
+		$deleted = CMS::db()->exec('DELETE FROM `'.self::$tbl.'` WHERE `id`=:id', [':id' => $comment_id]);
 
 		if ($deleted) {
-			CMS::$db->exec('OPTIMIZE TABLE `'.self::$tbl.'`');
+			CMS::db()->exec('OPTIMIZE TABLE `'.self::$tbl.'`');
 
 			CMS::log([
 				'subj_table' => self::$tbl,
@@ -125,7 +125,7 @@ class comments {
 	}
 
 	public static function getComment($comment_id) {
-		return CMS::$db->getRow("SELECT * FROM `".self::$tbl."` WHERE id=:id AND is_deleted='0' LIMIT 1", [':id' => $comment_id]);
+		return CMS::db()->getRow("SELECT * FROM `".self::$tbl."` WHERE id=:id AND is_deleted='0' LIMIT 1", [':id' => $comment_id]);
 	}
 
 	public static function editComment($comment_id) {
@@ -148,7 +148,7 @@ class comments {
 			//$upd['mod_by'] = $_SESSION[CMS::$sess_hash]['ses_adm_id'];
 			//$upd['mod_datetime'] = date('Y-m-d H:i:s');
 
-			$updated = CMS::$db->mod(self::$tbl.'#'.(int)$comment_id, $upd);
+			$updated = CMS::db()->mod(self::$tbl.'#'.(int)$comment_id, $upd);
 
 			if ($updated) {
 				CMS::log([
@@ -167,7 +167,7 @@ class comments {
 	}
 
 	public static function touchComment($comment_id) {
-		$updated = CMS::$db->mod(self::$tbl.'#'.(int)$comment_id, ['is_inspected' => '1']);
+		$updated = CMS::db()->mod(self::$tbl.'#'.(int)$comment_id, ['is_inspected' => '1']);
 
 		if ($updated) {
 			CMS::log([
@@ -182,14 +182,14 @@ class comments {
 	}
 
 	public static function countComments() {
-		return CMS::$db->get("SELECT COUNT(c.id)
+		return CMS::db()->get("SELECT COUNT(c.id)
 			FROM `".self::$tbl."` c
 				JOIN `site_users` u ON u.id=c.user_id
 			WHERE c.is_deleted='0'");
 	}
 
 	public static function countUnreadComments() {
-		return CMS::$db->get("SELECT COUNT(c.id)
+		return CMS::db()->get("SELECT COUNT(c.id)
 			FROM `".self::$tbl."` c
 				JOIN `site_users` u ON u.id=c.user_id
 			WHERE c.is_inspected='0' AND c.is_deleted='0'");

@@ -11,7 +11,7 @@
  Target Server Version : 100432 (10.4.32-MariaDB)
  File Encoding         : 65001
 
- Date: 17/02/2026 22:07:07
+ Date: 20/02/2026 01:23:54
 */
 
 SET NAMES utf8mb4;
@@ -77,6 +77,7 @@ DROP TABLE IF EXISTS `cms_log`;
 CREATE TABLE `cms_log`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `cms_user_id` int UNSIGNED NOT NULL,
+  `subdomain` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `subj_table` char(255) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   `subj_id` int UNSIGNED NOT NULL,
   `action` char(255) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
@@ -165,7 +166,7 @@ CREATE TABLE `cms_users_roles_actions`  (
   `is_readonly` enum('0','1') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `role`(`role`, `controller`, `action`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 49 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 52 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for comments
@@ -409,7 +410,7 @@ CREATE TABLE `subdomains`  (
   `is_deleted` tinyint(1) UNSIGNED NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_url`(`url` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for translates

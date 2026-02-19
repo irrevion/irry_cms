@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\models\cms_users;
 use irrevion\irry_cms\core\CMS;
 use irrevion\irry_cms\core\helpers\utils;
 
@@ -17,7 +18,7 @@ class complaints {
 	public static function hasUserComplains($user_id) {
 		if (empty($user_id)) {return false;} else {$user_id = intval($user_id);}
 
-		return CMS::$db->get("SELECT id FROM complaints WHERE user_id='{$user_id}' LIMIT 1");
+		return CMS::db()->get("SELECT id FROM complaints WHERE user_id='{$user_id}' LIMIT 1");
 	}
 
 	public static function getComplaints() {
@@ -34,13 +35,13 @@ class complaints {
 			$qXploded = explode(' ', $q);
 			$byName = '';
 			if (is_array($qXploded) && count($qXploded)) foreach ($qXploded as $w) {
-				$w = CMS::$db->quote('%'.$w.'%');
+				$w = CMS::db()->quote('%'.$w.'%');
 				$byName.=(empty($byName)? '': ' AND ')."(
 					u.first_name LIKE {$w} OR
 					u.last_name LIKE {$w}
 				)";
 			}
-			$q = CMS::$db->quote('%'.$q.'%');
+			$q = CMS::db()->quote('%'.$q.'%');
 			$where[] = "(
 				c.message LIKE {$q} OR
 				u.email LIKE {$q}".(empty($byName)? '': (' OR
@@ -53,7 +54,7 @@ class complaints {
 		$where = (empty($where)? '': ('WHERE '.implode(' AND ', $where)));
 		$having = (empty($having)? '': ('HAVING '.implode(' AND ', $having)));
 
-		$st = CMS::$db->run("SELECT {$fields}
+		$st = CMS::db()->run("SELECT {$fields}
 			FROM complaints c
 				".implode("\n", $joins)."
 			{$where}
@@ -61,7 +62,7 @@ class complaints {
 			{$having}");
 		$c = ($st? $st->rowCount(): 0);
 		unset($st);
-		// print "<pre>QUERIES:\n".var_export(CMS::$db->queries, 1)."\n\nERRORS:\n".var_export(CMS::$db->errors, 1)."\n\nRESULT:\n{$c}\n</pre>";
+		// print "<pre>QUERIES:\n".var_export(CMS::db()->queries, 1)."\n\nERRORS:\n".var_export(CMS::db()->errors, 1)."\n\nRESULT:\n{$c}\n</pre>";
 		self::$items_amount = $c;
 		$pages_amount = ceil($c/self::$pp);
 
@@ -70,7 +71,7 @@ class complaints {
 			self::$curr_pg = ((self::$curr_pg>self::$pages_amount)? self::$pages_amount: self::$curr_pg);
 			$start_from = (self::$curr_pg-1)*self::$pp;
 
-			$list = CMS::$db->getAll("SELECT {$fields}
+			$list = CMS::db()->getAll("SELECT {$fields}
 				FROM complaints c
 					".implode("\n", $joins)."
 				{$where}
@@ -78,12 +79,13 @@ class complaints {
 				{$having}
 				ORDER BY unread DESC, `c`.`date` DESC
 				LIMIT ".(($start_from>0)? ($start_from.', '): '').self::$pp);
-			// print "<pre>QUERIES:\n".var_export(CMS::$db->queries, 1)."\n\nERRORS:\n".var_export(CMS::$db->errors, 1)."\n\nRESULT:\n".var_export($list, 1)."\n</pre>";
+			// print "<pre>QUERIES:\n".var_export(CMS::db()->queries, 1)."\n\nERRORS:\n".var_export(CMS::db()->errors, 1)."\n\nRESULT:\n".var_export($list, 1)."\n</pre>";
 		}
 
 		return $list;
 	}
 
+	/*
 	public static function getUserChat($user_id) {
 		$s = '';
 		if (!empty($_GET['search_query'])) {
@@ -98,6 +100,31 @@ class complaints {
             ORDER BY c.id DESC";
 		return CMS::$db->getAll($sql);
 	}
+	*/
+
+	public static function getUserChat($user_id) {
+		$s = '';
+		if (!empty($_GET['search_query'])) {
+			$q = utils::makeSearchable((string)$_GET['search_query']);
+			$q = CMS::db()->quote('%'.$q.'%');
+			$s = " AND (c.message LIKE {$q} OR c.filename LIKE {$q})";
+		}
+		$sql = "SELECT c.*
+			FROM complaints c
+			WHERE c.user_id='".(int)$user_id."'{$s}
+            ORDER BY c.id DESC";
+		$chat = CMS::db()->getAll($sql);
+		$admins = [];
+		if ($chat) foreach ($chat as $i=>$msg) {
+			if (!empty($msg['admin_id'])) {
+				if (empty($admins[$msg['admin_id']])) {
+					$admins[$msg['admin_id']] = cms_users::getUser($msg['admin_id']);
+				}
+				$chat[$i]['name'] = $admins[$msg['admin_id']]['name'];
+			}
+		}
+		return $chat;
+	}
 
 	public static function answerUserComplaint($user_id) {
 		$response = ['success' => false, 'message' => 'Unknown error', 'errors' => []];
@@ -107,7 +134,7 @@ class complaints {
 			return $response;
 		}
 		$user_id = intval($user_id);
-		$user = CMS::$db->getRow("SELECT * FROM `site_users` WHERE id='{$user_id}' LIMIT 1");
+		$user = CMS::db()->getRow("SELECT * FROM `site_users` WHERE id='{$user_id}' LIMIT 1");
 		if (empty($user['id'])) {
 			$response['message'] = 'User data not found';
 			return $response;
@@ -138,7 +165,7 @@ class complaints {
 			$answer['admin_id'] = $_SESSION[CMS::$sess_hash]['ses_adm_id'];
 			$answer['date'] = date('Y-m-d H:i:s');
 
-			$answer_id = CMS::$db->add('complaints', $answer);
+			$answer_id = CMS::db()->add('complaints', $answer);
 
 			if ($answer_id) {
 				$username = $user['last_name'].' '.$user['first_name'];
@@ -186,13 +213,13 @@ class complaints {
 
 	public static function getLastIncomingComplaintByUser($user_id) {
 		$sql = "SELECT * FROM complaints WHERE user_id='".(int)$user_id."' AND admin_id IS NULL ORDER BY date DESC LIMIT 1";
-		return CMS::$db->getRow($sql);
+		return CMS::db()->getRow($sql);
 	}
 
 	public static function downloadComplaintFile($complaint_id) {
 		if (!empty($complaint_id)) {
 			$complaint_id = intval($complaint_id);
-			$complaint = CMS::$db->getRow("SELECT * FROM complaints WHERE id='{$complaint_id}' LIMIT 1");
+			$complaint = CMS::db()->getRow("SELECT * FROM complaints WHERE id='{$complaint_id}' LIMIT 1");
 			if (!empty($complaint['tmp_name'])) {
 				$filename = UPLOADS_DIR.'complaints/'.$complaint['tmp_name'];
 				$ext = utils::getFileExt($filename);
@@ -212,11 +239,11 @@ class complaints {
 	}
 
 	public static function touchComplaintsByUser($user_id) {
-		return CMS::$db->mod('complaints', ['is_read' => '1'], "user_id='".(int)$user_id."' AND admin_id IS NULL AND is_read='0'");
+		return CMS::db()->mod('complaints', ['is_read' => '1'], "user_id='".(int)$user_id."' AND admin_id IS NULL AND is_read='0'");
 	}
 
 	public static function countNewComplaints() {
-		return CMS::$db->get("SELECT COUNT(t.id) AS `unread_conversation`
+		return CMS::db()->get("SELECT COUNT(t.id) AS `unread_conversation`
 			FROM (
 					SELECT c1.`id`, (ISNULL(c1.admin_id) AND c1.is_read=1) AS `unread`
 						FROM `complaints` c1
