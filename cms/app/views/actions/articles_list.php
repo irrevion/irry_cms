@@ -269,7 +269,7 @@ $(document).ready(function() {
 								?><a href="?controller=cms_users&amp;action=edit&amp;id=<?=$a['add_by'];?>"><i class="fa fa-user" aria-hidden="true"></i> <?php
 								}
 
-								$author_name = $authors_names[$a['add_by']];
+								$author_name = ($authors_names[$a['add_by']] ?? '');
 								// utils::safeEcho($a['author_name']);
 								utils::safeEcho($author_name);
 

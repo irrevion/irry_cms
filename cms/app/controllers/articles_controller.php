@@ -45,7 +45,7 @@ class articles_controller extends controller {
 		$params['link_return'] = urlencode(SITE.CMS_DIR.utils::trueLink(['controller', 'action', 'q', 'filter', 'page']));
 
 		$params['authors'] = articles::getAuthors();
-		$params['authors_names'] = cms_users::getIdNameArr(array_column($params['articles'], 'id'));
+		$params['authors_names'] = cms_users::getIdNameArr(array_column($params['articles'], 'add_by'));
 		$params['allowed_cats'] = @$allowed_cats;
 		$params['cats'] = nav::getCats();
 
