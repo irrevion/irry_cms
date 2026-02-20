@@ -74,7 +74,7 @@ $(document).ready(function() {
 	<!-- Subdomain reset hidden form -->
 	<form action="?controller=subdomains&amp;action=reset" method="post" id="formResetSubdomain">
 		<input type="hidden" name="CSRF_token" value="<?= $CSRF_token; ?>" />
-		<input type="hidden" name="reset" value="0" />
+		<input type="hidden" name="reset" value="default_context" />
 	</form>
 
 
@@ -91,14 +91,18 @@ $(document).ready(function() {
 		</ol> -->
 	</section>
 
-	<!-- Content Header (Page header) -->
-	<!-- <section class="contextual-navigation">
+	<section class="contextual-navigation">
 		<nav>
-			<?php if ($canWrite) { ?>
-			<a href="?controller=subdomains&amp;action=add&amp;return=<?=$link_return;?>&amp;<?=time();?>" class="btn btn-default"><i class="fa fa-plus-circle" aria-hidden="true"></i> <?=CMS::t('menu_item_subdomains_add');?></a>
+			<?php if ($active_subdomain && CMS::hasAccessTo('subdomains/activate')) { ?>
+			<a href="?controller=subdomains&amp;action=reset&amp;return=<?= $link_return; ?>&amp;<?=time();?>" class="btn btn-default" id="aResetContext"><i class="fa fa-sitemap" aria-hidden="true"></i> <?= CMS::t('reset_subdomain'); ?></a>
+			<script type="text/javascript">
+utils.setConfirmation('click', '#aResetContext', '<?= CMS::t('reset_subdomain_confirm'); ?>', function($el) {
+	$('#formResetSubdomain').submit();
+});
+			</script>
 			<?php } ?>
 		</nav>
-	</section> -->
+	</section>
 
 	<!-- Main content -->
 	<section class="content">
