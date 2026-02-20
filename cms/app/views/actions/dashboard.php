@@ -14,14 +14,23 @@ $subdomain = ($active_subdomain? CMS::sess('active_subdomain_info'): []);
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>
-			<?=CMS::t('menu_item_statistics_dashboard');?>
+			<?= CMS::t('menu_item_statistics_dashboard'); ?>
 			<?php if ($active_subdomain) { ?><small><?= utils::safeEcho($subdomain['url'], 1); ?></small><?php } ?>
 		</h1>
 
-		<!-- <ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li class="active">Dashboard</li>
-		</ol> -->
+		<!-- <?php if ($active_subdomain) { ?>
+		<ol class="breadcrumb">
+			<li><a href="#"><i class="fa fa-sitemap"></i> <?= utils::safeEcho(CMS::$settings['domain'], 1); ?></a></li>
+			<li><a href="#"><i class="fa fa-server"></i> <?= CMS::t('menu_item_subdomains_list'); ?></a></li>
+			<li><i class="fa fa-star"></i> <?= utils::safeEcho($subdomain['url'], 1); ?></li>
+			<li class="active"><i class="fa fa-dashboard"></i> <?= CMS::t('menu_item_statistics_dashboard'); ?></li>
+		</ol>
+		<?php } ?> -->
+		
+		<?= self::widget('breadcrumbs', [
+			'icon' => 'dashboard',
+			'name' => CMS::t('menu_item_statistics_dashboard'),
+		]); ?>
 	</section>
 
 	<!-- Main content -->

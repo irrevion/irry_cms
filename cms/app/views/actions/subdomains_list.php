@@ -71,6 +71,13 @@ $(document).ready(function() {
 	</form>
 
 
+	<!-- Subdomain reset hidden form -->
+	<form action="?controller=subdomains&amp;action=reset" method="post" id="formResetSubdomain">
+		<input type="hidden" name="CSRF_token" value="<?= $CSRF_token; ?>" />
+		<input type="hidden" name="reset" value="0" />
+	</form>
+
+
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>

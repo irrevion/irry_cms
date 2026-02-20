@@ -14,7 +14,7 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 		<meta name="csrf-token" content="<?=utils::safeEcho($CSRF_token, 1);?>" />
 
-		<title><?=utils::safeEcho(CMS::$site_settings['cms_name'], 1);?> - <?=utils::safeEcho(self::$title, 1);?></title>
+		<title><?=utils::safeEcho(CMS::$settings['cms_name'], 1);?> - <?=utils::safeEcho(self::$title, 1);?></title>
 
 <?php
 
@@ -74,7 +74,7 @@ print view::outputJsList();
 					<!-- mini logo for sidebar mini 50x50 pixels -->
 					<span class="logo-mini"><img src="<?=IMAGE_DIR;?>logo.png" style="height: 50px;" /></span>
 					<!-- logo for regular state and mobile devices -->
-					<span class="logo-lg"><img src="<?=IMAGE_DIR;?>logo.png" style="height: 42px;" /> <?=CMS::$site_settings['cms_name_formatted'];?></span>
+					<span class="logo-lg"><img src="<?=IMAGE_DIR;?>logo.png" style="height: 42px;" /> <?=CMS::$settings['cms_name_formatted'];?></span>
 				</a>
 
 				<!-- Header Navbar: style can be found in header.less -->

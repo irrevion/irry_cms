@@ -11,7 +11,7 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 	<body class="hold-transition lockscreen">
 		<div class="lockscreen-wrapper">
 			<div class="lockscreen-logo">
-				<?=CMS::$site_settings['cms_name_formatted'];?>
+				<?=CMS::$settings['cms_name_formatted'];?>
 			</div>
 
 			<?php if (isset($_POST['change']) && !empty($response['errors'])) foreach ($response['errors'] as $e) { ?>

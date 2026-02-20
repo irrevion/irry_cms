@@ -15,7 +15,7 @@ class nav {
 
 	/* private functions */
 
-	private static function checkSef(&$response, &$item, $item_id=0) { // 2016-05-11
+	private static function checkSef(&$response, &$item, $item_id=0) {
 		$sef = utils::makeSef(@$_POST['sef']);
 
 		if (empty($sef)) {
@@ -36,12 +36,12 @@ class nav {
 		$item['sef'] = $sef;
 	}
 
-	private static function checkArticleId(&$response, &$item, $item_id=0) { // 2016-05-12
+	private static function checkArticleId(&$response, &$item, $item_id=0) {
 		$item['ref_table'] = 'articles';
 		$article_id = (int)@$_POST['ref_id'];
 		if (empty($article_id)) {
 			$response['errors'][] = 'nav_menu_add_item_err_article_id_empty';
-		} else if (!CMS::$db->get("SELECT id FROM articles WHERE id=:article_id LIMIT 1", [':article_id' => $article_id])) {
+		} else if (!CMS::db()->get("SELECT id FROM articles WHERE id=:article_id LIMIT 1", [':article_id' => $article_id])) {
 			$response['errors'][] = 'nav_menu_add_item_err_article_id_not_exists';
 		} else if (self::isArticleNavItemExists($article_id, $item_id)) {
 			$response['errors'][] = 'nav_menu_add_item_err_article_id_item_exists';
@@ -50,7 +50,7 @@ class nav {
 		}
 	}
 
-	private static function checkUrl(&$response, &$item, $item_id=0) { // 2016-05-11
+	private static function checkUrl(&$response, &$item, $item_id=0) {
 		$url = trim((string)@$_POST['url']);
 		if (empty($url)) {
 			$response['errors'][] = 'nav_menu_add_item_err_url_empty';
@@ -59,7 +59,7 @@ class nav {
 		}
 	}
 
-	private static function processNavItemTranslates(&$response, &$translates) { // 2016-05-11
+	private static function processNavItemTranslates(&$response, &$translates) {
 		foreach (CMS::$site_langs as $lng) {
 			foreach (self::$tr_fields as $f) {
 				if (in_array($f, ['name'])) {
@@ -77,11 +77,11 @@ class nav {
 		}
 	}
 
-	private static function processNavItemPositions(&$response, &$positions) { // 2016-05-11
+	private static function processNavItemPositions(&$response, &$positions) {
 		if (empty($_POST['position']) || !is_array($_POST['position'])) {
 			$response['errors'][] = 'nav_menu_add_item_err_position_empty';
 		} else {
-			$exists = CMS::$db->getPairs("SELECT position, id FROM nav_positions");
+			$exists = CMS::db()->getPairs("SELECT position, id FROM nav_positions");
 			foreach ($_POST['position'] as $pos=>$value) {
 				if (isset($exists[$pos])) {
 					$positions[] = $exists[$pos];
@@ -92,14 +92,14 @@ class nav {
 
 	/* public functions */
 
-	public static function getPositions() { // 2016-05-10
+	public static function getPositions() {
 		$l = (($_SESSION[CMS::$sess_hash]['ses_adm_lang']=='az')? 'az': 'ru');
 		$sql = "SELECT id, position, name_{$l} AS name
 			FROM nav_positions";
-		return CMS::$db->getAll($sql);
+		return CMS::db()->getAll($sql);
 	}
 
-	public static function getMenu($parent=false) { // 2016-05-11
+	public static function getMenu($parent=false) {
 		$menu = [];
 
 		$sql = "SELECT n.*, tr.text AS name
@@ -107,7 +107,7 @@ class nav {
 				LEFT JOIN translates tr ON tr.ref_table='menu' AND tr.ref_id=n.id AND tr.lang=:default_site_lang AND tr.fieldname='name'
 			WHERE is_deleted='0'".(empty($parent)? " AND parent_id='0'": (" AND parent_id='".(int)$parent."'"))."
 			ORDER BY ordering ASC";
-		$menu = CMS::$db->getAll($sql, [
+		$menu = CMS::db()->getAll($sql, [
 			':default_site_lang' => CMS::$default_site_lang
 		]);
 
@@ -121,14 +121,14 @@ class nav {
 		return $menu;
 	}
 
-	public static function getNavItem($id) { // 2016-05-11
+	public static function getNavItem($id) {
 		$sql = "SELECT n.*, cu.name AS author_name, mcu.name AS editor_name
 			FROM menu n
 				JOIN cms_users cu ON cu.id=n.add_by
 				LEFT JOIN cms_users mcu ON mcu.id=n.mod_by
 			WHERE n.id=:item_id AND n.is_deleted='0'
 			LIMIT 1";
-		$item = CMS::$db->getRow($sql, [
+		$item = CMS::db()->getRow($sql, [
 			':item_id' => $id
 		]);
 
@@ -137,7 +137,7 @@ class nav {
 		}
 
 		if (empty($item['parent_id'])) {
-			$item['positions'] = CMS::$db->getList("SELECT p.position
+			$item['positions'] = CMS::db()->getList("SELECT p.position
 				FROM menu_navpos_rel mpr
 					JOIN nav_positions p ON p.id=navpos_id
 				WHERE mpr.item_id=:item_id", [
@@ -148,7 +148,7 @@ class nav {
 		return $item;
 	}
 
-	public static function addNavItem() { // 2016-05-25
+	public static function addNavItem() {
 		$response = ['success' => false, 'message' => 'insert_err'];
 
 		$item = [];
@@ -182,7 +182,7 @@ class nav {
 		}
 
 		if (empty($response['errors'])) {
-			$item['ordering'] = CMS::$db->get("SELECT MAX(ordering) FROM menu WHERE parent_id=:parent_id", [
+			$item['ordering'] = CMS::db()->get("SELECT MAX(ordering) FROM menu WHERE parent_id=:parent_id", [
 				':parent_id' => $item['parent_id']
 			])+1;
 			$item['is_published'] = (empty($_POST['is_published'])? '0': '1');
@@ -190,7 +190,7 @@ class nav {
 			$item['add_by'] = $_SESSION[CMS::$sess_hash]['ses_adm_id'];
 			$item['add_datetime'] = date('Y-m-d H:i:s');
 
-			$item_id = CMS::$db->add('menu', $item);
+			$item_id = CMS::db()->add('menu', $item);
 
 			if ($item_id) {
 				$response['success'] = true;
@@ -212,7 +212,7 @@ class nav {
 
 				// saving positions
 				foreach ($positions as $navpos_id) {
-					CMS::$db->add('menu_navpos_rel', [
+					CMS::db()->add('menu_navpos_rel', [
 						'item_id' => $item_id,
 						'navpos_id' => $navpos_id
 					]);
@@ -231,7 +231,7 @@ class nav {
 		return $response;
 	}
 
-	public static function editNavItem($id) { // 2016-05-11
+	public static function editNavItem($id) {
 		$response = ['success' => false, 'message' => 'update_err'];
 
 		$old_data = self::getNavItem($id);
@@ -276,7 +276,7 @@ class nav {
 			$item['mod_by'] = $_SESSION[CMS::$sess_hash]['ses_adm_id'];
 			$item['mod_datetime'] = date('Y-m-d H:i:s');
 
-			$updated = CMS::$db->mod('menu#'.(int)$id, $item);
+			$updated = CMS::db()->mod('menu#'.(int)$id, $item);
 
 			// saving translates
 			foreach ($translates as $lang=>$tr_data) {
@@ -293,18 +293,18 @@ class nav {
 
 			// saving positions
 			if (empty($old_data['parent_id'])) {
-				$old_positions = CMS::$db->getList("SELECT id FROM nav_positions WHERE position IN ('".implode("', '", $old_data['positions'])."')");
+				$old_positions = CMS::db()->getList("SELECT id FROM nav_positions WHERE position IN ('".implode("', '", $old_data['positions'])."')");
 				if (empty($old_positions)) {$old_positions = [];}
 				$del = array_diff($old_positions, $positions);
 				$ins = array_diff($positions, $old_positions);
 				foreach ($del as $navpos_id) {
-					CMS::$db->run("DELETE FROM menu_navpos_rel WHERE item_id=:item_id AND navpos_id=:navpos_id", [
+					CMS::db()->run("DELETE FROM menu_navpos_rel WHERE item_id=:item_id AND navpos_id=:navpos_id", [
 						':item_id' => $id,
 						':navpos_id' => $navpos_id
 					]);
 				}
 				foreach ($ins as $navpos_id) {
-					CMS::$db->add('menu_navpos_rel', [
+					CMS::db()->add('menu_navpos_rel', [
 						'item_id' => $id,
 						'navpos_id' => $navpos_id
 					]);
@@ -326,7 +326,7 @@ class nav {
 		return $response;
 	}
 
-	public static function isSefExists($sef, $exclude=0) { // 2016-05-11
+	public static function isSefExists($sef, $exclude=0) {
 		$sef = (string)$sef;
 		if (empty($sef)) {return false;}
 
@@ -338,10 +338,10 @@ class nav {
 			$params[':exclude'] = $exclude;
 		}
 
-		return CMS::$db->get($sql, $params);
+		return CMS::db()->get($sql, $params);
 	}
 
-	public static function clearDeletedSef($sef) { // 2017-10-08
+	public static function clearDeletedSef($sef) {
 		$sef = (string)$sef;
 		if (empty($sef)) {return false;}
 
@@ -350,10 +350,10 @@ class nav {
 			':sef' => $sef
 		];
 
-		return CMS::$db->exec($sql, $params);
+		return CMS::db()->exec($sql, $params);
 	}
 
-	public static function isArticleNavItemExists($article_id, $exclude=0) { // 2016-05-12
+	public static function isArticleNavItemExists($article_id, $exclude=0) {
 		$article_id = (int)$article_id;
 		$exclude = (int)$exclude;
 
@@ -367,11 +367,11 @@ class nav {
 			$params[':exclude'] = $exclude;
 		}
 
-		return CMS::$db->get($sql, $params);
+		return CMS::db()->get($sql, $params);
 	}
 
-	public static function deleteNavItem($id) { // 2016-05-11
-		$deleted = CMS::$db->mod('menu#'.(int)$id, [
+	public static function deleteNavItem($id) {
+		$deleted = CMS::db()->mod('menu#'.(int)$id, [
 			'is_deleted' => '1',
 		]);
 
@@ -387,34 +387,34 @@ class nav {
 		return $deleted;
 	}
 
-	public static function setNavItemPosition($id, $position) { // 2016-05-12
+	public static function setNavItemPosition($id, $position) {
 		$position = (int)$position;
-		$parent_id = CMS::$db->get("SELECT parent_id FROM menu WHERE id=:item_id LIMIT 1", [
+		$parent_id = CMS::db()->get("SELECT parent_id FROM menu WHERE id=:item_id LIMIT 1", [
 			':item_id' => $id,
 		]);
 		if ($parent_id===false) {return false;}
-		$neigbors = CMS::$db->getList("SELECT id FROM menu WHERE id!=:item_id AND parent_id=:parent_id ORDER BY ordering ASC", [
+		$neigbors = CMS::db()->getList("SELECT id FROM menu WHERE id!=:item_id AND parent_id=:parent_id ORDER BY ordering ASC", [
 			':item_id' => $id,
 			':parent_id' => $parent_id,
 		]);
 		if (empty($neigbors)) {$neigbors = [];}
 		array_splice($neigbors, $position, 0, $id);
 		foreach ($neigbors as $ordering=>$item_id) {
-			CMS::$db->mod('menu#'.$item_id, [
+			CMS::db()->mod('menu#'.$item_id, [
 				'ordering' => $ordering
 			]);
 		}
 		return true;
 	}
 
-	public static function setNavItemParent($id, $parent) { // 2016-05-12
+	public static function setNavItemParent($id, $parent) {
 		$parent = (int)$parent;
-		return CMS::$db->mod('menu#'.$id, [
+		return CMS::db()->mod('menu#'.$id, [
 			'parent_id' => $parent
 		]);
 	}
 
-	public static function getCats($parent=false) { // 2016-05-13
+	public static function getCats($parent=false) {
 		$cats = [];
 
 		$sql = "SELECT n.*, tr.text AS name
@@ -422,7 +422,7 @@ class nav {
 				LEFT JOIN translates tr ON tr.ref_table='menu' AND tr.ref_id=n.id AND tr.lang=:default_site_lang AND tr.fieldname='name'
 			WHERE is_deleted='0'".(empty($parent)? " AND parent_id='0'": (" AND parent_id='".(int)$parent."'"))."
 			ORDER BY ordering ASC";
-		$menu = CMS::$db->getAll($sql, [
+		$menu = CMS::db()->getAll($sql, [
 			':default_site_lang' => CMS::$default_site_lang
 		]);
 
@@ -445,7 +445,7 @@ class nav {
 		return $cats;
 	}
 
-	/*public static function getCats() { // 2016-05-13
+	/*public static function getCats() {
 		$sql = "SELECT n.*, tr.text AS name
 			FROM menu n
 				LEFT JOIN translates tr ON tr.ref_table='menu' AND tr.ref_id=n.id AND tr.lang=:default_site_lang AND tr.fieldname='name'
@@ -454,10 +454,10 @@ class nav {
 		$params = [
 			':default_site_lang' => CMS::$default_site_lang
 		];
-		return CMS::$db->getAll($sql, $params);
+		return CMS::db()->getAll($sql, $params);
 	}*/
 
-	public static function getEditorAllowedCats($editor_id) { // 2016-05-26
+	public static function getEditorAllowedCats($editor_id) {
 		$sql = "SELECT m.id
 			FROM cms_users_menu_sections_rel uml
 				JOIN menu m ON m.id=uml.menu_section_id
@@ -465,10 +465,10 @@ class nav {
 		$params = [
 			':id' => $editor_id
 		];
-		return CMS::$db->getList($sql, $params);
+		return CMS::db()->getList($sql, $params);
 	}
 
-	public static function getSections() { // 2016-05-25
+	public static function getSections() {
 		$sql = "SELECT n.*, tr.text AS name
 			FROM menu n
 				LEFT JOIN translates tr ON tr.ref_table='menu' AND tr.ref_id=n.id AND tr.lang=:default_site_lang AND tr.fieldname='name'
@@ -477,7 +477,7 @@ class nav {
 		$params = [
 			':default_site_lang' => CMS::$default_site_lang
 		];
-		return CMS::$db->getAll($sql, $params);
+		return CMS::db()->getAll($sql, $params);
 	}
 }
 

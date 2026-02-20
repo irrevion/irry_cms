@@ -58,12 +58,44 @@ class subdomains_controller extends controller {
 			$activated = false;
 			if ($params['canWrite']) {
 				$activated = subdomains::activateSubdomain(@$_POST['activate']);
+				// establish subdomain DB connection immediately
+				$sub_db_ok = CMS::checkActiveSubdomain();
 			}
 			$params['op']['success'] = $activated;
 			$params['op']['message'] = 'activate_subdomain_'.($activated? 'suc': 'err');
 		}
 
 		return self::render('subdomains_activate', $params);
+	}
+
+	public static function action_reset() {
+		self::$layout = 'common_layout';
+		view::$title = CMS::t('reset_subdomain');
+
+		$params = [];
+
+		$params['canWrite'] = CMS::hasAccessTo('subdomains/activate', 'write');
+		$params['link_back'] = (empty($_GET['return'])? '?controller=subdomains&action=list': $_GET['return']);
+		if (!utils::isInternalURL($params['link_back'])) {
+			// insecure external URL
+			CMS::logout();
+			throw new \Error('External links are prohibited for security reasons.');
+		}
+
+		$params['op']['success'] = false;
+		$params['op']['message'] = 'reset_err';
+
+		if (!empty($_POST['reset'])) {
+			$done = false;
+			if ($params['canWrite']) {
+				CMS::sess('active_subdomain', null);
+				CMS::sess('active_subdomain_info', null);
+				$params['op']['success'] = true;
+				$params['op']['message'] = 'reset_suc';
+			}
+		}
+
+		return self::render('subdomains_reset', $params);
 	}
 }
 

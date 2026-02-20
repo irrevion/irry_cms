@@ -12,7 +12,7 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 class widget extends controller {
 	public static $options;
 
-	public static function init() {}
+	public static function init(): void {}
 
 	public static function run() {
 		return '';

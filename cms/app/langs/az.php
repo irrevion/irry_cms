@@ -425,11 +425,15 @@ return [
 	// Subdomains
 
 	'subdomains_list_details' => '{count} subdomen tapıldı',
-	'activate_subdomain_confirmation' => 'Seçilmiş alt domen üçün admin panelini məzmun redaktə rejiminə keçirmək istədiyinizə əminsinizmi?',
+	'activate_subdomain_confirmation' => 'Seçilmiş alt domen üçün admin panelini məzmun redaktə rejiminə keçirmək istədiyinizə əminsinizmi? *Eyni zamanda yadda saxlanmamış məlumatların və ya açıq tabların olmadığından əmin olun.',
 	'activate_subdomain' => 'Alt domenin seçimi',
 	'activate_subdomain_suc' => 'Subdomen uğurla aktivləşdirildi',
 	'activate_subdomain_err' => 'Seçilmiş subdomen aktivləşdirilə bilməz',
 	'subdomain_not_selected_err' => 'Heç bir subdomen seçilməyib',
+	'reset_subdomain' => 'Kontekstin sıfırlaması',
+	'reset_subdomain_confirm' => 'Konteksti sıfırlamaq və admin panelini əsas sayt redaktə rejiminə keçirmək istədiyinizə əminsinizmi? *Eyni zamanda yadda saxlanmamış məlumatların və ya açıq tabların olmadığından əmin olun.',
+	'reset_err' => 'Kontekst sıfırlama uğursuz oldu. İstifadəçi sessiyanızı dayandırmağa çalışın.',
+	'reset_suc' => 'Kontekst sıfırlandı.',
 
 ];
 

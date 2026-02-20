@@ -28,7 +28,7 @@ class app {
 		}
 
 		// $headers = "From: admin@irrevion.dp.ua\r\n";
-		$headers = "From: ".CMS::$site_settings['cms_sender_email']."\r\n";
+		$headers = "From: ".CMS::$settings['cms_sender_email']."\r\n";
 		$headers.="Content-type: text/html; charset=UTF-8\r\n";
 		$headers.="Content-transfer-encoding: base64\r\n\r\n";
 		if (!empty($username)) {

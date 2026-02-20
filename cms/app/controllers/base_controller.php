@@ -48,9 +48,9 @@ class base_controller extends controller {
 			$user = cms_users::getUserByLogin(@$_POST['ad_login']);
 			if (empty($user['id'])) {
 				$response['errors'][] = 'login_err';
-			} else if (((int)$user['login_attempts']>=(int)CMS::$site_settings['cms_max_login_attempts']) && !is_null($user['last_login_attempt']) && ((strtotime($user['last_login_attempt'])+CMS::$site_settings['cms_login_cooldown'])>$now_ts)) {
+			} else if (((int)$user['login_attempts']>=(int)CMS::$settings['cms_max_login_attempts']) && !is_null($user['last_login_attempt']) && ((strtotime($user['last_login_attempt'])+CMS::$settings['cms_login_cooldown'])>$now_ts)) {
 				$response['errors'][] = 'login_cooldown_err';
-				$response['errors'][] = '⏱ '.utils::formatDuration(((strtotime($user['last_login_attempt'])+CMS::$site_settings['cms_login_cooldown'])-$now_ts), [
+				$response['errors'][] = '⏱ '.utils::formatDuration(((strtotime($user['last_login_attempt'])+CMS::$settings['cms_login_cooldown'])-$now_ts), [
 					'd' => CMS::t('d'),
 					'h' => CMS::t('h'),
 					'm' => CMS::t('m'),

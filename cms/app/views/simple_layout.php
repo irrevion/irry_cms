@@ -7,14 +7,14 @@ use irrevion\irry_cms\core\helpers\view;
 if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.');}
 
 ?><!DOCTYPE html>
-<html lang="<?= ($_SESSION[CMS::$sess_hash]['ses_adm_lang'] ?? CMS::$site_settings['cms_default_lang']); ?>">
+<html lang="<?= ($_SESSION[CMS::$sess_hash]['ses_adm_lang'] ?? CMS::$settings['cms_default_lang']); ?>">
 	<head>
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 		<meta name="csrf-token" content="<?=utils::safeEcho($CSRF_token, 1);?>" />
 
-		<title><?=utils::safeEcho(CMS::$site_settings['cms_name'], 1);?> - <?=utils::safeEcho(self::$title, 1);?></title>
+		<title><?=utils::safeEcho(CMS::$settings['cms_name'], 1);?> - <?=utils::safeEcho(self::$title, 1);?></title>
 
 <?php
 

@@ -11,7 +11,7 @@
  Target Server Version : 100432 (10.4.32-MariaDB)
  File Encoding         : 65001
 
- Date: 20/02/2026 01:23:54
+ Date: 20/02/2026 16:07:20
 */
 
 SET NAMES utf8mb4;
@@ -88,6 +88,18 @@ CREATE TABLE `cms_log`  (
   INDEX `action`(`action`) USING BTREE,
   INDEX `cms_user_id`(`cms_user_id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 265 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for cms_settings
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_settings`;
+CREATE TABLE `cms_settings`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `option` char(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `value` char(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `option`(`option`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Table structure for cms_users
@@ -353,7 +365,7 @@ CREATE TABLE `site_settings`  (
   `value` char(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `option`(`option`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = FIXED;
 
 -- ----------------------------
 -- Table structure for site_users

@@ -11,6 +11,7 @@ if (!defined('_VALID_PHP')) die('Direct access to this location is not allowed.'
 class CMS {
 	public static $version = '17.2.1';
 	public static $config;
+	public static $settings;
 	public static $db;
 	public static $db_subdomain;
 	public static $lang;
@@ -21,7 +22,6 @@ class CMS {
 		'admin' => [],
 		'editor' => []
 	];
-	public static $site_settings;
 	public static $upload_err = [
 		1 => 'upl_ini_size_err',			// The uploaded file exceeds the upload_max_filesize directive in php.ini
 		2 => 'upl_form_size_err',			// The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form
@@ -75,11 +75,11 @@ class CMS {
 
 		self::$db = new mysql_pdo(self::$config['db']);
 
-		self::loadSiteSettings();
+		self::loadSettings();
 
 		self::checkAdminUserSession();
 
-		self::$lang = include LANG_DIR.self::$site_settings['cms_default_lang'].'.php';
+		self::$lang = include LANG_DIR.self::$settings['cms_default_lang'].'.php';
 		if (!empty($_SESSION[self::$sess_hash]['ses_adm_id'])) {
 			$user_lang_file = LANG_DIR.$_SESSION[self::$sess_hash]['ses_adm_lang'].'.php';
 			if (is_file($user_lang_file)) {
@@ -218,7 +218,7 @@ class CMS {
 	}
 
 	public static function getLandingPage() {
-		$landing_page = self::$site_settings['cms_default_landing_page'];
+		$landing_page = self::$settings['cms_default_landing_page'];
 		$user_role = self::$db->getRow("SELECT * FROM `cms_users_roles` WHERE role=:role LIMIT 1", [':role' => $_SESSION[self::$sess_hash]['ses_adm_type']]);
 		if (!empty($user_role['id'])) {
 			$landing_page = $user_role['landing_page'];
@@ -226,10 +226,10 @@ class CMS {
 		return $landing_page;
 	}
 
-	public static function loadSiteSettings() {
-		$site_settings = self::$db->getPairs("SELECT `option`, `value` FROM `site_settings`");
-		define('DEFAULT_LANG_DIR', $site_settings['site_default_lang_dir']);
-		self::$site_settings = $site_settings;
+	public static function loadSettings() {
+		$settings = self::$db->getPairs("SELECT `option`, `value` FROM `cms_settings`");
+		define('DEFAULT_LANG_DIR', $settings['site_default_lang_dir']);
+		self::$settings = $settings;
 	}
 
 	public static function checkAdminUserSession() {
@@ -275,6 +275,9 @@ class CMS {
 		// return connection to active database
 		$active_subdomain = self::sess('active_subdomain');
 		if (!empty($active_subdomain)) {
+			if (is_null(self::$db_subdomain)) {
+				throw new \Error('Subdomain DB connection not established');
+			}
 			return self::$db_subdomain;
 		}
 		return self::$db;
@@ -298,7 +301,8 @@ class CMS {
 
 	public static function log($data) {
 		return self::$db->add('cms_log', [
-			'cms_user_id' => $_SESSION[self::$sess_hash]['ses_adm_id'],
+			'cms_user_id' => self::sess('id'),
+			'subdomain' => self::sess('active_subdomain'),
 			'subj_table' => $data['subj_table'],
 			'subj_id' => $data['subj_id'],
 			'action' => $data['action'],

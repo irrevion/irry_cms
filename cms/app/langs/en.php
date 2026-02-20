@@ -425,11 +425,15 @@ return [
 	// Subdomains
 
 	'subdomains_list_details' => '{count} subdomain found',
-	'activate_subdomain_confirmation' => 'Are you sure you want to switch the admin panel to the content editing mode for the selected subdomain?',
+	'activate_subdomain_confirmation' => 'Are you sure you want to switch the admin panel to the content editing mode for the selected subdomain? *Make sure you don\'t have any unsaved data or open tabs at the same time.',
 	'activate_subdomain' => 'Subdomain activation',
 	'activate_subdomain_suc' => 'The subdomain was successfully activated',
 	'activate_subdomain_err' => 'The selected subdomain cannot be activated',
 	'subdomain_not_selected_err' => 'No subdomain selected',
+	'reset_subdomain' => 'Context reset',
+	'reset_subdomain_confirm' => 'Are you sure you want to reset the context and switch the admin panel to the main site editing mode? *Make sure you don\'t have any unsaved data or open tabs at the same time.',
+	'reset_err' => 'Context reset failed. Try terminating your user session.',
+	'reset_suc' => 'Context has been reset.',
 
 ];
 

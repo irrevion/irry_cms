@@ -10,12 +10,12 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 class languages {
 	public static $site_langs_dir = '../../messages/';
 
-	public static function getLangsList() { // 2016-04-25
+	public static function getLangsList() {
 		$sql = "SELECT * FROM site_languages ORDER BY is_default DESC, language_dir ASC";
-		return CMS::$db->getAll($sql);
+		return CMS::db()->getAll($sql);
 	}
 
-	public static function addLang($code, $name) { // 2016-04-26
+	public static function addLang($code, $name) {
 		$response = [
 			'success' => false,
 			'message' => CMS::t('insert_err')
@@ -30,7 +30,7 @@ class languages {
 			$response['errors']['language_name'] = CMS::t('site_lang_add_err_invalid_name');
 		}
 		if (empty($response['errors'])) {
-			$added = CMS::$db->add('site_languages', [
+			$added = CMS::db()->add('site_languages', [
 				'language_dir' => $code,
 				'language_name' => $name
 			]);
@@ -53,17 +53,17 @@ class languages {
 		return $response;
 	}
 
-	public static function isLangExists($code) { // 2016-04-26
-		return CMS::$db->get("SELECT id FROM site_languages WHERE language_dir=:code LIMIT 1", [':code' => $code]);
+	public static function isLangExists($code) {
+		return CMS::db()->get("SELECT id FROM site_languages WHERE language_dir=:code LIMIT 1", [':code' => $code]);
 	}
 
-	public static function setLangStatus($code, $status) { // 2016-04-26
+	public static function setLangStatus($code, $status) {
 		if (!preg_match('/^[a-z]{2}$/', $code)) {return false;}
 		if (!in_array($status, ['allow', 'deny'])) {return false;}
 		$lang = self::getLang($code);
 		if (empty($lang['id'])) {return false;}
 
-		$updated = CMS::$db->mod('site_languages#'.$lang['id'], [
+		$updated = CMS::db()->mod('site_languages#'.$lang['id'], [
 			'is_published' => (($status=='allow')? '1': '0')
 		]);
 
@@ -79,16 +79,16 @@ class languages {
 		return $updated;
 	}
 
-	public static function getLang($code) { // 2016-04-27
+	public static function getLang($code) {
 		if (!preg_match('/^[a-z]{2}$/', $code)) {return false;}
-		return CMS::$db->getRow("SELECT * FROM site_languages WHERE language_dir=:code LIMIT 1", [':code' => $code]);
+		return CMS::db()->getRow("SELECT * FROM site_languages WHERE language_dir=:code LIMIT 1", [':code' => $code]);
 	}
 
-	public static function getDefaultLangCode() { // 2016-04-27
-		return CMS::$db->get("SELECT language_dir FROM site_languages WHERE is_default='1' LIMIT 1");
+	public static function getDefaultLangCode() {
+		return CMS::db()->get("SELECT language_dir FROM site_languages WHERE is_default='1' LIMIT 1");
 	}
 
-	public static function getLangFile($code) { // 2016-04-27
+	public static function getLangFile($code) {
 		$fname = self::$site_langs_dir.$code.'/app.php';
 		if (!is_file($fname)) {return false;}
 		$lang_file = include($fname);
@@ -96,7 +96,7 @@ class languages {
 		return $lang_file;
 	}
 
-	public static function saveLangFile($code, $entries) { // 2016-04-27
+	public static function saveLangFile($code, $entries) {
 		if (empty($entries) || !is_array($entries)) {return false;}
 		$dir = self::$site_langs_dir.$code.'/';
 		if (!is_dir($dir)) {
@@ -117,11 +117,11 @@ class languages {
 		return file_put_contents($fname, $content);
 	}
 
-	public static function deleteLang($code) { // 2016-04-28
+	public static function deleteLang($code) {
 		$lang = self::getLang($code);
 		if (empty($lang['id'])) {return false;}
 
-		$deleted = CMS::$db->run("DELETE FROM site_languages WHERE language_dir=:code", [':code' => $code]);
+		$deleted = CMS::db()->run("DELETE FROM site_languages WHERE language_dir=:code", [':code' => $code]);
 
 		if ($deleted) {
 			CMS::log([
@@ -131,7 +131,7 @@ class languages {
 				'descr' => 'Site language '.$code.' and translations file erased by admin '.ADMIN_INFO,
 			]);
 
-			CMS::$db->run("OPTIMIZE TABLE site_languages");
+			CMS::db()->run("OPTIMIZE TABLE site_languages");
 			$dir = self::$site_langs_dir.$code.'/';
 			utils::deleteDir($dir);
 		}
@@ -139,7 +139,7 @@ class languages {
 		return $deleted;
 	}
 
-	public static function refreshLangSwitchEntries() { // 2016-05-13
+	public static function refreshLangSwitchEntries() {
 		$default_code = self::getDefaultLangCode();
 		$langs = self::getLangsList();
 		$langfile = self::getLangFile($default_code);

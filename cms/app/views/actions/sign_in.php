@@ -44,7 +44,7 @@ var auth = function(token) {
 <body class="hold-transition login-page">
 	<div class="login-box">
 		<div class="login-logo">
-			<?=CMS::$site_settings['cms_name_formatted'];?>
+			<?=CMS::$settings['cms_name_formatted'];?>
 		</div>
 
 		<?php if (!empty($response['errors'])) foreach ($response['errors'] as $e) { ?>
