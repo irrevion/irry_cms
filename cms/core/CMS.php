@@ -288,15 +288,15 @@ class CMS {
 	}
 
 	public static function getLangsRegistered() {
-		return self::$db->getAll("SELECT * FROM `site_languages` WHERE is_deleted='0' ORDER BY `id` ASC");
+		return self::db()->getAll("SELECT * FROM `site_languages` WHERE is_deleted='0' ORDER BY `id` ASC");
 	}
 
 	public static function getLangsRegisteredList() {
-		return CMS::$db->getList("SELECT `language_dir` FROM `site_languages` WHERE is_deleted='0' ORDER BY `language_dir` ASC");
+		return CMS::db()->getList("SELECT `language_dir` FROM `site_languages` WHERE is_deleted='0' ORDER BY `language_dir` ASC");
 	}
 
 	public static function getDefaultSiteLang() {
-		return self::$db->get("SELECT language_dir FROM `site_languages` WHERE is_default='1' AND is_deleted='0' LIMIT 1");
+		return self::db()->get("SELECT language_dir FROM `site_languages` WHERE is_default='1' AND is_deleted='0' LIMIT 1");
 	}
 
 	public static function log($data) {
