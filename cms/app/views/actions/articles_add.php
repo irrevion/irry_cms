@@ -13,23 +13,17 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 // load Bootstrap Datepicker
 view::appendCss(SITE.CMS_DIR.JS_DIR.'bootstrap-datepicker/css/bootstrap-datepicker3.css');
 view::appendJs(SITE.CMS_DIR.JS_DIR.'bootstrap-datepicker/js/bootstrap-datepicker.min.js');
-view::appendJs(SITE.CMS_DIR.JS_DIR.'bootstrap-datepicker/locales/bootstrap-datepicker.'.$_SESSION[CMS::$sess_hash]['ses_adm_lang'].'.min.js');
+view::appendJs(SITE.CMS_DIR.JS_DIR.'bootstrap-datepicker/locales/bootstrap-datepicker.'.CMS::sess('lang').'.min.js');
 
-// load CK Editor
-view::appendJs(SITE.CMS_DIR.JS_DIR.'ckeditor-4.6.2/ckeditor.js');
-view::appendJs(SITE.CMS_DIR.JS_DIR.'ckfinder/ckfinder.js');
+// load EasyMDE
+view::appendCss(SITE.CMS_DIR.JS_DIR.'easymde/css/easymde.min.css');
+view::appendJs(SITE.CMS_DIR.JS_DIR.'easymde/js/easymde.min.js');
 
 // load Select2 plugin
 view::appendJs(SITE.CMS_DIR.JS_DIR.'select2/js/select2.min.js');
-view::appendJs(SITE.CMS_DIR.JS_DIR.'select2/js/i18n/'.$_SESSION[CMS::$sess_hash]['ses_adm_lang'].'.js');
+view::appendJs(SITE.CMS_DIR.JS_DIR.'select2/js/i18n/'.CMS::sess('lang').'.js');
 
 ?>
-
-<script type="text/javascript">
-// <![CDATA[
-CKFinder.setupCKEditor(null);
-// ]]>
-</script>
 
 
 <!-- Content Header (Page header) -->
@@ -292,13 +286,19 @@ $('#selectGalleryPicker').select2({
 										<textarea name="full[<?=$lng['language_dir'];?>]" rows="4" cols="32" class="form-input-std" id="wysiwyg_full_<?=$lng['language_dir'];?>"><?php utils::safeEcho(@$_POST['full'][$lng['language_dir']]); ?></textarea>
 										<script type="text/javascript">
 // <![CDATA[
-CKEDITOR.replace('wysiwyg_full_<?=$lng['language_dir'];?>', {
+
+/*CKEDITOR.replace('wysiwyg_full_<?=$lng['language_dir'];?>', {
 	language: '<?=$_SESSION[CMS::$sess_hash]['ses_adm_lang'];?>',
 	baseHref: '<?=SITE;?>',
 	contentsCss: '<?=SITE;?>web/assets/base/css/content.css',
 	uploadUrl: '<?=UPLOADS_DIR;?>',
 	contentsLanguage: '<?=$lng['language_dir'];?>'
+});*/
+
+new EasyMDE({
+	element: document.getElementById('wysiwyg_full_<?=$lng['language_dir'];?>'),
 });
+
 // ]]>
 										</script>
 									</div>

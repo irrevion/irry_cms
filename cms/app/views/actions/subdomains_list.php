@@ -8,6 +8,7 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 
 $count = count($subdomains);
 $active_subdomain = CMS::sess('active_subdomain');
+$active_subdomain_info = CMS::sess('active_subdomain_info');
 
 ?>
 
@@ -81,8 +82,8 @@ $(document).ready(function() {
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>
-			<?=CMS::t('menu_item_subdomains_list');?>
-			<!-- <small>Subtitile</small> -->
+			<?= CMS::t('menu_item_subdomains_list'); ?>
+			<!-- <small>Subtitle</small> -->
 		</h1>
 
 		<!-- <ol class="breadcrumb">
@@ -94,7 +95,7 @@ $(document).ready(function() {
 	<section class="contextual-navigation">
 		<nav>
 			<?php if ($active_subdomain && CMS::hasAccessTo('subdomains/activate')) { ?>
-			<a href="?controller=subdomains&amp;action=reset&amp;return=<?= $link_return; ?>&amp;<?=time();?>" class="btn btn-default" id="aResetContext"><i class="fa fa-sitemap" aria-hidden="true"></i> <?= CMS::t('reset_subdomain'); ?></a>
+			<a href="?controller=subdomains&amp;action=reset&amp;return=<?= $link_return; ?>&amp;<?=time();?>" class="btn btn-default" id="aResetContext"><i class="fa fa-sitemap" aria-hidden="true"></i> <?= CMS::t('reset_subdomain'); ?> ( <?php utils::safeEcho($active_subdomain_info['url']); ?> )</a>
 			<script type="text/javascript">
 utils.setConfirmation('click', '#aResetContext', '<?= CMS::t('reset_subdomain_confirm'); ?>', function($el) {
 	$('#formResetSubdomain').submit();

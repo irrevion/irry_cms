@@ -34,8 +34,7 @@ phpunit.phar
 robots.txt
 .ftpquota
 /cgi-bin/
-old/
-trash/
+.trash/
 /error_log
 /uploads/*
 /cms/app/config/app.php

@@ -1,1 +1,4 @@
 Options -Indexes
+#AddDefaultCharset utf-8
+#AddType text/javascript .js
+#AddCharset utf-8 .js

@@ -3,8 +3,8 @@
 namespace app\models;
 
 use irrevion\irry_cms\core\CMS;
-use irrevion\irry_cms\core\helpers\tr;
 use irrevion\irry_cms\core\helpers\utils;
+use app\models\tr;
 
 if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.');}
 
