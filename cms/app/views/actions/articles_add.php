@@ -6,6 +6,9 @@ use irrevion\irry_cms\core\helpers\view;
 
 if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.');}
 
+$active_subdomain = CMS::sess('active_subdomain');
+$subdomain = ($active_subdomain? CMS::sess('active_subdomain_info'): []);
+
 
 
 // load resourses
@@ -29,14 +32,14 @@ view::appendJs(SITE.CMS_DIR.JS_DIR.'select2/js/i18n/'.CMS::sess('lang').'.js');
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	<h1>
-		<?=CMS::t('menu_item_articles_add');?>
-		<!-- <small>Subtitile</small> -->
+		<?= CMS::t('menu_item_articles_add'); ?>
+		<?php if ($active_subdomain) { ?><small><?= utils::safeEcho($subdomain['url'], 1); ?></small><?php } ?>
 	</h1>
 
-	<!-- <ol class="breadcrumb">
-		<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-		<li class="active">Dashboard</li>
-	</ol> -->
+	<?= self::widget('breadcrumbs', [
+		'icon' => 'files-o',
+		'name' => CMS::t('menu_block_content'),
+	]); ?>
 </section>
 
 <!-- Content Header (Page header) -->
@@ -69,6 +72,7 @@ view::appendJs(SITE.CMS_DIR.JS_DIR.'select2/js/i18n/'.CMS::sess('lang').'.js');
 
 		<form action="" method="post" enctype="multipart/form-data" class="form-std" role="form">
 			<input type="hidden" name="CSRF_token" value="<?=$CSRF_token;?>" />
+			<input type="hidden" name="active_subdomain" value="<?php utils::safeEcho(CMS::sess('active_subdomain')); ?>" />
 
 			<div class="box-body" style="padding: 0;">
 				<div class="nav-tabs-custom">
@@ -89,7 +93,7 @@ view::appendJs(SITE.CMS_DIR.JS_DIR.'select2/js/i18n/'.CMS::sess('lang').'.js');
 									<div class="form-group">
 										<label><a href="https://google.com/?q=SEF+friendly+urls" title="" target="_blank"><?=CMS::t('article_sef');?> <i class="fa fa-external-link" aria-hidden="true" style="font-size: inherit;"></i></a></label>
 
-										<input type="text" name="sef" value="<?=utils::safeEcho(@$_POST['sef'], 1);?>" class="form-control" />
+										<input type="text" name="sef" value="<?=utils::safeEcho(@$_POST['sef'], 1);?>" class="form-control" placeholder="slug" />
 										<!-- <p class="form-input-tip"><?=CMS::t('article_sef_descr');?></p> -->
 									</div>
 
@@ -104,13 +108,6 @@ view::appendJs(SITE.CMS_DIR.JS_DIR.'select2/js/i18n/'.CMS::sess('lang').'.js');
 										<p class="form-info-tip"><?=CMS::t('article_image_descr', [
 											'{types}' => implode(', ', $allowed_thumb_ext)
 										]);?></p>
-									</div>
-
-									<div class="form-group">
-										<label><?=CMS::t('article_source');?></label>
-
-										<input type="text" name="source_url" value="<?=utils::safeEcho(@$_POST['source_url'], 1);?>" placeholder="<?=CMS::t('article_source_url');?>" class="form-control" style="margin-bottom: 5px;" />
-										<input type="text" name="source_name" value="<?=utils::safeEcho(@$_POST['source_name'], 1);?>" placeholder="<?=CMS::t('article_source_name');?>" class="form-control" />
 									</div>
 
 									<div class="form-group">
@@ -283,17 +280,9 @@ $('#selectGalleryPicker').select2({
 									<div class="form-group">
 										<label><?=CMS::t('article_full');?></label>
 
-										<textarea name="full[<?=$lng['language_dir'];?>]" rows="4" cols="32" class="form-input-std" id="wysiwyg_full_<?=$lng['language_dir'];?>"><?php utils::safeEcho(@$_POST['full'][$lng['language_dir']]); ?></textarea>
+										<textarea name="post[<?=$lng['language_dir'];?>]" rows="4" cols="32" class="form-input-std" id="wysiwyg_full_<?=$lng['language_dir'];?>"><?php utils::safeEcho(@$_POST['post'][$lng['language_dir']]); ?></textarea>
 										<script type="text/javascript">
 // <![CDATA[
-
-/*CKEDITOR.replace('wysiwyg_full_<?=$lng['language_dir'];?>', {
-	language: '<?=$_SESSION[CMS::$sess_hash]['ses_adm_lang'];?>',
-	baseHref: '<?=SITE;?>',
-	contentsCss: '<?=SITE;?>web/assets/base/css/content.css',
-	uploadUrl: '<?=UPLOADS_DIR;?>',
-	contentsLanguage: '<?=$lng['language_dir'];?>'
-});*/
 
 new EasyMDE({
 	element: document.getElementById('wysiwyg_full_<?=$lng['language_dir'];?>'),

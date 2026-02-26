@@ -17,30 +17,30 @@ class articles {
 	public static $pages_amount = 0;
 	public static $items_amount = 0;
 	public static $tbl = 'articles';
-	public static $tr_fields = ['keywords', 'descr', 'title', 'short', 'full', 'is_published_lang'];
-	public static $allowed_thumb_ext = ['jpg', 'jpeg', 'jpe', 'png', 'bmp', 'gif'];
+	public static $tr_fields = ['title', 'post', 'is_published_lang'];
+	public static $allowed_thumb_ext = ['jpg', 'png', 'webp'];
 	public static $dimensions = [
 		'thumbs' => [
-			'width' => 262,
-			'height' => 169
+			'width' => 330,
+			'height' => 220
 		],
 		'square' => [
 			'width' => 60,
 			'height' => 60
 		],
 		'larges' => [
-			'width' => 800,
-			'height' => 600
+			'width' => 1920,
+			'height' => 1080
 		],
 		'block' => [
-			'width' => 360,
-			'height' => 190
+			'width' => 900,
+			'height' => 600
 		]
 	];
-	public static $stop_words = [
+	/*public static $stop_words = [
 		'az' => ['azərbaycan', 'azərbaycanlı', 'azərbaycanı', 'azərbaycanda', 'respublika', 'respublikası', 'respublikasının', 'sinif', 'bunun', 'üçün', 'kimi', 'görə', 'ilə', 'ili', 'ildən', 'ildə', 'illərdə', 'üzrə', 'isə', 'kəsə', 'mən', 'mənim', 'əldə', 'çox', 'hər', 'the', 'digər', 'sonra', 'min', 'bir', 'nömrəli', 'ııı', 'nun', 'həmçinin', 'şəhəri', 'daxil', 'ölkələrinin', 'ölkədən', 'məqsədilə', 'ötən', 'keçən', 'keçirilmiş', 'çatıb', 'bildirib', 'olacaq', 'olunub', 'olunan', 'olunması', 'olan', 'olaq', 'olmaq', 'olaraq', 'olması', 'olmayacaq', 'olduqca', 'olmağım', 'olmayan', 'olursunuz', 'olum', 'olanda', 'olunmayacaq', 'olduğum', 'olanlara', 'olmaqla', 'etmək', 'etməkdir', 'edir', 'edib', 'edək', 'edən', 'ediblər', 'edəcək', 'edilib'],
 		'ru' => ['азербайджан', 'азербайджанский', 'республика', 'класс', 'для', 'год', 'также', 'почти', 'когда', 'после', 'этих', 'потому', 'поэтому', 'очень', 'всех', 'когда', 'тогда', 'которые', 'того', 'лишь', 'если', 'надо', 'даже', 'есть', 'все', 'это', 'или', 'как', 'под', 'просто']
-	];
+	];*/
 
 	private static function checkGallery(&$response, &$article, $article_id=0) {
 		$article['gallery_id'] = '0';
@@ -53,89 +53,22 @@ class articles {
 		}
 	}
 
-	private static function checkSource(&$response, &$article, $article_id=0) {
-		if (!empty($_POST['source_url']) || !empty($_POST['source_name'])) {
-			$article['source_url'] = @$_POST['source_url'];
-			$article['source_name'] = @$_POST['source_name'];
-			if (!empty($article['source_url']) && !utils::validURL($article['source_url'])) {
-				$response['errors'][] = 'article_add_err_source_url_invalid';
-			}
-		} else if ($article_id) {
-			$article['source_url'] = null;
-			$article['source_name'] = null;
-		}
-	}
-
-	private static function genKeywords($s, $lang='az') {
-		// cleanup
-		$s = (string)$s;
-		$s = trim($s);
-		$s = strip_tags($s);
-		$s = str_replace(["\t", "\r\n", "  "], ' ', $s);
-		$s = str_replace(['"', '&nbsp;', '&amp;', '&quot;', "'", "`", "<", ">", "«", "»", "“", "”", "(", ")", "?", "!", "=", "  "], ' ', $s);
-		$s = html_entity_decode($s);
-		$s = preg_replace('/\s+/', ' ', $s);
-		if ($lang=='az') {
-			$s = str_replace('İ', 'i', $s);
-			$s = str_replace('I', 'ı', $s);
-		}
-		$s = mb_convert_case($s, MB_CASE_LOWER, "UTF-8");
-
-		// sort words by frequency
-		$words = [];
-		preg_match_all("/[0-9a-zA-Zа-яА-ЯüöğıəçşёÜÖĞİƏÇŞЁ\-]{3,}+/isu", $s, $words);
-		$words = array_count_values($words[0]);
-		asort($words, SORT_DESC);
-		$words = array_reverse($words, 1);
-		$words = array_keys($words);
-
-		// clean from stop words
-		$stop_words = @self::$stop_words[$lang];
-		if (empty($stop_words)) {$stop_words = [];}
-		$words = array_diff($words, $stop_words);
-		$words = array_values($words);
-
-		// reduce amount
-		$tail = $words;
-		$words = array_slice($words, 0, 10);
-		$tail = array_slice($tail, 10, 20);
-		if ($tail) {
-			shuffle($tail);
-			$tail = array_slice($tail, 0, 10);
-			$words = array_merge($words, $tail);
-		}
-
-		return $words;
-	}
-
-	private static function genShorttext($s) {
-		$s = (string)$s;
-		$s = trim($s);
-		$s = html_entity_decode($s);
-		$s = strtr($s, [
-			'</p>' => "</p>\n",
-			'<br />' => "<br />\n",
-		]);
-		$s = strip_tags($s);
-		$s = explode("\n", $s);
-		$s = reset($s);
-
-		return $s;
-	}
-
 	public static function getArticlesList() {
 		$list = [];
-
 		$joins = [];
 		$joins['tr'] = "LEFT JOIN translates tr ON tr.ref_table='".self::$tbl."' AND tr.ref_id=a.id AND tr.lang=:default_site_lang AND tr.fieldname='title'";
-		//$joins['cu'] = "LEFT JOIN cms_users cu ON cu.id=a.add_by";
 		$filter = [];
 		$filter[] = "a.is_deleted='0'";
+		$params = [
+			':default_site_lang' => CMS::$default_site_lang
+		];
 		if (!empty($_GET['q'])) {
-			$filter[] = "tr.text LIKE '%".utils::makeSearchable($_GET['q'])."%'";
+			$filter[] = "tr.text LIKE :q";
+			$params[':q'] = "%".utils::makeSearchable($_GET['q'])."%";
 		}
 		if (in_array(@$_GET['filter']['status'], ['0', '1'])) {
-			$filter[] = "a.is_published=".CMS::db()->escape($_GET['filter']['status']);
+			$filter[] = "a.is_published=:status";
+			$params[':status'] = $_GET['filter']['status'];
 		}
 		if (!empty($_GET['filter']['author'])) {
 			$filter[] = "a.add_by='".(int)$_GET['filter']['author']."'";
@@ -174,9 +107,9 @@ class articles {
 		$c = CMS::db()->get("SELECT COUNT(a.id)
 			FROM `".self::$tbl."` a
 				".implode("\n", $joins)."
-			{$where}", [
-			':default_site_lang' => CMS::$default_site_lang
-		]);
+			{$where}",
+			$params
+		);
 		self::$items_amount = $c;
 		//print "<pre>RESULT:\n{$c}\n\nQUERIES:\n".var_export(CMS::db()->queries, 1)."\n\nERRORS:\n".var_export(CMS::db()->errors, 1)."\n</pre>";
 		$pages_amount = ceil($c/self::$pp);
@@ -188,7 +121,6 @@ class articles {
 
 			$list = CMS::db()->getAll("SELECT a.id, a.sef, a.img, a.publish_datetime, a.ordering, a.add_by, a.add_datetime, a.mod_by, a.mod_datetime, a.is_published,
 					tr.text AS title,
-					-- cu.name AS author_name,
 					(
 						SELECT COUNT(c.id)
 							FROM comments c
@@ -199,9 +131,9 @@ class articles {
 					".implode("\n", $joins)."
 				{$where}
 				ORDER BY a.ordering DESC
-				LIMIT ".(($start_from>0)? ($start_from.', '): '').self::$pp, [
-				':default_site_lang' => CMS::$default_site_lang
-			]);
+				LIMIT ".(($start_from>0)? ($start_from.', '): '').self::$pp,
+				$params
+			);
 			// print "<pre>RESULT:\n".var_export($list, 1)."\n\nQUERIES:\n".var_export(CMS::db()->queries, 1)."\n\nERRORS:\n".var_export(CMS::db()->errors, 1)."\n</pre>";
 		}
 
@@ -237,8 +169,6 @@ class articles {
 			$article['sef'] = $sef;
 		}
 
-		self::checkSource($response, $article);
-
 		self::checkGallery($response, $article);
 
 		if (!empty($_FILES['img']['name'])) {
@@ -262,36 +192,26 @@ class articles {
 		// processing translates
 		foreach (CMS::$site_langs as $lng) {
 			foreach (self::$tr_fields as $f) {
-				if (in_array($f, ['title', 'full'])) {
+				if (in_array($f, ['title', 'post'])) {
 					$translates[$lng['language_dir']][$f] = trim(@$_POST[$f][$lng['language_dir']]);
 
-					if ($f=='full') {
-						$translates[$lng['language_dir']]['short'] = self::genShorttext($translates[$lng['language_dir']][$f]);
-					}
-
 					if (!empty($_POST['is_published_lang'][$lng['language_dir']])) {
-						if (empty($translates[$lng['language_dir']][$f]) && in_array($f, ['title', 'full'])) {
+						if (empty($translates[$lng['language_dir']][$f]) && in_array($f, ['title', 'post'])) {
 							$response['errors'][] = 'article_add_err_'.$f.'_empty';
 						}
 					}
 				} else if (in_array($f, ['is_published_lang'])) {
 					$translates[$lng['language_dir']][$f] = (empty($_POST[$f][$lng['language_dir']])? '0': '1');
-				} else if (in_array($f, ['keywords'])) {
-					$s = @$_POST['title'][$lng['language_dir']].' '.@$_POST['full'][$lng['language_dir']];
-					$s = self::genKeywords($s, $lng['language_dir']);
-					$s = implode(', ', $s);
-					$translates[$lng['language_dir']][$f] = $s;
 				}
 			}
 		}
 
-		//$response['errors'][] = 'prevent saving';
 		if (empty($response['errors'])) {
 			$article['ordering'] = CMS::db()->get("SELECT MAX(ordering) FROM `".self::$tbl."`")+1;
 			$article['is_published'] = (empty($_POST['is_published'])? '0': '1');
 			$article['show_on_main_page'] = (empty($_POST['show_on_main_page'])? '0': '1');
 			$article['is_highlighted'] = (empty($_POST['is_highlighted'])? '0': '1');
-			$article['add_by'] = $_SESSION[CMS::$sess_hash]['ses_adm_id'];
+			$article['add_by'] = CMS::sess('id');
 			$article['add_datetime'] = date('Y-m-d H:i:s');
 
 			$article_id = CMS::db()->add(self::$tbl, $article);
@@ -368,8 +288,6 @@ class articles {
 			$upd['sef'] = $sef;
 		}
 
-		self::checkSource($response, $upd, $article['id']);
-
 		self::checkGallery($response, $upd, $article['id']);
 
 		if (!empty($_FILES['img']['name'])) {
@@ -405,18 +323,16 @@ class articles {
 		// processing translates
 		foreach (CMS::$site_langs as $lng) {
 			foreach (self::$tr_fields as $f) {
-				if (in_array($f, ['title', /*'descr',*/ 'short', 'full'])) {
+				if (in_array($f, ['title', 'post'])) {
 					$translates[$lng['language_dir']][$f] = trim(@$_POST[$f][$lng['language_dir']]);
 
 					if (!empty($_POST['is_published_lang'][$lng['language_dir']])) {
-						if (empty($translates[$lng['language_dir']][$f]) && in_array($f, ['title', 'full'])) {
+						if (empty($translates[$lng['language_dir']][$f]) && in_array($f, ['title', 'post'])) {
 							$response['errors'][] = 'article_add_err_'.$f.'_empty';
 						}
 					}
 				} else if (in_array($f, ['is_published_lang'])) {
 					$translates[$lng['language_dir']][$f] = (empty($_POST[$f][$lng['language_dir']])? '0': '1');
-				} else if (in_array($f, ['keywords'])) {
-					$translates[$lng['language_dir']][$f] = trim(@$_POST[$f][$lng['language_dir']]);
 				}
 			}
 		}
@@ -560,10 +476,10 @@ class articles {
 		if (empty($from) || empty($to) || ($from==$to)) {return false;}
 
 		/*
-		$from - идентификатор элемента, который перетаскивали
-		$to - последний элемент до новой позиции перетаскиваемого (если тащили вниз то до перетаскиваемого, если вверх - после)
-		нужно изменить ордеринг всех элементов, чей ордеринг между старой позицией перетаскиваемого элемента и новой позицией
-		перетаскиваемый элемент становится на место $to
+		$from - the ID of the element being dragged
+		$to - the last element before the new position of the dragged element (if dragged down, before the dragged element; if dragged up, after)
+		You need to change the ordering of all elements whose ordering is between the old position of the dragged element and the new position
+		The dragged element is placed in the position of $to
 		*/
 		$from_ord = CMS::db()->get("SELECT ordering FROM `".self::$tbl."` WHERE id=:from_id LIMIT 1", [
 			':from_id' => $from

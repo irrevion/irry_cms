@@ -433,6 +433,7 @@ class utils {
 		return $html;
 	}
 
+	#[\Deprecated(message: "to be removed", since: "2026-02-24")]
 	public static function strClear($str, $spch=0, $itag=0, $trim=1, $snqq=0, $skp=0) {
 		if (is_scalar($str)) {$str = strval($str);} else {return '';}
 		if ($trim) {$str = str_replace(["\r\n", "\r", "\n", "\t"], ' ', trim($str));}
@@ -526,11 +527,11 @@ class utils {
 
 	public static function makeSearchable($str) {
 		$str = strip_tags(@(string)$str);
-		$str = mb_strtolower($str, 'UTF-8');
+		//$str = mb_strtolower($str, 'UTF-8');
 		$str = str_replace(["\t", "\r\n", "  "], ' ', $str);
 		$str = str_replace(['"', '&nbsp;', '&amp;', '&quot;', "'", "<", ">", "  "], ' ', $str);
 		$str = trim($str);
-		$str = self::strClear($str, 1);
+		//$str = self::strClear($str, 1);
 
 		return $str;
 	}

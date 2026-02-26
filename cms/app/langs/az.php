@@ -25,6 +25,7 @@ return [
 	'cancel' => 'İmtina et',
 	'common_data' => 'Ümumi məlumat',
 	'content' => 'Kontent',
+	'context_err' => 'Aktiv alt domen dəyişib. Düzgün kontekstdə olduğunuzdan əmin olun.',
 	'controls' => 'İdarə edilməsi',
 	'del_suc' => 'Müvəffəqiyyətlə silindi',
 	'del_err' => 'Silmək mümkün olmadı',

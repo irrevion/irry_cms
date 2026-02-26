@@ -66,9 +66,13 @@ $(document).ready(function() {
 						data.turn = old_status;
 						$el.attr('data-ajax_post', JSON.stringify(data));
 					}
+				} else {
+					bootbox.alert(t[response.message]);
 				}
 			},
-			error: function(xhr, err, descr) {}
+			error: function(xhr, err, descr) {
+				bootbox.alert(err);
+			}
 		});
 
 		return false;
@@ -285,6 +289,7 @@ $(document).ready(function() {
 								<?php if (CMS::hasAccessTo('articles/ajax_set_status', 'write')) { ?>
 								<a href="?controller=articles&amp;action=ajax_set_status" title="" class="aAjax btn-toggle" data-ajax_post="<?=utils::safeEcho(json_encode([
 									'CSRF_token' => $CSRF_token,
+									'active_subdomain' => ($active_subdomain ?? ''),
 									'id' => $a['id'],
 									'turn' => ($a['is_published']? 'off': 'on')
 								]), 1);?>"><i class="fa fa-toggle-<?=($a['is_published']? 'on': 'off');?> btn-toggle-<?=($a['is_published']? 'on': 'off');?>" aria-hidden="true"></i></a>

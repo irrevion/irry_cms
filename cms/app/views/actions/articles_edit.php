@@ -45,9 +45,9 @@ view::appendCss(SITE.CMS_DIR.JS_DIR.'bootstrap-datepicker/css/bootstrap-datepick
 view::appendJs(SITE.CMS_DIR.JS_DIR.'bootstrap-datepicker/js/bootstrap-datepicker.min.js');
 view::appendJs(SITE.CMS_DIR.JS_DIR.'bootstrap-datepicker/locales/bootstrap-datepicker.'.$_SESSION[CMS::$sess_hash]['ses_adm_lang'].'.min.js');
 
-// load CK Editor
-view::appendJs(SITE.CMS_DIR.JS_DIR.'ckeditor-4.6.2/ckeditor.js');
-view::appendJs(SITE.CMS_DIR.JS_DIR.'ckfinder/ckfinder.js');
+// load EasyMDE
+view::appendCss(SITE.CMS_DIR.JS_DIR.'easymde/css/easymde.min.css');
+view::appendJs(SITE.CMS_DIR.JS_DIR.'easymde/js/easymde.min.js');
 
 // load Select2 plugin
 view::appendJs(SITE.CMS_DIR.JS_DIR.'select2/js/select2.min.js');
@@ -57,8 +57,6 @@ view::appendJs(SITE.CMS_DIR.JS_DIR.'select2/js/i18n/'.$_SESSION[CMS::$sess_hash]
 
 <script type="text/javascript">
 // <![CDATA[
-CKFinder.setupCKEditor(null);
-
 $(document).ready(function() {
 	$('.image-preview').append('<div class="image-preview-overlay"></div>');
 	$('.image-preview').hover(function() {
@@ -259,13 +257,6 @@ $(document).ready(function() {
 									</div>
 
 									<div class="form-group">
-										<label><?=CMS::t('article_source');?></label>
-
-										<input type="text" name="source_url" value="<?=utils::safePostValue('source_url', $article['source_url'], 1);?>" placeholder="<?=CMS::t('article_source_url');?>" class="form-control" style="margin-bottom: 5px;" />
-										<input type="text" name="source_name" value="<?=utils::safePostValue('source_name', $article['source_name'], 1);?>" placeholder="<?=CMS::t('article_source_name');?>" class="form-control" />
-									</div>
-
-									<div class="form-group">
 										<label><?=CMS::t('article_publish_datetime');?></label>
 
 										<div class="row">
@@ -437,25 +428,11 @@ $('#selectGalleryPicker').select2({
 							<div class="row">
 								<div class="col-md-12">
 									<div class="row">
-										<div class="col-md-6">
+										<div class="col-md-12">
 											<div class="form-group">
 												<label><?=CMS::t('article_title');?></label>
 
 												<input type="text" name="title[<?=$lng['language_dir'];?>]" value="<?=utils::safeEcho((isset($_POST['title'][$lng['language_dir']])? $_POST['title'][$lng['language_dir']]: @$article['translates'][$lng['language_dir']]['title']), 1);?>" class="form-control" />
-											</div>
-
-											<div class="form-group">
-												<label><?=CMS::t('article_keywords');?></label>
-
-												<textarea name="keywords[<?=$lng['language_dir'];?>]" rows="4" cols="32" class="form-control" style="height: 80px;"><?=utils::safeEcho((isset($_POST['keywords'][$lng['language_dir']])? $_POST['keywords'][$lng['language_dir']]: @$article['translates'][$lng['language_dir']]['keywords']), 1);?></textarea>
-											</div>
-										</div>
-
-										<div class="col-md-6">
-											<div class="form-group">
-												<label><?=CMS::t('article_short');?></label>
-
-												<textarea name="short[<?=$lng['language_dir'];?>]" rows="4" cols="32" class="form-control" style="height: 154px;"><?=utils::safeEcho((isset($_POST['short'][$lng['language_dir']])? $_POST['short'][$lng['language_dir']]: @$article['translates'][$lng['language_dir']]['short']), 1);?></textarea>
 											</div>
 										</div>
 									</div>
@@ -463,16 +440,14 @@ $('#selectGalleryPicker').select2({
 									<div class="form-group">
 										<label><?=CMS::t('article_full');?></label>
 
-										<textarea name="full[<?=$lng['language_dir'];?>]" rows="4" cols="32" class="form-input-std" id="wysiwyg_full_<?=$lng['language_dir'];?>"><?=utils::safeEcho((isset($_POST['full'][$lng['language_dir']])? $_POST['full'][$lng['language_dir']]: @$article['translates'][$lng['language_dir']]['full']), 1);?></textarea>
+										<textarea name="post[<?=$lng['language_dir'];?>]" rows="4" cols="32" class="form-input-std" id="wysiwyg_full_<?=$lng['language_dir'];?>"><?=utils::safeEcho((isset($_POST['post'][$lng['language_dir']])? $_POST['post'][$lng['language_dir']]: @$article['translates'][$lng['language_dir']]['post']), 1);?></textarea>
 										<script type="text/javascript">
 // <![CDATA[
-CKEDITOR.replace('wysiwyg_full_<?=$lng['language_dir'];?>', {
-	language: '<?=$_SESSION[CMS::$sess_hash]['ses_adm_lang'];?>',
-	baseHref: '<?=SITE;?>',
-	contentsCss: '<?=SITE;?>web/assets/base/css/content.css',
-	uploadUrl: '<?=UPLOADS_DIR;?>',
-	contentsLanguage: '<?=$lng['language_dir'];?>'
+
+new EasyMDE({
+	element: document.getElementById('wysiwyg_full_<?=$lng['language_dir'];?>'),
 });
+
 // ]]>
 										</script>
 									</div>

@@ -25,6 +25,7 @@ return [
 	'cancel' => 'Cancel',
 	'common_data' => 'Common info',
 	'content' => 'Content',
+	'context_err' => 'Active subdomain has been switched. Make sure you are in the right context.',
 	'controls' => 'Controls',
 	'del_suc' => 'Successfully deleted',
 	'del_err' => 'Unable to delete',

@@ -71,6 +71,11 @@ class articles_controller extends controller {
 		}
 
 		if (isset($_POST['add'])) {
+			if (CMS::sess('active_subdomain') || !empty($_POST['active_subdomain'])) {
+				if ($_POST['active_subdomain']!==CMS::sess('active_subdomain')) {
+					throw new \Error('Active subdomain has been switched. Make sure you are in the right context.');
+				}
+			}
 			$params['op'] = articles::addArticle();
 			if ($params['op']['success']) {
 				utils::delayedRedirect($params['link_back']);
@@ -171,7 +176,18 @@ class articles_controller extends controller {
 		if (!CMS::hasAccessTo('articles/ajax_set_status', 'write')) {
 			$response['code'] = '403';
 			$response['message'] = 'ajax_request_not_allowed_to_write';
-		} else if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH'])=='xmlhttprequest') {
+			return json_encode($response);
+		}
+		
+		if (CMS::sess('active_subdomain') || !empty($_POST['active_subdomain'])) {
+			if ($_POST['active_subdomain']!==CMS::sess('active_subdomain')) {
+				$response['code'] = '403';
+				$response['message'] = 'context_err';
+				return json_encode($response);
+			}
+		}
+
+		if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH'])=='xmlhttprequest') {
 			$id = @(int)$_POST['id'];
 			$status = @(string)$_POST['turn'];
 			$updated = articles::setArticleStatus($id, $status);
