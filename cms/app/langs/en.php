@@ -104,6 +104,7 @@ return [
 	// File Upload
 
 	'upl_invalid_image_extension_err' => 'Only files with *.jpg, *.png extensions can be uploaded',
+	'upl_invalid_ext_err' => 'Only files with {ext} extensions can be uploaded',
 	'upl_ini_size_err' => 'Total uploading data size over server limitation',
 	'upl_form_size_err' => 'The file is too big',
 	'upl_partial_err' => 'Upload interrupted. Try again.',

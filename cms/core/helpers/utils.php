@@ -161,21 +161,42 @@ class utils {
 		return false;
 	}
 
-	#[\Deprecated(message: "use utils::isValidHumanName() instead", since: "2024-12-23")]
-	public static function is_valid_human_name($name) {
-		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ\-\`\\\'\s]{2,64}$/u', (string)$name);
+	public static function isValidHumanName(&$name) {
+		// return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁєіїЄІЇʼ\-\`\\\'\s]{2,64}$/u', (string)$name);
+		$name = (string)$name;
+		$name = trim($name);
+		$name = preg_replace('/\s+/u', ' ', $name);
+		$name = strip_tags($name);
+		$name = str_replace(['<', '>', '/', '+', '=', '√', '°', '†', '💩', '🏳️‍🌈', '🇷🇺'], '', $name);
+		$l = mb_strlen($name, 'UTF-8');
+		if (($l<2) || ($l>255)) {return false;}
+		if (!preg_match('/[\p{L}]/u', $name)) {return false;}
+		if (preg_match('/[\p{C}]/u', $name)) {return false;}
+		return true;
 	}
 
-	public static function isValidHumanName($name) {
-		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁєіїЄІЇʼ\-\`\\\'\s]{2,64}$/u', (string)$name);
-	}
+	public static function isValidHumanNameStrict(&$name): bool {
+		$name = preg_replace('/\s+/u', ' ', trim((string)$name));
 
-	#[\Deprecated(message: "use utils::isValidHumanNSP() instead", since: "2024-12-23")]
-	public static function is_valid_human_nsp($nsp) {
-		$nsp = (string)$nsp;
-		$nsp = trim($nsp);
+		$l = mb_strlen($name, 'UTF-8');
+		if ($l < 2 || $l > 255) return false;
 
-		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ]{2,}\s+[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁ\-\`\\\'\s]+$/u', $nsp);
+		// at least one letter
+		if (!preg_match('/\p{L}/u', $name)) return false;
+
+		// forbid control/unassigned etc
+		if (preg_match('/\p{C}/u', $name)) return false;
+
+		// whitelist nsp chars
+		if (!preg_match('/^[\p{L}\p{M}\p{Zs}\.\-\'’ʼ-–—]+$/u', $name)) return false;
+
+		// forbid start with punctuation
+		if (preg_match('/^[\.\-\'’ʼ-–—]|[\.\-\'’ʼ-–—]$/u', $name)) return false;
+
+		// forbid repeated punctuation
+		if (preg_match('/([.\-\'’ʼ-–—])\1\1+/u', $name)) return false;
+
+		return true;
 	}
 
 	public static function isValidHumanNSP($nsp) {

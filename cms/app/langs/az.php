@@ -104,6 +104,7 @@ return [
 	// File Upload
 
 	'upl_invalid_image_extension_err' => 'Ancaq *.jpg, *.png formatlı faylların yüklənməsinə icazə verilir',
+	'upl_invalid_ext_err' => 'Only files with {ext} extensions can be uploaded',
 	'upl_ini_size_err' => 'Ümumi POST və faylların çəkisi server məhdudiyyəti ötüb',
 	'upl_form_size_err' => 'Şəklin məqbul ölçüsü (çəkisi) ötüb',
 	'upl_partial_err' => 'Faylın ötürülməsi dayandırıldı, bir daha cəhd edin',

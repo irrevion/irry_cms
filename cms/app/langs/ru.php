@@ -104,6 +104,7 @@ return [
 	// File Upload
 
 	'upl_invalid_image_extension_err' => 'Разрешена загрузка файлов только с расширениями *.jpg, *.png',
+	'upl_invalid_ext_err' => 'Only files with {ext} extensions can be uploaded',
 	'upl_ini_size_err' => 'Общий объем данных превысил ограничение на сервере',
 	'upl_form_size_err' => 'Превышен допустимый размер файла',
 	'upl_partial_err' => 'Загрузка была прервана, повторите попытку',

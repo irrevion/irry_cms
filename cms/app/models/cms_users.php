@@ -16,7 +16,7 @@ class cms_users {
 	public static $items_amount = 0;
 
 	public static $users_tbl = 'cms_users';
-	public static $allowed_avatar_ext = ['jpg', 'jpeg', 'jpe', 'png'];
+	public static $allowed_avatar_ext = ['jpg', 'jpeg', 'jpe', 'png', 'webp'];
 	public static $avatar_size = ['width' => 256, 'height' => 256];
 
 	const AVATAR_UPL_DIR = 'avatars/cms_users/';
@@ -80,7 +80,7 @@ class cms_users {
 		}
 
 		$name = trim(@(string)$_POST['name']);
-		if (empty($name) || !utils::isValidHumanNSP($name)) {
+		if (empty($name) || !utils::isValidHumanName($name)) {
 			$response['errors'][] = 'cms_user_name_err';
 		} else {
 			$user['name'] = $name;
@@ -180,7 +180,7 @@ class cms_users {
 		}
 
 		$name = trim(@(string)$_POST['name']);
-		if (empty($name) || !utils::isValidHumanNSP($name)) {
+		if (empty($name) || !utils::isValidHumanName($name)) {
 			$response['errors'][] = 'cms_user_name_err';
 		} else {
 			$upd['name'] = $name;
