@@ -139,11 +139,6 @@ class utils {
 		return filter_var((string)$email, FILTER_VALIDATE_EMAIL);
 	}
 
-	#[\Deprecated(message: "use utils::isValidUriElement() instead", since: "2024-12-23")]
-	public static function is_valid_URI_element($s) {
-		return preg_match('/^[0-9a-z\_\-]{1,255}$/i', $s);
-	}
-
 	public static function isValidUriElement($s) {
 		return preg_match('/^[0-9a-z\_\-]{1,255}$/i', $s);
 	}
@@ -161,13 +156,13 @@ class utils {
 		return false;
 	}
 
-	public static function isValidHumanName(&$name) {
+	public static function isValidHumanName(&$name): bool {
 		// return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁєіїЄІЇʼ\-\`\\\'\s]{2,64}$/u', (string)$name);
 		$name = (string)$name;
 		$name = trim($name);
-		$name = preg_replace('/\s+/u', ' ', $name);
 		$name = strip_tags($name);
 		$name = str_replace(['<', '>', '/', '+', '=', '√', '°', '†', '💩', '🏳️‍🌈', '🇷🇺'], '', $name);
+		$name = preg_replace('/\s+/u', ' ', $name);
 		$l = mb_strlen($name, 'UTF-8');
 		if (($l<2) || ($l>255)) {return false;}
 		if (!preg_match('/[\p{L}]/u', $name)) {return false;}
@@ -176,26 +171,16 @@ class utils {
 	}
 
 	public static function isValidHumanNameStrict(&$name): bool {
-		$name = preg_replace('/\s+/u', ' ', trim((string)$name));
-
-		$l = mb_strlen($name, 'UTF-8');
-		if ($l < 2 || $l > 255) return false;
-
-		// at least one letter
-		if (!preg_match('/\p{L}/u', $name)) return false;
-
-		// forbid control/unassigned etc
-		if (preg_match('/\p{C}/u', $name)) return false;
-
+		$ok = self::isValidHumanName($name);
+		if (!$ok) return false;
+		// clear emoji
+		$name = preg_replace('/[\p{So}\p{Sk}\p{Cs}]+/u', '', $name);
 		// whitelist nsp chars
 		if (!preg_match('/^[\p{L}\p{M}\p{Zs}\.\-\'’ʼ-–—]+$/u', $name)) return false;
-
 		// forbid start with punctuation
 		if (preg_match('/^[\.\-\'’ʼ-–—]|[\.\-\'’ʼ-–—]$/u', $name)) return false;
-
 		// forbid repeated punctuation
 		if (preg_match('/([.\-\'’ʼ-–—])\1\1+/u', $name)) return false;
-
 		return true;
 	}
 
@@ -206,22 +191,12 @@ class utils {
 		return preg_match('/^[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁєіїЄІЇʼ]{2,}\s+[a-zа-яА-ЯA-ZüöğıəçşёÜÖĞİƏÇŞЁєіїЄІЇʼ\-\`\\\'\s]+$/u', $nsp);
 	}
 
-	#[\Deprecated(message: "use isValidPhone() instead", since: "2024-12-23")]
-	public static function is_valid_phone($phone) {
-		return preg_match('/^\+994\d{9}$/u', (string)$phone);
-	}
-
 	public static function isValidPhone($phone) {
 		return preg_match('/^\+994(12|50|51|55|70|77)\d{7}$/u', (string)$phone);
 	}
 
 	public static function isValidMobilePhone($phone) {
 		return preg_match('/^\+994(50|51|55|70|77)\d{7}$/u', (string)$phone);
-	}
-
-	#[\Deprecated(message: "use isValidDate() instead", since: "2024-12-23")]
-	public static function valid_date($date) {
-		return preg_match('/^\d{2}\.\d{2}\.\d{4}$/', $date);
 	}
 
 	public static function isValidDate($date) { // for dd.mm.yyyy format

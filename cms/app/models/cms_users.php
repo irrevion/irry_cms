@@ -97,7 +97,8 @@ class cms_users {
 			if (empty($_FILES['avatar']['error'])) {
 				$user['avatar'] = utils::upload($_FILES['avatar']['name'], $_FILES['avatar']['tmp_name'], UPLOADS_DIR.self::AVATAR_UPL_DIR, self::$allowed_avatar_ext);
 				if (empty($user['avatar'])) {
-					$response['errors'][] = 'upl_invalid_image_extension_err';
+					// $response['errors'][] = 'upl_invalid_image_extension_err';
+					$response['errors'][] = CMS::t('upl_invalid_ext_err', ['{ext}' => '*.'.implode(', *.', self::$allowed_avatar_ext)]);
 				} else {
 					$img = new SimpleImage(UPLOADS_DIR.self::AVATAR_UPL_DIR.$user['avatar']);
 					$img->thumbnail(self::$avatar_size['width'], self::$avatar_size['height'])->save();
@@ -207,7 +208,8 @@ class cms_users {
 			if (empty($_FILES['avatar']['error'])) {
 				$upd['avatar'] = utils::upload($_FILES['avatar']['name'], $_FILES['avatar']['tmp_name'], UPLOADS_DIR.self::AVATAR_UPL_DIR, self::$allowed_avatar_ext);
 				if (empty($upd['avatar'])) {
-					$response['errors'][] = 'upl_invalid_image_extension_err';
+					// $response['errors'][] = 'upl_invalid_image_extension_err';
+					$response['errors'][] = CMS::t('upl_invalid_ext_err', ['{ext}' => '*.'.implode(', *.', self::$allowed_avatar_ext)]);
 				} else {
 					$img = new SimpleImage(UPLOADS_DIR.self::AVATAR_UPL_DIR.$upd['avatar']);
 					$img->thumbnail(self::$avatar_size['width'], self::$avatar_size['height'])->save();

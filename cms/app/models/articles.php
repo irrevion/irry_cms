@@ -295,7 +295,6 @@ class articles {
 			if (empty($_FILES['img']['error'])) {
 				$uploaded = utils::upload($_FILES['img']['name'], $_FILES['img']['tmp_name'], $d.'originals/', self::$allowed_thumb_ext);
 				if (empty($uploaded)) {
-					// $response['errors'][] = 'upl_invalid_image_extension_err';
 					$response['errors'][] = CMS::t('upl_invalid_ext_err', ['{ext}' => '*.'.implode(', *.', self::$allowed_thumb_ext)]);
 				} else {
 					$upd['img'] = $uploaded;
