@@ -20,12 +20,12 @@ class menu_widget_controller extends widget {
 			'selected' => ['statistics/dashboard'],
 			'url' => '?controller=statistics&action=dashboard'
 		],
-		[
+		/*[
 			'name' => 'menu_block_nav',
 			'icon' => 'sitemap',
 			'selected' => ['nav/list', 'nav/add', 'nav/edit', 'nav/delete'],
 			'url' => '?controller=nav&action=list'
-		],
+		],*/
 		[
 			'name' => 'menu_block_content',
 			'icon' => 'files-o',
@@ -34,12 +34,12 @@ class menu_widget_controller extends widget {
 				'articles/list' => [
 					'selected' => ['articles/list', 'articles/add', 'articles/edit', 'articles/delete']
 				],
-				'gallery/list' => [
+				/*'gallery/list' => [
 					'selected' => ['gallery/list', 'gallery/add', 'gallery/edit', 'gallery/delete', 'gallery/photos']
-				]
+				]*/
 			]
 		],
-		[
+		/*[
 			'name' => 'menu_block_site_users',
 			'icon' => 'users',
 			'selected' => ['site_users/list', 'site_users/delete', 'site_users/view_info', 'comments/list', 'comments/edit', 'comments/delete'],
@@ -51,12 +51,12 @@ class menu_widget_controller extends widget {
 					'selected' => ['comments/list', 'comments/edit', 'comments/delete'],
 					'callback' => 'comments.countUnreadComments'
 				],
-				/*'complaints' => [
+				/ *'complaints' => [
 					'selected' => ['complaints/list_chats', 'complaints/chat'],
 					'callback' => 'complaints.countNewComplaints'
-				]*/
+				]* /
 			]
-		],
+		],*/
 		[
 			'name' => 'menu_block_cms_users',
 			'icon' => 'user-secret',

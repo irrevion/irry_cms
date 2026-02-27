@@ -193,7 +193,7 @@ $(document).ready(function() {
 										<input type="checkbox" name="is_highlighted" value="1"<?=(empty($_POST['is_highlighted'])? '': ' checked="checked"');?> id="triggerArticleIsHighLighted" /><label for="triggerArticleIsHighLighted" style="display: inline; font-weight: normal;"> <?=CMS::t('article_is_highlighted');?></label>
 									</div>
 
-									<div class="form-group">
+									<!-- <div class="form-group">
 										<label><?=CMS::t('article_gallery');?></label>
 
 										<select name="gallery_id" class="form-control select2" id="selectGalleryPicker">
@@ -257,7 +257,7 @@ $('#selectGalleryPicker').select2({
 });
 // ]]>
 										</script>
-									</div>
+									</div> -->
 								</div>
 							</div>
 						</div>

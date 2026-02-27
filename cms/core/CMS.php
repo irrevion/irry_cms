@@ -299,6 +299,12 @@ class CMS {
 		return self::db()->get("SELECT language_dir FROM `site_languages` WHERE is_default='1' AND is_deleted='0' LIMIT 1");
 	}
 
+	public static function getContentUploadsDir() {
+		$default_dir = UPLOADS_DIR; // fallback dir if there is no setting defined
+		$dir = self::db()->get("SELECT `value` FROM `site_settings` WHERE `option`='uploads_dir' LIMIT 1");
+		return (empty($dir)? $default_dir: $dir);
+	}
+
 	public static function log($data) {
 		return self::$db->add('cms_log', [
 			'cms_user_id' => self::sess('id'),

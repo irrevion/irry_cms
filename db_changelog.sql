@@ -1,8 +1,10 @@
--- SUBDOMAINS 2026-02-20
+-- SUBDOMAINS 2026-02-27
 
-CREATE TABLE `cms_setings` LIKE `site_setings`;
-INSERT INTO `cms_setings` SELECT * FROM `site_setings`;
-TRUNCATE `site_setings`;
+CREATE TABLE `tags` ... ;
+CREATE TABLE `articles_tags_rel` ... ;
+CREATE TABLE `cms_settings` LIKE `site_settings`;
+INSERT INTO `cms_settings` SELECT * FROM `site_settings`;
+TRUNCATE `site_settings`;
 
 ALTER TABLE `irry_cms`.`cms_log` ADD COLUMN `subdomain` varchar(255) NULL AFTER `cms_user_id`;
 CREATE TABLE `subdomains` ... ;

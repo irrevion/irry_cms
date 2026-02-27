@@ -8,6 +8,8 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 
 $active_subdomain = CMS::sess('active_subdomain');
 $subdomain = ($active_subdomain? CMS::sess('active_subdomain_info'): []);
+$uploadDir = CMS::getContentUploadsDir().'articles/';
+$uploadUrl = SITE.utils::dirCanonicalPath(CMS_DIR.$uploadDir);
 
 ?>
 
@@ -71,7 +73,7 @@ $(document).ready(function() {
 				}
 			},
 			error: function(xhr, err, descr) {
-				bootbox.alert(err);
+				bootbox.alert(err+' : '+descr);
 			}
 		});
 
@@ -178,6 +180,7 @@ $(document).ready(function() {
 <!-- Deleting hidden form -->
 <form action="?controller=articles&amp;action=delete&amp;return=<?=$link_return;?>" method="post" id="formDeleteItem">
 	<input type="hidden" name="CSRF_token" value="<?=$CSRF_token;?>" />
+	<input type="hidden" name="active_subdomain" value="<?php utils::safeEcho(CMS::sess('active_subdomain')); ?>" />
 	<input type="hidden" name="delete" value="0" />
 </form>
 
@@ -263,8 +266,7 @@ $(document).ready(function() {
 						<tr data-id="<?=$a['id'];?>" data-ordering="<?=$a['ordering'];?>">
 							<td>
 								<?php if (!empty($a['img'])) {
-									$uploadUrl = SITE.utils::dirCanonicalPath(CMS_DIR.UPLOADS_DIR);
-									$previewUrl = $uploadUrl.'articles/square/'.$a['img'];
+									$previewUrl = $uploadUrl.'square/'.$a['img'];
 								?>
 								<img src="<?=$previewUrl;?>" alt="" class="article-thumb img-circle img-bordered-sm" />
 								<?php } ?>

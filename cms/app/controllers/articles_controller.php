@@ -72,10 +72,11 @@ class articles_controller extends controller {
 
 		if (isset($_POST['add'])) {
 			if (CMS::sess('active_subdomain') || !empty($_POST['active_subdomain'])) {
-				if ($_POST['active_subdomain']!==CMS::sess('active_subdomain')) {
-					throw new \Error('Active subdomain has been switched. Make sure you are in the right context.');
+				if ($_POST['active_subdomain']!=CMS::sess('active_subdomain')) {
+					throw new \Error(CMS::t('context_err'));
 				}
 			}
+
 			$params['op'] = articles::addArticle();
 			if ($params['op']['success']) {
 				utils::delayedRedirect($params['link_back']);
@@ -125,7 +126,16 @@ class articles_controller extends controller {
 		$params['allowed_thumb_ext'] = articles::$allowed_thumb_ext;
 
 		if (isset($_POST['save']) || isset($_POST['apply']) || isset($_POST['is_published'])) {
-			if (!$params['canWrite']) {CMS::logout();}
+			if (CMS::sess('active_subdomain') || !empty($_POST['active_subdomain'])) {
+				if ($_POST['active_subdomain']!=CMS::sess('active_subdomain')) {
+					throw new \Error(CMS::t('context_err'));
+				}
+			}
+
+			if (!$params['canWrite']) {
+				throw new \Error(CMS::t('access_prohibited'));
+			}
+
 			$params['op'] = articles::editArticle($id);
 			$params['article'] = articles::getArticle($id);
 			//print "<pre>\n".var_export($params['op'], 1)."\n\nQUERIES:\n".var_export(CMS::$db->queries, 1)."\n\nERRORS:\n".var_export(CMS::$db->errors, 1)."\n</pre>";
@@ -158,6 +168,12 @@ class articles_controller extends controller {
 			throw new \Error('External links are prohibited for security reasons.');
 		}
 
+		if (CMS::sess('active_subdomain') || !empty($_POST['active_subdomain'])) {
+			if ($_POST['active_subdomain']!=CMS::sess('active_subdomain')) {
+				throw new \Error(CMS::t('context_err'));
+			}
+		}
+
 		$deleted = false;
 		if ($params['canWrite']) {
 			$deleted = articles::deleteArticle(@$_POST['delete']);
@@ -180,7 +196,7 @@ class articles_controller extends controller {
 		}
 		
 		if (CMS::sess('active_subdomain') || !empty($_POST['active_subdomain'])) {
-			if ($_POST['active_subdomain']!==CMS::sess('active_subdomain')) {
+			if ($_POST['active_subdomain']!=CMS::sess('active_subdomain')) {
 				$response['code'] = '403';
 				$response['message'] = 'context_err';
 				return json_encode($response);
@@ -201,7 +217,7 @@ class articles_controller extends controller {
 		return json_encode($response);
 	}
 
-	public static function action_ajax_sort() { // 2016-12-05
+	public static function action_ajax_sort() {
 		header('Content-type: application/json; charset=utf-8');
 
 		$response = ['success' => false, 'message' => 'ajax_invalid_request'];
@@ -223,7 +239,7 @@ class articles_controller extends controller {
 		return json_encode($response);
 	}
 
-	public static function action_ajax_paged_sort() { // 2016-12-05
+	public static function action_ajax_paged_sort() {
 		header('Content-type: application/json; charset=utf-8');
 
 		$response = ['success' => false, 'message' => 'ajax_invalid_request'];
@@ -245,7 +261,7 @@ class articles_controller extends controller {
 		return json_encode($response);
 	}
 
-	public static function action_ajax_get_autocomplete() { // 2016-12-05
+	public static function action_ajax_get_autocomplete() {
 		header('Content-type: application/json; charset=utf-8');
 
 		$response = ['success' => false, 'message' => 'ajax_invalid_request'];
@@ -275,7 +291,18 @@ class articles_controller extends controller {
 		if (!CMS::hasAccessTo('articles/ajax_delete_image', 'write')) {
 			$response['code'] = '403';
 			$response['message'] = 'ajax_request_not_allowed_to_write';
-		} else if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH'])=='xmlhttprequest') {
+			return json_encode($response);
+		}
+		
+		if (CMS::sess('active_subdomain') || !empty($_POST['active_subdomain'])) {
+			if ($_POST['active_subdomain']!=CMS::sess('active_subdomain')) {
+				$response['code'] = '403';
+				$response['message'] = 'context_err';
+				return json_encode($response);
+			}
+		}
+
+		if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH'])=='xmlhttprequest') {
 			if (!empty($_POST['article_id'])) {
 				$deleted = articles::deleteArticleImages($_POST['article_id']);
 

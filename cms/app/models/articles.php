@@ -18,7 +18,7 @@ class articles {
 	public static $items_amount = 0;
 	public static $tbl = 'articles';
 	public static $tr_fields = ['title', 'post', 'is_published_lang'];
-	public static $allowed_thumb_ext = ['jpg', 'png', 'webp'];
+	public static $allowed_thumb_ext = ['jpg', 'jpeg', 'png', 'webp'];
 	public static $dimensions = [
 		'thumbs' => [
 			'width' => 330,
@@ -37,10 +37,6 @@ class articles {
 			'height' => 600
 		]
 	];
-	/*public static $stop_words = [
-		'az' => ['azərbaycan', 'azərbaycanlı', 'azərbaycanı', 'azərbaycanda', 'respublika', 'respublikası', 'respublikasının', 'sinif', 'bunun', 'üçün', 'kimi', 'görə', 'ilə', 'ili', 'ildən', 'ildə', 'illərdə', 'üzrə', 'isə', 'kəsə', 'mən', 'mənim', 'əldə', 'çox', 'hər', 'the', 'digər', 'sonra', 'min', 'bir', 'nömrəli', 'ııı', 'nun', 'həmçinin', 'şəhəri', 'daxil', 'ölkələrinin', 'ölkədən', 'məqsədilə', 'ötən', 'keçən', 'keçirilmiş', 'çatıb', 'bildirib', 'olacaq', 'olunub', 'olunan', 'olunması', 'olan', 'olaq', 'olmaq', 'olaraq', 'olması', 'olmayacaq', 'olduqca', 'olmağım', 'olmayan', 'olursunuz', 'olum', 'olanda', 'olunmayacaq', 'olduğum', 'olanlara', 'olmaqla', 'etmək', 'etməkdir', 'edir', 'edib', 'edək', 'edən', 'ediblər', 'edəcək', 'edilib'],
-		'ru' => ['азербайджан', 'азербайджанский', 'республика', 'класс', 'для', 'год', 'также', 'почти', 'когда', 'после', 'этих', 'потому', 'поэтому', 'очень', 'всех', 'когда', 'тогда', 'которые', 'того', 'лишь', 'если', 'надо', 'даже', 'есть', 'все', 'это', 'или', 'как', 'под', 'просто']
-	];*/
 
 	private static function checkGallery(&$response, &$article, $article_id=0) {
 		$article['gallery_id'] = '0';
@@ -142,6 +138,7 @@ class articles {
 
 	public static function addArticle() {
 		$response = ['success' => false, 'message' => 'insert_err'];
+		$d = CMS::getContentUploadsDir().'articles/';
 
 		$article = [];
 		$translates = [];
@@ -173,15 +170,17 @@ class articles {
 
 		if (!empty($_FILES['img']['name'])) {
 			if (empty($_FILES['img']['error'])) {
-				$article['img'] = utils::upload($_FILES['img']['name'], $_FILES['img']['tmp_name'], UPLOADS_DIR.'articles/originals/', self::$allowed_thumb_ext);
+				$article['img'] = utils::upload($_FILES['img']['name'], $_FILES['img']['tmp_name'], $d.'originals/', self::$allowed_thumb_ext);
 				if (empty($article['img'])) {
 					$response['errors'][] = 'upl_invalid_image_extension_err';
 				} else {
 					foreach (self::$dimensions as $dir=>$size) {
-						@mkdir(UPLOADS_DIR.'articles/'.$dir.'/', 0777, true);
-						$img = new SimpleImage(UPLOADS_DIR.'articles/originals/'.$article['img']);
-						//$img->thumbnail($size['width'], $size['height'])->save(UPLOADS_DIR.'articles/'.$dir.'/'.$article['img']);
-						$img->thumbnail($size['width'], $size['height'])->toFile(UPLOADS_DIR.'articles/'.$dir.'/'.$article['img']);
+						$cd = $d.$dir.'/';
+						@mkdir($cd, 0777, true);
+						$img = new SimpleImage($d.'originals/'.$article['img']);
+						$img
+							->thumbnail($size['width'], $size['height'])
+							->toFile($cd.$article['img'], $img->getMimeType(), 75);
 					}
 				}
 			} else {
@@ -267,6 +266,7 @@ class articles {
 
 	public static function editArticle($id) {
 		$response = ['success' => false, 'message' => 'update_err'];
+		$d = CMS::getContentUploadsDir().'articles/';
 		$article = self::getArticle($id);
 		if (empty($article['id'])) {
 			$response['message'] = 'article_edit_err_not_found';
@@ -292,17 +292,21 @@ class articles {
 
 		if (!empty($_FILES['img']['name'])) {
 			if (empty($_FILES['img']['error'])) {
-				$uploaded = utils::upload($_FILES['img']['name'], $_FILES['img']['tmp_name'], UPLOADS_DIR.'articles/originals/', self::$allowed_thumb_ext);
+				$uploaded = utils::upload($_FILES['img']['name'], $_FILES['img']['tmp_name'], $d.'originals/', self::$allowed_thumb_ext);
 				if (empty($uploaded)) {
 					$response['errors'][] = 'upl_invalid_image_extension_err';
 				} else {
 					$upd['img'] = $uploaded;
-					@unlink(UPLOADS_DIR.'articles/originals/'.$article['img']);
+					@unlink($d.'originals/'.$article['img']);
 
 					foreach (self::$dimensions as $dir=>$size) {
-						@unlink(UPLOADS_DIR.'articles/'.$dir.'/'.$article['img']);
-						$img = new SimpleImage(UPLOADS_DIR.'articles/originals/'.$uploaded);
-						$img->thumbnail($size['width'], $size['height'])->toFile(UPLOADS_DIR.'articles/'.$dir.'/'.$uploaded);
+						$cd = $d.$dir.'/';
+						if (!is_dir($cd)) {@mkdir($cd, 0777, true);}
+						if (is_file($cd.$article['img'])) {@unlink($cd.$article['img']);}
+						$img = new SimpleImage($d.'originals/'.$uploaded);
+						$img
+							->thumbnail($size['width'], $size['height'])
+							->toFile($cd.$uploaded, $img->getMimeType(), 75);
 					}
 				}
 			} else {
@@ -384,7 +388,7 @@ class articles {
 				'subj_table' => self::$tbl,
 				'subj_id' => $id,
 				'action' => 'edit',
-				'descr' => 'Article modified by '.$_SESSION[CMS::$sess_hash]['ses_adm_type'].' '.ADMIN_INFO,
+				'descr' => 'Article modified by '.CMS::sess('type').' '.ADMIN_INFO,
 			]);
 
 			$response['success'] = true;
@@ -421,7 +425,7 @@ class articles {
 				'subj_table' => self::$tbl,
 				'subj_id' => $id,
 				'action' => 'delete',
-				'descr' => 'Article moved to recycle bin by '.$_SESSION[CMS::$sess_hash]['ses_adm_type'].' '.ADMIN_INFO,
+				'descr' => 'Article moved to trash by '.$_SESSION[CMS::$sess_hash]['ses_adm_type'].' '.ADMIN_INFO,
 			]);
 		}
 
@@ -445,9 +449,11 @@ class articles {
 			]);
 		}
 
-		@unlink(UPLOADS_DIR.'articles/originals/'.$article['img']);
+		$d = CMS::getContentUploadsDir().'articles/';
+		@unlink($d.'originals/'.$article['img']);
 		foreach (self::$dimensions as $dir=>$size) {
-			@unlink(UPLOADS_DIR.'articles/'.$dir.'/'.$article['img']);
+			$cd = $d.$dir.'/';
+			@unlink($cd.$article['img']);
 		}
 
 		return true;

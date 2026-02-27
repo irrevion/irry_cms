@@ -7,6 +7,10 @@ use irrevion\irry_cms\core\helpers\view;
 if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.');}
 
 $only_lang = (count($langs)==1);
+$active_subdomain = CMS::sess('active_subdomain');
+$subdomain = ($active_subdomain? CMS::sess('active_subdomain_info'): []);
+$uploadDir = CMS::getContentUploadsDir().'articles/';
+$uploadUrl = SITE.utils::dirCanonicalPath(CMS_DIR.$uploadDir);
 
 ?>
 
@@ -115,7 +119,8 @@ $(document).ready(function() {
 			method: 'post',
 			data: {
 				article_id: '<?=$article['id'];?>',
-				CSRF_token: '<?=$CSRF_token;?>'
+				CSRF_token: '<?=$CSRF_token;?>',
+				active_subdomain: '<?=$active_subdomain;?>'
 			},
 			success: function(response, status, xhr) {
 				if (response.success) {
@@ -141,14 +146,15 @@ $(document).ready(function() {
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	<h1>
-		<?=CMS::t('menu_item_articles_edit');?>
-		<small><?=utils::safeEcho(utils::limitStringLength((empty($article['translates'][CMS::$default_site_lang]['title'])? $article['sef']: $article['translates'][CMS::$default_site_lang]['title']), 48), 1);?></small>
+		<?=CMS::t('menu_item_articles_edit');?> “<?=utils::safeEcho(utils::limitStringLength((empty($article['translates'][CMS::$default_site_lang]['title'])? $article['sef']: $article['translates'][CMS::$default_site_lang]['title']), 48), 1);?>”
+
+		<?php if ($active_subdomain) { ?><small><?= utils::safeEcho($subdomain['url'], 1); ?></small><?php } ?>
 	</h1>
 
-	<!-- <ol class="breadcrumb">
-		<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-		<li class="active">Dashboard</li>
-	</ol> -->
+	<?= self::widget('breadcrumbs', [
+		'icon' => 'files-o',
+		'name' => CMS::t('menu_block_content'),
+	]); ?>
 </section>
 
 <!-- Content Header (Page header) -->
@@ -185,6 +191,7 @@ $(document).ready(function() {
 
 		<form action="" method="post" enctype="multipart/form-data" class="form-std" role="form">
 			<input type="hidden" name="CSRF_token" value="<?=$CSRF_token;?>" />
+			<input type="hidden" name="active_subdomain" value="<?php utils::safeEcho(CMS::sess('active_subdomain')); ?>" />
 
 			<div class="box-body" style="padding: 0;">
 				<div class="nav-tabs-custom">
@@ -213,18 +220,17 @@ $(document).ready(function() {
 										<label><?=CMS::t('image');?></label>
 
 										<?php if (!empty($article['img'])) {
-												$uploadUrl = SITE.utils::dirCanonicalPath(CMS_DIR.UPLOADS_DIR);
-												$previewUrl = $uploadUrl.'articles/originals/'.$article['img'];
-												$preview_exists = is_file(UPLOADS_DIR.'articles/originals/'.$article['img']);
+												$previewUrl = $uploadUrl.'originals/'.$article['img'];
+												$preview_exists = is_file($uploadDir.'originals/'.$article['img']);
 											?>
 										<div class="image-preview">
 											<img src="<?=($preview_exists? $previewUrl: IMAGE_DIR.'noimg.jpg');?>" alt="<?=$article['img'];?>" class="img-responsive image-preview-img" />
 											<div class="image-preview-info">
 												<p>
 												<?php
-													$orgSize = utils::getFileSizeFormatted(UPLOADS_DIR.'articles/originals/'.$article['img']);
-													$tmbSize = utils::getFileSizeFormatted(UPLOADS_DIR.'articles/thumbs/'.$article['img']);
-													$imgModTimestamp = @filemtime(UPLOADS_DIR.'articles/originals/'.$article['img']);
+													$orgSize = utils::getFileSizeFormatted($uploadDir.'originals/'.$article['img']);
+													$tmbSize = utils::getFileSizeFormatted($uploadDir.'thumbs/'.$article['img']);
+													$imgModTimestamp = @filemtime($uploadDir.'originals/'.$article['img']);
 												?>
 												<?=CMS::t('article_image_original_size');?>: <?=$orgSize['value'];?> <?=$orgSize['measure'];?><br />
 												<?=CMS::t('article_image_thumbnail_size');?>: <?=$tmbSize['value'];?> <?=$tmbSize['measure'];?><br />
@@ -233,7 +239,7 @@ $(document).ready(function() {
 												<br />
 												<?php if ($preview_exists) { ?>
 												<a href="<?=$previewUrl;?>" target="_blank">
-													<i class="fa fa-camera" aria-hidden="true"></i> <?=CMS::t('article_image_original_view');?> <img src="<?=IMAGE_DIR;?>outer_link_white.png" alt="" />
+													<i class="fa fa-camera" aria-hidden="true"></i> <?=CMS::t('article_image_original_view');?> <i class="fa fa-external-link"></i>
 												</a>
 												<?php } ?>
 												<?php if (CMS::hasAccessTo('articles/ajax_delete_image', 'write')) { ?>
@@ -326,7 +332,7 @@ $(document).ready(function() {
 													if (empty($_POST['CSRF_token'])) {
 														$is_pos_selected = @in_array($c['id'], $art_cats);
 													} else {
-														$is_pos_selected = @in_array($c['id'], @$_POST['cats']);
+														$is_pos_selected = @in_array($c['id'], ($_POST['cats'] ?? []));
 													}
 											?><input type="checkbox" name="cats[]" value="<?=$c['id'];?>"<?=($is_pos_selected? ' checked="checked"': '');?> id="multiCheckboxCat_<?=$c['id'];?>" /><label for="multiCheckboxCat_<?=$c['id'];?>"> <?=$c['name'];?><?php if (!empty($c['parent']['id'])) { ?> <span style="color: #aaa;">&crarr; <?=$c['parent']['name'];?></span><?php } ?></label><br /><?php
 												}
@@ -349,7 +355,7 @@ $(document).ready(function() {
 										<input type="checkbox" name="is_highlighted" value="1"<?=($is_highlighted? ' checked="checked"': '');?> id="triggerArticleIsHighLighted" /><label for="triggerArticleIsHighLighted" style="display: inline; font-weight: normal;"> <?=CMS::t('article_is_highlighted');?></label>
 									</div>
 
-									<div class="form-group">
+									<!-- <div class="form-group">
 										<label><?=CMS::t('article_gallery');?></label>
 
 										<select name="gallery_id" class="form-control select2" id="selectGalleryPicker">
@@ -413,7 +419,7 @@ $('#selectGalleryPicker').select2({
 });
 // ]]>
 										</script>
-									</div>
+									</div> -->
 								</div>
 							</div>
 						</div>
