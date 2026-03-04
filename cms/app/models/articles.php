@@ -329,7 +329,7 @@ class articles {
 		foreach (CMS::$site_langs as $lng) {
 			foreach (self::$tr_fields as $f) {
 				if (in_array($f, ['title', 'post'])) {
-					$translates[$lng['language_dir']][$f] = trim(@$_POST[$f][$lng['language_dir']]);
+					$translates[$lng['language_dir']][$f] = strip_tags(trim(@$_POST[$f][$lng['language_dir']]));
 
 					if (!empty($_POST['is_published_lang'][$lng['language_dir']])) {
 						if (empty($translates[$lng['language_dir']][$f]) && in_array($f, ['title', 'post'])) {

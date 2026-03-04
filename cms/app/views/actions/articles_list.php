@@ -9,7 +9,7 @@ if (!defined("_VALID_PHP")) {die('Direct access to this location is not allowed.
 $active_subdomain = CMS::sess('active_subdomain');
 $subdomain = ($active_subdomain? CMS::sess('active_subdomain_info'): []);
 $uploadDir = CMS::getContentUploadsDir().'articles/';
-$uploadUrl = SITE.utils::dirCanonicalPath(CMS_DIR.$uploadDir);
+$uploadUrl = utils::urlJoin(CMS::getContentUploadsUrl(), 'articles/');
 
 ?>
 

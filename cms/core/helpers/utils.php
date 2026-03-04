@@ -80,6 +80,7 @@ class utils {
 			(string) trueLink($allowed_keys)
 			(string) array2url($array, $variable='')
 			(array) parseURL($url)
+			urlJoin($base, $path)
 		Arrays:
 			(bool) isEmptyArrayRecursive($arr, $zerosAreValue=1)
 			(array) array_filter_keys($arr, $keys)
@@ -681,6 +682,10 @@ class utils {
 			parse_str($request['query'], $request['query_params']);
 		}
 		return $request;
+	}
+
+	public static function urlJoin(string $base, string $path): string {
+		return rtrim($base, '/').'/'.ltrim($path, '/');
 	}
 
 	/* array */

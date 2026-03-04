@@ -286,6 +286,7 @@ $('#selectGalleryPicker').select2({
 
 new EasyMDE({
 	element: document.getElementById('wysiwyg_full_<?=$lng['language_dir'];?>'),
+	maxHeight: '320px',
 });
 
 // ]]>

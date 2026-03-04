@@ -5,6 +5,7 @@ defined('_VALID_PHP') or die('No direct script access.');
 define('SITE', '//localhost/irry-cms/');
 define('CMS_DIR', 'cms/');
 define('UPLOADS_DIR', '../uploads/');
+define('UPLOADS_URL', SITE.'uploads/');
 define('APP_DIR', 'app/');
 define('LANG_DIR', APP_DIR.'langs/');
 define('MODEL_DIR', APP_DIR.'models/');

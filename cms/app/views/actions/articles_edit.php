@@ -10,7 +10,8 @@ $only_lang = (count($langs)==1);
 $active_subdomain = CMS::sess('active_subdomain');
 $subdomain = ($active_subdomain? CMS::sess('active_subdomain_info'): []);
 $uploadDir = CMS::getContentUploadsDir().'articles/';
-$uploadUrl = SITE.utils::dirCanonicalPath(CMS_DIR.$uploadDir);
+// $uploadUrl = CMS::getContentUploadsUrl().'articles/';
+$uploadUrl = utils::urlJoin(CMS::getContentUploadsUrl(), 'articles/');
 
 ?>
 
@@ -452,6 +453,7 @@ $('#selectGalleryPicker').select2({
 
 new EasyMDE({
 	element: document.getElementById('wysiwyg_full_<?=$lng['language_dir'];?>'),
+	maxHeight: '320px',
 });
 
 // ]]>

@@ -302,7 +302,19 @@ class CMS {
 	public static function getContentUploadsDir() {
 		$default_dir = UPLOADS_DIR; // fallback dir if there is no setting defined
 		$dir = self::db()->get("SELECT `value` FROM `site_settings` WHERE `option`='uploads_dir' LIMIT 1");
-		return (empty($dir)? $default_dir: $dir);
+		$dir = (empty($dir)? $default_dir: $dir);
+		$dir = rtrim($dir, '/').'/';
+		return $dir;
+	}
+
+	public static function getContentUploadsUrl() {
+		$url = self::db()->get("SELECT `value` FROM `site_settings` WHERE `option`='uploads_url' LIMIT 1");
+		if (empty($url)) {
+			// throw new \Error('Content upload URL not found in site settings');
+			$url = UPLOADS_URL;
+		}
+		$url = rtrim($url, '/').'/';
+		return $url;
 	}
 
 	public static function log($data) {

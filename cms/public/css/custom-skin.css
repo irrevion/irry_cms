@@ -416,3 +416,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .skin-irry .content-action-link {
 	margin-right: 5px;
 }
+.skin-irry .content-header > .breadcrumb {
+	float: none; margin-top: 10px; position: static;
+}
