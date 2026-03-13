@@ -322,6 +322,7 @@ return [
 	'article_show_off_main_page_filter' => 'Not shown on main page',
 	'article_is_highlighted' => 'Highlighted',
 	'article_is_highlighted_filter' => 'Highlighted',
+	'article_not_translated_filter' => 'Not translated to',
 	'article_add_err_title_empty' => 'Title cannot be empty',
 	'article_add_err_full_empty' => 'Article text cannot be empty',
 	'article_add_err_publish_date_invalid' => 'Publishing date is invalid',

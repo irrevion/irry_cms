@@ -322,6 +322,7 @@ return [
 	'article_show_off_main_page_filter' => 'Əsas səhifədə olmayanlar',
 	'article_is_highlighted' => 'Seçilmiş',
 	'article_is_highlighted_filter' => 'Seçilmişlər',
+	'article_not_translated_filter' => 'Tərcümə edilməyib dilinə',
 	'article_add_err_title_empty' => 'Məqalənin başlığı boş ola bilməz',
 	'article_add_err_full_empty' => 'Məqalənin mətni boş ola bilməz',
 	'article_add_err_publish_date_invalid' => 'Dərc olunma tarixi yanlışdır',

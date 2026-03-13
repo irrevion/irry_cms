@@ -66,6 +66,10 @@ class articles {
 			$filter[] = "a.is_published=:status";
 			$params[':status'] = $_GET['filter']['status'];
 		}
+		if (!empty($_GET['filter']['notr'])) {
+			$filter[] = "(SELECT trp.id FROM translates trp WHERE trp.ref_table='".self::$tbl."' AND trp.ref_id=a.id AND trp.lang=:notr AND trp.fieldname='is_published_lang' AND trp.text='1' LIMIT 1) IS NULL";
+			$params[':notr'] = $_GET['filter']['notr'];
+		}
 		if (!empty($_GET['filter']['author'])) {
 			$filter[] = "a.add_by='".(int)$_GET['filter']['author']."'";
 		}

@@ -323,6 +323,7 @@ return [
 	'article_show_off_main_page_filter' => 'Не показані на головній',
 	'article_is_highlighted' => 'Вибране',
 	'article_is_highlighted_filter' => 'Вибрані',
+	'article_not_translated_filter' => 'Не мають перекладу на',
 	'article_add_err_title_empty' => 'Заголовок не повинен бути порожнім',
 	'article_add_err_full_empty' => 'Текст публікації не повинен бути порожнім',
 	'article_add_err_publish_date_invalid' => 'Дата публікації введена неправильно',

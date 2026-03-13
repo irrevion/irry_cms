@@ -322,6 +322,7 @@ return [
 	'article_show_off_main_page_filter' => 'Не показываемые на главной',
 	'article_is_highlighted' => 'Избранное',
 	'article_is_highlighted_filter' => 'Избранные',
+	'article_not_translated_filter' => 'Не переведены на',
 	'article_add_err_title_empty' => 'Заголовок не должен быть пустым',
 	'article_add_err_full_empty' => 'Текст публикации не должен быть пустым',
 	'article_add_err_publish_date_invalid' => 'Дата публикации введена неверно',

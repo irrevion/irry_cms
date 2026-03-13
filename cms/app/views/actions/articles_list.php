@@ -380,6 +380,21 @@ $(document).ready(function() {
 			</div>
 
 			<div class="popupFormInputsBlock">
+				<label for="selectNoTr" class="form-label"><?=CMS::t('article_not_translated_filter');?></label>
+
+				<select name="filter[notr]" id="selectNoTr" class="form-control" form="formSearchAndFilter">
+					<option value=""><?=CMS::t('filter_no_matter');?></option>
+					<?php
+					if (!empty(CMS::$site_langs) && is_array(CMS::$site_langs)) {
+						foreach (CMS::$site_langs as $ln) {
+					?><option value="<?= $ln['language_dir']; ?>"<?= ((@$_GET['filter']['notr']==$ln['language_dir'])? ' selected="selected"': ''); ?>><?= Utils::safeEcho($ln['language_name'], 1); ?></option><?php
+						}
+					}
+					?>
+				</select>
+			</div>
+
+			<div class="popupFormInputsBlock">
 				<label for="selectAuthor" class="form-label"><?= CMS::t('author'); ?></label>
 
 				<select name="filter[author]" id="selectAuthor" class="form-control" form="formSearchAndFilter">
