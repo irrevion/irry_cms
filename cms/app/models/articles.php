@@ -19,11 +19,12 @@ class articles {
 	public static $tbl = 'articles';
 	public static $tr_fields = ['title', 'post', 'is_published_lang'];
 	public static $allowed_thumb_ext = ['jpg', 'jpeg', 'png', 'webp'];
+	public static $delete_originals = true;
 	public static $dimensions = [
-		'thumbs' => [
+		/*'thumbs' => [
 			'width' => 330,
 			'height' => 220
-		],
+		],*/
 		'square' => [
 			'width' => 60,
 			'height' => 60
@@ -187,6 +188,10 @@ class articles {
 							->thumbnail($size['width'], $size['height'])
 							->toFile($cd.$article['img'], $img->getMimeType(), 75);
 					}
+					// do not store uploaded files if not necessary
+					if (self::$delete_originals) {
+						unlink($d.'originals/'.$article['img']);
+					}
 				}
 			} else {
 				$response['errors'][] = CMS::$upload_err[$_FILES['img']['error']];
@@ -312,6 +317,10 @@ class articles {
 						$img
 							->thumbnail($size['width'], $size['height'])
 							->toFile($cd.$uploaded, $img->getMimeType(), 75);
+					}
+					// do not store uploaded files if not necessary
+					if (self::$delete_originals) {
+						unlink($d.'originals/'.$uploaded);
 					}
 				}
 			} else {

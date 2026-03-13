@@ -10,7 +10,6 @@ $only_lang = (count($langs)==1);
 $active_subdomain = CMS::sess('active_subdomain');
 $subdomain = ($active_subdomain? CMS::sess('active_subdomain_info'): []);
 $uploadDir = CMS::getContentUploadsDir().'articles/';
-// $uploadUrl = CMS::getContentUploadsUrl().'articles/';
 $uploadUrl = utils::urlJoin(CMS::getContentUploadsUrl(), 'articles/');
 
 ?>
@@ -221,17 +220,17 @@ $(document).ready(function() {
 										<label><?=CMS::t('image');?></label>
 
 										<?php if (!empty($article['img'])) {
-												$previewUrl = $uploadUrl.'originals/'.$article['img'];
-												$preview_exists = is_file($uploadDir.'originals/'.$article['img']);
+												$previewUrl = $uploadUrl.'larges/'.$article['img'];
+												$preview_exists = is_file($uploadDir.'larges/'.$article['img']);
 											?>
 										<div class="image-preview">
 											<img src="<?=($preview_exists? $previewUrl: IMAGE_DIR.'noimg.jpg');?>" alt="<?=$article['img'];?>" class="img-responsive image-preview-img" />
 											<div class="image-preview-info">
 												<p>
 												<?php
-													$orgSize = utils::getFileSizeFormatted($uploadDir.'originals/'.$article['img']);
-													$tmbSize = utils::getFileSizeFormatted($uploadDir.'thumbs/'.$article['img']);
-													$imgModTimestamp = @filemtime($uploadDir.'originals/'.$article['img']);
+													$orgSize = utils::getFileSizeFormatted($uploadDir.'larges/'.$article['img']);
+													$tmbSize = utils::getFileSizeFormatted($uploadDir.'block/'.$article['img']);
+													$imgModTimestamp = @filemtime($uploadDir.'larges/'.$article['img']);
 												?>
 												<?=CMS::t('article_image_original_size');?>: <?=$orgSize['value'];?> <?=$orgSize['measure'];?><br />
 												<?=CMS::t('article_image_thumbnail_size');?>: <?=$tmbSize['value'];?> <?=$tmbSize['measure'];?><br />
